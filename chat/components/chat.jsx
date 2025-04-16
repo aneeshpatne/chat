@@ -12,6 +12,16 @@ export default function Chat() {
   const handleChange = (e) => {
     setMessage(e.target.value);
   };
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      setMessage("");
+    }
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setMessage("");
+  };
   if (!mounted) {
     return (
       <div className="flex flex-1 justify-center items-center h-screen">
@@ -40,13 +50,14 @@ export default function Chat() {
           <TextareaAutosize
             value={message}
             onChange={handleChange}
+            onKeyDown={handleKeyDown}
             minRows={1}
             maxRows={4}
             placeholder="Type your message here..."
             className="w-full p-2 border-none rounded-md text-white overflow-y-auto focus:outline-none transition-all duration-150 ease-in-out resize-none"
           />
           <div className="flex justify-end mt-2">
-            <Button variant="outline">
+            <Button variant="outline" onClick={handleSubmit}>
               <Send size={16} />
             </Button>
           </div>
