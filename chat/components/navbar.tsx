@@ -19,7 +19,9 @@ export default function NavBar() {
       <aside
         className={`fixed md:sticky top-0 h-full bg-stone-800 text-white transition-all duration-200 ${
           open ? "w-64" : "w-0"
-        } flex flex-col overflow-hidden z-9999`}
+        } flex flex-col overflow-hidden z-9999 ${
+          open && "border-r border-stone-700"
+        }`}
       >
         <div className="flex items-center justify-between p-4 border-b border-stone-700">
           {open && (
