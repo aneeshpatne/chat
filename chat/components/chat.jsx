@@ -31,8 +31,8 @@ export default function Chat() {
     );
   }
   return (
-    <div className="flex flex-1 justify-center items-center h-screen">
-      <div className="flex flex-col w-[80%] max-w-2xl">
+    <div className="flex flex-col justify-center mx-auto w-[80%] max-w-3xl h-screen">
+      <div className="flex flex-col">
         <h1 className="text-3xl font-bold tracking-tight mb-4 bg-gradient-to-r from-stone-100 via-stone-300 to-stone-100 inline-block text-transparent bg-clip-text drop-shadow-sm">
           Good Afternoon, Aneesh!
         </h1>
