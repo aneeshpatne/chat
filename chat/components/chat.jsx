@@ -77,7 +77,7 @@ export default function Chat() {
           })}
         </div>
       </div>
-      <div className="fixed bottom-0 w-full">
+      <div className="fixed bottom-0 left-0 w-full">
         <div className="mx-auto w-[80%] max-w-4xl">
           <div className="flex flex-col p-4 bg-stone-800 rounded-md border border-stone-600">
             <TextareaAutosize
