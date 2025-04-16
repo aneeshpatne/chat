@@ -4,10 +4,11 @@ import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Send } from "lucide-react";
 import { useChat } from "@ai-sdk/react";
+import ReactMarkdown from "react-markdown";
+
 export default function Chat() {
   const { messages, input, handleInputChange, handleSubmit } = useChat();
   const [mounted, setMounted] = useState(false);
-  const [started, setStarted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -102,7 +103,7 @@ function SentMessage({ message }) {
   return (
     <div className="flex justify-end w-full">
       <div className="max-w-[60%] px-4 py-2 bg-stone-700 rounded-2xl rounded-tr-none text-white shadow-sm">
-        {message}
+        <ReactMarkdown>{message}</ReactMarkdown>
       </div>
     </div>
   );
@@ -111,7 +112,9 @@ function SentMessage({ message }) {
 function ReceivedMessage({ message }) {
   return (
     <div className="flex justify-start w-full">
-      <div className="w-full px-4 py-2 text-white">{message}</div>
+      <div className="w-full px-4 py-2 text-white">
+        <ReactMarkdown>{message}</ReactMarkdown>
+      </div>
     </div>
   );
 }
