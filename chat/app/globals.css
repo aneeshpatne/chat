@@ -114,6 +114,10 @@
 body {
   background-color: var(--background);
 }
+::selection {
+  background-color: rgba(0, 133, 170, 0.15); /* transparent dark blue */
+  color: #22d3ee; /* cyan-400 / sky-400 */
+}
 
 @layer base {
   * {
