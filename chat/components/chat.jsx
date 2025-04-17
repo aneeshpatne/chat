@@ -9,7 +9,7 @@ import { useChat } from "@ai-sdk/react";
 import ReactMarkdown from "react-markdown";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { highlightCodeToJSX } from "@/lib/shiki-client";
+import { highlightCodeToJSX } from "../lib/shiki-client";
 export default function Chat() {
   const { messages, input, handleInputChange, handleSubmit } = useChat();
   const [mounted, setMounted] = useState(false);

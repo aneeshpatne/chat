@@ -1,21 +1,31 @@
 // lib/shiki-client.ts
-"use client";
-
-import { codeToHast } from "shiki";
+import { createHighlighter } from "shiki"; // shorthand loader
 import { toJsxRuntime } from "hast-util-to-jsx-runtime";
-import { visit } from "unist-util-visit";
 import { transformerNotationDiff } from "@shikijs/transformers";
 
-export async function highlightCodeToJSX(code: string, lang: string) {
-  const { codeToHast: shikiCodeToHast } = await import("shiki");
+// 1️⃣ Preload once at module import:
+export const highlighterPromise = createHighlighter({
+  themes: ["nord"], // plural “themes” :contentReference[oaicite:4]{index=4}
+  langs: ["javascript", "typescript", "jsx", "tsx", "css"],
+});
 
-  const hast = await shikiCodeToHast(code, {
+/**
+ * Highlight code → HAST → JSX-runtime
+ */
+export async function highlightCodeToJSX(code: string, lang: string) {
+  const highlighter = await highlighterPromise;
+
+  // 2️⃣ Pass `themes` array, not `theme`
+  const hast = highlighter.codeToHast(code, {
     lang,
-    theme: "nord",
+    themes: {
+      // ← mapping object satisfies the Record<string,…> type
+      default: "nord",
+    },
     transformers: [transformerNotationDiff()],
   });
 
-  // Convert HAST to JSX for rendering in React
+  // 3️⃣ Convert HAST → JSX with proper runtime imports
   return toJsxRuntime(hast, {
     Fragment: (await import("react")).Fragment,
     jsx: (await import("react/jsx-runtime")).jsx,
