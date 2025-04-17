@@ -1,5 +1,7 @@
 "use client";
 import TextareaAutosize from "react-textarea-autosize";
+import React from "react";
+import { getHighlighter } from "shiki";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Send } from "lucide-react";
@@ -7,15 +9,7 @@ import { useChat } from "@ai-sdk/react";
 import ReactMarkdown from "react-markdown";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { dark as baseTheme } from "react-syntax-highlighter/dist/esm/styles/prism";
-const customTheme = {
-  ...baseTheme,
-  "token.comment": {
-    ...baseTheme["token.comment"],
-    color: "#d2fcf6", // ← THIS is how you change comment color
-  },
-};
+import { highlightCodeToJSX } from "@/lib/shiki-client";
 export default function Chat() {
   const { messages, input, handleInputChange, handleSubmit } = useChat();
   const [mounted, setMounted] = useState(false);
@@ -110,7 +104,7 @@ export default function Chat() {
     </div>
   );
 }
-function SentMessage({ message }) {
+const SentMessage = React.memo(function SentMessage({ message }) {
   return (
     <div className="flex justify-end w-full">
       <div className="max-w-[60%] px-4 py-2 bg-stone-700 rounded-2xl rounded-tr-none text-white shadow-sm">
@@ -118,41 +112,48 @@ function SentMessage({ message }) {
       </div>
     </div>
   );
+});
+
+export function CodeBlock({ className = "", children }) {
+  const [jsx, setJsx] = useState(null);
+  const lang = className?.replace("language-", "") || "text";
+  const code = String(children).trim();
+
+  useEffect(() => {
+    const run = async () => {
+      const highlighted = await highlightCodeToJSX(code, lang);
+      setJsx(highlighted);
+    };
+    run();
+  }, [code, lang]);
+
+  return (
+    jsx ?? (
+      <pre className="bg-stone-700 text-white rounded-md p-4 text-sm">
+        <code>{children}</code>
+      </pre>
+    )
+  );
 }
 
-function ReceivedMessage({ message }) {
+const ReceivedMessage = React.memo(function ReceivedMessage({ message }) {
   return (
     <div className="flex justify-start w-full">
       <div className="w-full px-4 py-2 text-white">
         <Markdown
+          remarkPlugins={[remarkGfm]}
           components={{
             code({ node, inline, className, children, ...props }) {
-              const match = /language-(\w+)/.exec(className || "");
-              return !inline && match ? (
-                <SyntaxHighlighter
-                  language={match[1]}
-                  style={customTheme}
-                  customStyle={{
-                    background: "#011627",
-                    borderRadius: "5px",
-                    padding: "1.25rem",
-                    fontSize: "0.9rem",
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.5)",
-                    border: "none",
-                  }}
-                  showLineNumbers
-                  lineNumberStyle={{
-                    color: "#999",
-                    fontSize: "0.8em",
-                    minWidth: "2em",
-                    marginRight: "1em",
-                  }}
-                  wrapLines={true}
+              if (!inline && className?.startsWith("language-")) {
+                return <CodeBlock className={className} children={children} />;
+              }
+
+              // Inline code fallback
+              return (
+                <code
+                  {...props}
+                  className="bg-stone-700/70 px-1 py-0.5 rounded text-white text-sm"
                 >
-                  {String(children).replace(/\n$/, "")}
-                </SyntaxHighlighter>
-              ) : (
-                <code {...props} className={className}>
                   {children}
                 </code>
               );
@@ -164,4 +165,4 @@ function ReceivedMessage({ message }) {
       </div>
     </div>
   );
-}
+});
