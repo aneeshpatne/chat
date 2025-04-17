@@ -5,14 +5,24 @@ import { Button } from "./ui/button";
 import { Send } from "lucide-react";
 import { useChat } from "@ai-sdk/react";
 import ReactMarkdown from "react-markdown";
-
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { dark as baseTheme } from "react-syntax-highlighter/dist/esm/styles/prism";
+const customTheme = {
+  ...baseTheme,
+  "token.comment": {
+    ...baseTheme["token.comment"],
+    color: "#d2fcf6", // ← THIS is how you change comment color
+  },
+};
 export default function Chat() {
   const { messages, input, handleInputChange, handleSubmit } = useChat();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-  });
+  }, []);
 
   if (!mounted) {
     return (
@@ -114,7 +124,43 @@ function ReceivedMessage({ message }) {
   return (
     <div className="flex justify-start w-full">
       <div className="w-full px-4 py-2 text-white">
-        <ReactMarkdown>{message}</ReactMarkdown>
+        <Markdown
+          components={{
+            code({ node, inline, className, children, ...props }) {
+              const match = /language-(\w+)/.exec(className || "");
+              return !inline && match ? (
+                <SyntaxHighlighter
+                  language={match[1]}
+                  style={customTheme}
+                  customStyle={{
+                    background: "#011627",
+                    borderRadius: "5px",
+                    padding: "1.25rem",
+                    fontSize: "0.9rem",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.5)",
+                    border: "none",
+                  }}
+                  showLineNumbers
+                  lineNumberStyle={{
+                    color: "#999",
+                    fontSize: "0.8em",
+                    minWidth: "2em",
+                    marginRight: "1em",
+                  }}
+                  wrapLines={true}
+                >
+                  {String(children).replace(/\n$/, "")}
+                </SyntaxHighlighter>
+              ) : (
+                <code {...props} className={className}>
+                  {children}
+                </code>
+              );
+            },
+          }}
+        >
+          {message}
+        </Markdown>
       </div>
     </div>
   );
