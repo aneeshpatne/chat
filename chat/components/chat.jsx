@@ -1,15 +1,12 @@
 "use client";
 import TextareaAutosize from "react-textarea-autosize";
 import React from "react";
-import { getHighlighter } from "shiki";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Send } from "lucide-react";
 import { useChat } from "@ai-sdk/react";
 import ReactMarkdown from "react-markdown";
-import Markdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import { highlightCodeToJSX } from "../lib/shiki-client";
+import { ReceivedMessage } from "./ReceivedMessage";
 export default function Chat() {
   const { messages, input, handleInputChange, handleSubmit } = useChat();
   const [mounted, setMounted] = useState(false);
@@ -109,59 +106,6 @@ const SentMessage = React.memo(function SentMessage({ message }) {
     <div className="flex justify-end w-full">
       <div className="max-w-[60%] px-4 py-2 bg-stone-700 rounded-2xl rounded-tr-none text-white shadow-sm">
         <ReactMarkdown>{message}</ReactMarkdown>
-      </div>
-    </div>
-  );
-});
-
-export function CodeBlock({ className = "", children }) {
-  const [jsx, setJsx] = useState(null);
-  const lang = className?.replace("language-", "") || "text";
-  const code = String(children).trim();
-
-  useEffect(() => {
-    const run = async () => {
-      const highlighted = await highlightCodeToJSX(code, lang);
-      setJsx(highlighted);
-    };
-    run();
-  }, [code, lang]);
-
-  return (
-    jsx ?? (
-      <pre className="bg-stone-700 text-white rounded-md p-4 text-sm">
-        <code>{children}</code>
-      </pre>
-    )
-  );
-}
-
-const ReceivedMessage = React.memo(function ReceivedMessage({ message }) {
-  return (
-    <div className="flex justify-start w-full">
-      <div className="w-full px-4 py-2 text-white">
-        <Markdown
-          remarkPlugins={[remarkGfm]}
-          components={{
-            code({ node, inline, className, children, ...props }) {
-              if (!inline && className?.startsWith("language-")) {
-                return <CodeBlock className={className} children={children} />;
-              }
-
-              // Inline code fallback
-              return (
-                <code
-                  {...props}
-                  className="bg-stone-700/70 px-1 py-0.5 rounded text-white text-sm"
-                >
-                  {children}
-                </code>
-              );
-            },
-          }}
-        >
-          {message}
-        </Markdown>
       </div>
     </div>
   );
