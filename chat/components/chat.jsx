@@ -60,39 +60,40 @@ export default function Chat() {
   }
 
   return (
-    <div className="w-full h-full overflow-y-auto">
-      <div className="mx-auto w-[80%] max-w-4xl min-h-screen pb-[150px]">
-        <div className="flex flex-col w-full gap-3 p-3">
-          {messages.map((message, index) => {
-            const text = message.parts
-              .filter((part) => part.type === "text")
-              .map((part) => part.text)
-              .join("");
+    <div className="flex flex-col w-full h-full ">
+      <div className="w-full h-full overflow-y-auto">
+        <div className="mx-auto w-[80%] max-w-4xl pb-4">
+          <div className="flex flex-col w-full gap-3 p-3">
+            {messages.map((message, index) => {
+              const text = message.parts
+                .filter((part) => part.type === "text")
+                .map((part) => part.text)
+                .join("");
 
-            return message.role === "user" ? (
-              <SentMessage key={index} message={text} />
-            ) : (
-              <ReceivedMessage key={index} message={text} />
-            );
-          })}
+              return message.role === "user" ? (
+                <SentMessage key={index} message={text} />
+              ) : (
+                <ReceivedMessage key={index} message={text} />
+              );
+            })}
+          </div>
         </div>
       </div>
-      <div className="fixed bottom-0 left-0 w-full">
-        <div className="mx-auto w-[80%] max-w-4xl">
-          <div className="flex flex-col p-4 bg-stone-800 rounded-md border border-stone-600">
-            <TextareaAutosize
-              value={input}
-              onChange={handleInputChange}
-              minRows={1}
-              maxRows={4}
-              placeholder="Type your message here..."
-              className="w-full p-2 border-none rounded-md text-white overflow-y-auto focus:outline-none transition-all duration-150 ease-in-out resize-none"
-            />
-            <div className="flex justify-end mt-2">
-              <Button variant="outline" onClick={handleSubmit}>
-                <Send size={16} />
-              </Button>
-            </div>
+
+      <div className="mx-auto w-[80%] max-w-4xl">
+        <div className="flex flex-col p-4 bg-stone-800 rounded-md border border-stone-600">
+          <TextareaAutosize
+            value={input}
+            onChange={handleInputChange}
+            minRows={1}
+            maxRows={4}
+            placeholder="Type your message here..."
+            className="w-full p-2 border-none rounded-md text-white overflow-y-auto focus:outline-none transition-all duration-150 ease-in-out resize-none"
+          />
+          <div className="flex justify-end mt-2">
+            <Button variant="outline" onClick={handleSubmit}>
+              <Send size={16} />
+            </Button>
           </div>
         </div>
       </div>
