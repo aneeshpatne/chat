@@ -114,9 +114,10 @@ const SentMessage = React.memo(function SentMessage({ message }) {
 
 const ReceivedMessage = React.memo(function ReceivedMessage({ message }) {
   return (
-    <div
-      className="flex justify-start w-full"
-      dangerouslySetInnerHTML={{ __html: message }}
-    ></div>
+    <div className="flex justify-start w-full">
+      <div className="max-w-[60%] px-4 py-2 bg-stone-600 rounded-2xl rounded-tl-none text-white shadow-sm prose prose-invert">
+        <ReactMarkdown>{message}</ReactMarkdown>
+      </div>
+    </div>
   );
 });
