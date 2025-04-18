@@ -9,7 +9,7 @@ export async function POST(req: Request) {
   const { messages } = await req.json();
 
   const result = await streamText({
-    model: openai("gpt-4.1"),
+    model: openai("gpt-4.1-nano"),
     messages,
   });
 

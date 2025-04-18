@@ -1,6 +1,6 @@
 import React from "react";
 import ReactMarkdown from "react-markdown";
-import mdComponents from "./ReceivedMessage";
+import { mdComponents } from "./mdcomponents.jsx";
 
 const MemoizedMarkdownBlock = React.memo(
   function MemoizedMarkdownBlock({ content }) {
