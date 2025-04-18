@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "prismjs/themes/prism-tomorrow.css";
-@custom-variant dark (&:is(.dark *));
+
 /* hide all code blocks by default */
 
 @theme inline {
