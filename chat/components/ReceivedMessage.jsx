@@ -1,8 +1,10 @@
+import React, { Suspense } from "react";
+import { useMemo, useDeferredValue, useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
-import React from "react";
 import CodeBlock from "./CodeBlock";
-const mdComponents = {
-  code: CodeBlock,
+
+export const mdComponents = {
+  code: (props) => <CodeBlock {...props} />,
   p: ({ node, ...props }) => <p className="my-1.5 text-stone-200" {...props} />,
   h1: ({ node, ...props }) => (
     <h1 className="text-xl font-bold my-3 text-white" {...props} />
@@ -61,12 +63,15 @@ const mdComponents = {
   ),
   td: ({ node, ...props }) => <td className="py-2 px-3" {...props} />,
 };
+
 export const ReceivedMessage = React.memo(function ReceivedMessage({
   message,
 }) {
   return (
-    <div className="justify-start w-full ">
-      <ReactMarkdown children={message} components={mdComponents} />
+    <div className="justify-start w-full">
+      <ReactMarkdown components={mdComponents}>{message}</ReactMarkdown>
     </div>
   );
 });
+
+export default ReceivedMessage;
