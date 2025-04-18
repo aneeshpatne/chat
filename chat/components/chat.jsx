@@ -1,88 +1,19 @@
 "use client";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { Button } from "./ui/button";
 import { Send } from "lucide-react";
 import { useChat } from "@ai-sdk/react";
 import { micromark } from "micromark";
-// Import core only and specific languages for better performance
-import hljs from "highlight.js/lib/core";
-import javascript from "highlight.js/lib/languages/javascript";
-import python from "highlight.js/lib/languages/python";
-import typescript from "highlight.js/lib/languages/typescript";
-import bash from "highlight.js/lib/languages/bash";
-import json from "highlight.js/lib/languages/json";
-import "highlight.js/styles/atom-one-dark.css"; // Import a CSS theme for syntax highlighting
-
-// Register only the languages you need
-hljs.registerLanguage("javascript", javascript);
-hljs.registerLanguage("python", python);
-hljs.registerLanguage("typescript", typescript);
-hljs.registerLanguage("bash", bash);
-hljs.registerLanguage("json", json);
+import ReactMarkdown from "react-markdown";
 
 export default function Chat() {
   const { messages, input, handleInputChange, handleSubmit } = useChat();
   const [mounted, setMounted] = useState(false);
-  const containerRef = useRef(null);
-  const highlightTimeoutRef = useRef(null);
-  // const messagesEndRef = useRef(null);
-  useEffect(() => {}, [messages]);
 
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  // Scroll to bottom when messages change
-  // useEffect(() => {
-  //   messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  // }, [messages]);
-
-  // Highlight code blocks with debounce
-  const lastHighlightTime = useRef(0);
-
-  useEffect(() => {
-    if (!containerRef.current) return;
-
-    const THROTTLE = 50; // ms between highlights
-    const now = Date.now();
-    const delta = now - lastHighlightTime.current;
-
-    // helper to highlight every <pre><code>
-    const highlightAll = () => {
-      containerRef.current.querySelectorAll("pre code").forEach((block) => {
-        hljs.highlightElement(block);
-      });
-    };
-
-    // Throttle logic
-    if (delta < THROTTLE) {
-      // already ran recently — schedule the next call
-      clearTimeout(highlightTimeoutRef.current);
-      highlightTimeoutRef.current = setTimeout(() => {
-        highlightAll();
-        lastHighlightTime.current = Date.now();
-      }, THROTTLE - delta);
-    } else {
-      // OK to run now
-      highlightAll();
-      lastHighlightTime.current = now;
-    }
-
-    // One final "when idle" pass to catch anything still un‑highlighted
-    let idleId;
-    if ("requestIdleCallback" in window) {
-      idleId = requestIdleCallback(highlightAll, { timeout: 200 });
-    }
-
-    return () => {
-      clearTimeout(highlightTimeoutRef.current);
-      if (typeof cancelIdleCallback === "function") {
-        cancelIdleCallback(idleId);
-      }
-    };
-  }, [messages]);
-
   if (!mounted) {
     return <LoadingState />;
   }
@@ -99,7 +30,7 @@ export default function Chat() {
 
   return (
     <div className="flex flex-col w-full h-full">
-      <div ref={containerRef} className="w-full h-full overflow-y-auto">
+      <div className="w-full h-full overflow-y-auto">
         <div className="mx-auto w-[80%] max-w-4xl pb-4">
           <div className="flex flex-col w-full gap-3 p-3">
             {messages.map((message, index) => {
@@ -208,8 +139,8 @@ const SentMessage = React.memo(function SentMessage({ message }) {
 
 const ReceivedMessage = React.memo(function ReceivedMessage({ message }) {
   return (
-    <div className="justify-start w-full prose prose-invert">
-      <div dangerouslySetInnerHTML={{ __html: micromark(message) }} />
+    <div className=" justify-start w-full">
+      <ReactMarkdown>{message}</ReactMarkdown>
     </div>
   );
 });
