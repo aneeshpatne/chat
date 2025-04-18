@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 import { Send } from "lucide-react";
 import { useChat } from "@ai-sdk/react";
 import { micromark } from "micromark";
-import ReactMarkdown from "react-markdown";
+import { ReceivedMessage } from "./ReceivedMessage";
 
 export default function Chat() {
   const { messages, input, handleInputChange, handleSubmit } = useChat();
@@ -133,14 +133,6 @@ const SentMessage = React.memo(function SentMessage({ message }) {
         className="max-w-[60%] px-4 py-2 bg-stone-700 rounded-2xl rounded-tr-none text-white shadow-sm prose prose-invert"
         dangerouslySetInnerHTML={{ __html: micromark(message) }}
       />
-    </div>
-  );
-});
-
-const ReceivedMessage = React.memo(function ReceivedMessage({ message }) {
-  return (
-    <div className=" justify-start w-full">
-      <ReactMarkdown>{message}</ReactMarkdown>
     </div>
   );
 });
