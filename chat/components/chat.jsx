@@ -1,28 +1,37 @@
 "use client";
+import React, { useEffect, useState, useRef } from "react";
 import TextareaAutosize from "react-textarea-autosize";
-import React from "react";
-import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import { Send } from "lucide-react";
 import { useChat } from "@ai-sdk/react";
-import ReactMarkdown from "react-markdown";
-//import { ReceivedMessage } from "./ReceivedMessage";
+import { micromark } from "micromark";
+import hljs from "highlight.js";
+import "highlight.js/styles/github.css";
+
 export default function Chat() {
   const { messages, input, handleInputChange, handleSubmit } = useChat();
   const [mounted, setMounted] = useState(false);
+  const containerRef = useRef(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  // Highlight code blocks whenever new assistant message arrives
+  useEffect(() => {
+    if (!containerRef.current) return;
+    containerRef.current.querySelectorAll("pre code").forEach((block) => {
+      if (!block.classList.contains("hljs")) {
+        hljs.highlightElement(block);
+      }
+    });
+  }, [messages]);
+
   if (!mounted) {
     return (
       <div className="flex flex-1 justify-center items-center h-screen">
         <div className="flex flex-col w-[80%] max-w-2xl">
-          {/* Skeleton for the heading */}
           <div className="h-10 w-3/4 bg-stone-700/30 rounded-md mb-4 animate-pulse"></div>
-
-          {/* Skeleton for the chat box */}
           <div className="flex flex-col p-4 bg-stone-800 rounded-md border border-stone-600">
             <div className="w-full h-10 bg-stone-700/50 rounded-md animate-pulse"></div>
             <div className="flex justify-end mt-2">
@@ -33,6 +42,7 @@ export default function Chat() {
       </div>
     );
   }
+
   if (!messages) {
     return (
       <div className="flex flex-col justify-center mx-auto w-[80%] max-w-3xl h-screen">
@@ -61,8 +71,8 @@ export default function Chat() {
   }
 
   return (
-    <div className="flex flex-col w-full h-full ">
-      <div className="w-full h-full overflow-y-auto">
+    <div className="flex flex-col w-full h-full">
+      <div ref={containerRef} className="w-full h-full overflow-y-auto">
         <div className="mx-auto w-[80%] max-w-4xl pb-4">
           <div className="flex flex-col w-full gap-3 p-3">
             {messages.map((message, index) => {
@@ -101,12 +111,13 @@ export default function Chat() {
     </div>
   );
 }
+
 const SentMessage = React.memo(function SentMessage({ message }) {
   return (
     <div className="flex justify-end w-full">
       <div
         className="max-w-[60%] px-4 py-2 bg-stone-700 rounded-2xl rounded-tr-none text-white shadow-sm prose prose-invert"
-        dangerouslySetInnerHTML={{ __html: message }}
+        dangerouslySetInnerHTML={{ __html: micromark(message) }}
       />
     </div>
   );
@@ -114,10 +125,8 @@ const SentMessage = React.memo(function SentMessage({ message }) {
 
 const ReceivedMessage = React.memo(function ReceivedMessage({ message }) {
   return (
-    <div className="flex justify-start w-full">
-      <div className="max-w-[60%] px-4 py-2 bg-stone-600 rounded-2xl rounded-tl-none text-white shadow-sm prose prose-invert">
-        <ReactMarkdown>{message}</ReactMarkdown>
-      </div>
+    <div className="justify-start w-full prose prose-invert">
+      <div dangerouslySetInnerHTML={{ __html: micromark(message) }} />
     </div>
   );
 });
