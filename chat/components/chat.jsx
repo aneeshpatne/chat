@@ -65,7 +65,8 @@ export default function Chat() {
               }
             }}
           />
-          <div className="flex justify-end mt-2">
+          <div className="flex justify-between mt-2">
+            <div>Drop down</div>
             <Button variant="outline" onClick={handleSubmit}>
               <Send size={16} />
             </Button>

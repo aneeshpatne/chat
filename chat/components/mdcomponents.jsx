@@ -1,40 +1,45 @@
 import CodeBlock from "./CodeBlock";
+
 export const mdComponents = {
   code: (props) => <CodeBlock {...props} />,
-  p: ({ node, ...props }) => <p className="my-1.5 text-stone-200" {...props} />,
+  p: ({ node, ...props }) => (
+    <p className="my-4 text-stone-200" {...props} /> // increased margin
+  ),
   h1: ({ node, ...props }) => (
-    <h1 className="text-xl font-bold my-3 text-white" {...props} />
+    <h1 className="text-2xl font-bold my-4 text-white" {...props} /> // larger font and margin
   ),
   h2: ({ node, ...props }) => (
-    <h2 className="text-lg font-bold my-2.5 text-white" {...props} />
+    <h2 className="text-xl font-bold my-3 text-white" {...props} /> // increased margin
   ),
   h3: ({ node, ...props }) => (
-    <h3 className="text-base font-bold my-2 text-white" {...props} />
+    <h3 className="text-lg font-bold my-3 text-white" {...props} /> // increased margin
   ),
   h4: ({ node, ...props }) => (
-    <h4 className="text-sm font-bold my-2 text-white" {...props} />
+    <h4 className="text-base font-bold my-3 text-white" {...props} /> // increased margin
   ),
   ul: ({ node, ...props }) => (
-    <ul className="list-disc pl-5 my-2 space-y-1" {...props} />
+    <ul className="list-disc pl-6 my-3 space-y-2" {...props} /> // more padding and spacing
   ),
   ol: ({ node, ...props }) => (
-    <ol className="list-decimal pl-5 my-2 space-y-1" {...props} />
+    <ol className="list-decimal pl-6 my-3 space-y-2" {...props} /> // more padding and spacing
   ),
-  li: ({ node, ...props }) => <li className="text-stone-200" {...props} />,
+  li: ({ node, ...props }) => (
+    <li className="text-stone-200 mb-1" {...props} /> // margin bottom for spacing
+  ),
   a: ({ node, ...props }) => (
     <a className="text-blue-400 hover:text-blue-300 underline" {...props} />
   ),
   blockquote: ({ node, ...props }) => (
     <blockquote
-      className="border-l-4 border-stone-600 pl-3 italic my-2 text-stone-300"
+      className="border-l-4 border-stone-600 pl-4 italic my-3 text-stone-300" // increased padding and margin
       {...props}
     />
   ),
   hr: ({ node, ...props }) => (
-    <hr className="border-stone-600 my-3" {...props} />
+    <hr className="border-stone-600 my-4" {...props} /> // more vertical space
   ),
   img: ({ node, ...props }) => (
-    <img className="max-w-full rounded-lg my-2" {...props} />
+    <img className="max-w-full rounded-lg my-4" {...props} /> // more margin
   ),
   strong: ({ node, ...props }) => (
     <strong className="font-bold text-stone-100" {...props} />
@@ -43,7 +48,7 @@ export const mdComponents = {
     <em className="italic text-stone-200" {...props} />
   ),
   table: ({ node, ...props }) => (
-    <div className="overflow-x-auto my-3">
+    <div className="overflow-x-auto my-4">
       <table className="border-collapse w-full" {...props} />
     </div>
   ),
@@ -55,7 +60,9 @@ export const mdComponents = {
     <tr className="border-b border-stone-700" {...props} />
   ),
   th: ({ node, ...props }) => (
-    <th className="py-2 px-3 text-left font-medium text-stone-200" {...props} />
+    <th className="py-3 px-4 text-left font-medium text-stone-200" {...props} /> // increased padding
   ),
-  td: ({ node, ...props }) => <td className="py-2 px-3" {...props} />,
+  td: ({ node, ...props }) => (
+    <td className="py-3 px-4" {...props} /> // increased padding
+  ),
 };
