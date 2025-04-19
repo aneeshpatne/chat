@@ -6,7 +6,7 @@ import { Send } from "lucide-react";
 import { useChat } from "@ai-sdk/react";
 import { micromark } from "micromark";
 import { ReceivedMessage } from "./ReceivedMessage";
-
+import { LayoutTemplate } from "lucide-react";
 export default function Chat() {
   const { messages, input, handleInputChange, handleSubmit } = useChat();
   const [mounted, setMounted] = useState(false);
@@ -66,7 +66,7 @@ export default function Chat() {
             }}
           />
           <div className="flex justify-between mt-2">
-            <div>Drop down</div>
+            <ModelSelector />
             <Button variant="outline" onClick={handleSubmit}>
               <Send size={16} />
             </Button>
@@ -76,7 +76,16 @@ export default function Chat() {
     </div>
   );
 }
-
+function ModelSelector() {
+  return (
+    <div className="relative">
+      <Button variant="outline">
+        <LayoutTemplate size={16} className="mr-2" />
+        <span>Select Model</span>
+      </Button>
+    </div>
+  );
+}
 // Separate components for better organization
 function LoadingState() {
   return (
