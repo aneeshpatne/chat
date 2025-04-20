@@ -182,7 +182,7 @@ function ModelItem({
       onClick={handleClick}
     >
       {provider !== "openai" && (
-        <div className="absolute top-2 right-2 bg-stone-700/70 text-xs font-medium text-stone-200 px-1 py-0.5 rounded-md shadow-sm">
+        <div className="absolute top-2 left-1/2 transform -translate-x-1/2 bg-stone-700/70 text-xs font-medium text-stone-200 px-1 py-0.5 rounded-md shadow-sm">
           {provider}
         </div>
       )}
