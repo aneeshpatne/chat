@@ -181,12 +181,18 @@ function ModelItem({
   `}
       onClick={handleClick}
     >
-      <div className="absolute top-6 left-1/2 transform -translate-x-1/2 w-10 h-10 rounded-md">
+      {provider !== "openai" && (
+        <div className="absolute top-2 right-2 bg-stone-700/70 text-xs font-medium text-stone-200 px-1 py-0.5 rounded-md shadow-sm">
+          {provider}
+        </div>
+      )}
+      <div className="absolute top-8 left-1/2 transform -translate-x-1/2 w-10 h-10  overflow-hidden">
         <Image
           src={image}
           alt="Model Image"
-          fill
-          className="object-cover rounded-md"
+          height={35}
+          width={35}
+          className="object-cover"
         />
       </div>
       <p className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-xs font-medium text-stone-200 bg-stone-700/70 px-2 py-0.5 rounded-md shadow-sm text-center">

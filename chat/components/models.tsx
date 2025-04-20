@@ -70,4 +70,10 @@ export const models = {
     provider: "openrouter",
     img: "anthropic.svg",
   },
+  "Claude 3.5": {
+    name: "Claude 3.7",
+    id: "anthropic/claude-3.5-sonnet",
+    provider: "openrouter",
+    img: "anthropic.svg",
+  },
 };
