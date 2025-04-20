@@ -52,4 +52,22 @@ export const models = {
     provider: "openrouter",
     img: "gemini.svg",
   },
+  "Google: Gemini 2.0 Flash": {
+    name: "Gemini 2.0 Flash",
+    id: "google/gemini-2.0-flash-001",
+    provider: "openrouter",
+    img: "gemini.svg",
+  },
+  "Gemini 2.0 Flash Lite": {
+    name: "Gemini 2.0 Flash Lite",
+    id: "google/gemini-2.0-flash-lite-001",
+    provider: "openrouter",
+    img: "gemini.svg",
+  },
+  "Claude 3.7": {
+    name: "Claude 3.7",
+    id: "anthropic/claude-3.7-sonnet",
+    provider: "openrouter",
+    img: "anthropic.svg",
+  },
 };

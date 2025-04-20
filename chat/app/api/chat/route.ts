@@ -11,17 +11,17 @@ const openrouter = createOpenRouter({
 });
 
 export async function POST(req: Request) {
-  const { messages, data, provider } = await req.json();
-  console.log(provider);
+  const { messages, data } = await req.json();
+  console.log(data?.provider);
   const modelId = data?.model || "gpt-4.1-nano"; // Default to gpt-4.1 if no model is provided
   let result;
-  if (provider === "openai") {
+  if (data?.provider === "openai") {
     result = await streamText({
       model: openai(modelId),
       temperature: 1,
       messages,
     });
-  } else if (provider === "openrouter") {
+  } else if (data?.provider === "openrouter") {
     result = await streamText({
       model: openrouter(modelId),
       temperature: 1,
