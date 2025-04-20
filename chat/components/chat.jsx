@@ -137,15 +137,16 @@ function ModelSelector({ model, setModel }) {
         bg-stone-800 p-2 border border-stone-600 rounded-md shadow-lg
       "
           >
-            {Object.values(models).map((model) => (
+            {Object.values(models).map((m) => (
               <ModelItem
-                key={model.id}
-                id={model.id}
-                name={model.name}
+                key={m.id}
+                id={m.id}
+                name={m.name}
                 setModel={setModel}
-                image={model.img}
+                image={m.img}
                 setVisibility={setVisibility}
-                provider={model.provider}
+                provider={m.provider}
+                isSelected={m.id === model.id}
               />
             ))}
           </div>
@@ -156,17 +157,31 @@ function ModelSelector({ model, setModel }) {
 }
 
 // ModelItem component to represent each model in the selector
-function ModelItem({ name, setModel, setVisibility, image, id, provider }) {
+function ModelItem({
+  name,
+  setModel,
+  setVisibility,
+  image,
+  id,
+  provider,
+  isSelected,
+}) {
   function handleClick() {
     setModel({ name, id, provider });
     setVisibility(false);
   }
   return (
     <div
-      className="relative w-24 h-36 p-2 hover:bg-stone-700 border border-stone-600 rounded-md cursor-pointer transition duration-150 ease-in-out"
+      className={`relative w-24 h-36 p-2 border rounded-md cursor-pointer transition duration-150 ease-in-out
+    ${
+      isSelected
+        ? "border-stone-200 border-2 shadow-md"
+        : "hover:bg-stone-700 border-stone-600"
+    }
+  `}
       onClick={handleClick}
     >
-      <div className="absolute top-6 left-1/2 transform -translate-x-1/2 w-10 h-10  rounded-md">
+      <div className="absolute top-6 left-1/2 transform -translate-x-1/2 w-10 h-10 rounded-md">
         <Image
           src={image}
           alt="Model Image"
