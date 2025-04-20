@@ -7,9 +7,15 @@ import { useChat } from "@ai-sdk/react";
 import { micromark } from "micromark";
 import { ReceivedMessage } from "./ReceivedMessage";
 import { LayoutTemplate } from "lucide-react";
+import Image from "next/image";
 export default function Chat() {
-  const { messages, input, handleInputChange, handleSubmit } = useChat();
+  const { messages, input, handleInputChange, handleSubmit } = useChat({
+    onError: (error) => {
+      console.log("Error:", error);
+    },
+  });
   const [mounted, setMounted] = useState(false);
+  const [model, setModel] = useState("gpt-4.1-nano");
 
   useEffect(() => {
     setMounted(true);
@@ -18,18 +24,15 @@ export default function Chat() {
     return <LoadingState />;
   }
 
-  if (!messages || messages.length === 0) {
-    return (
-      <EmptyState
-        input={input}
-        handleInputChange={handleInputChange}
-        handleSubmit={handleSubmit}
-      />
-    );
-  }
-
   return (
     <div className="flex flex-col w-full h-full">
+      {!input && messages.length === 0 && (
+        <div className="flex items-center justify-center h-[calc(100vh-6rem)]">
+          <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-stone-100 via-stone-300 to-stone-100 inline-block text-transparent bg-clip-text drop-shadow-sm">
+            Good Afternoon, Aneesh!
+          </h1>
+        </div>
+      )}
       <div className="w-full h-full overflow-y-auto">
         <div className="mx-auto w-[80%] max-w-4xl pb-4">
           <div className="flex flex-col w-full gap-3 p-3">
@@ -66,7 +69,7 @@ export default function Chat() {
             }}
           />
           <div className="flex justify-between mt-2">
-            <ModelSelector />
+            <ModelSelector model={model} />
             <Button variant="outline" onClick={handleSubmit}>
               <Send size={16} />
             </Button>
@@ -76,16 +79,63 @@ export default function Chat() {
     </div>
   );
 }
-function ModelSelector() {
+function ModelSelector({ model }) {
+  const [visbility, setVisibility] = useState(false);
   return (
-    <div className="relative">
-      <Button variant="outline">
-        <LayoutTemplate size={16} className="mr-2" />
-        <span>Select Model</span>
-      </Button>
+    <div className="relative w-full">
+      {!visbility ? (
+        <>
+          <Button variant="outline" onClick={() => setVisibility(!visbility)}>
+            <LayoutTemplate size={16} className="mr-2" />
+            <span>{model}</span>
+          </Button>
+        </>
+      ) : (
+        <Button variant="destructive" onClick={() => setVisibility(!visbility)}>
+          <LayoutTemplate size={16} className="mr-2" />
+          <span>Close</span>
+        </Button>
+      )}
+      {visbility && (
+        <div className="absolute bottom-full mb-2">
+          <div
+            className="
+        flex flex-wrap gap-2 justify-between
+        max-w-[700px]
+        max-h-[80vh] 
+        overflow-y-auto
+        bg-stone-800 p-2 border border-stone-600 rounded-md shadow-lg
+      "
+          >
+            <ModelItem />
+            <ModelItem />
+            <ModelItem />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
+// ModelItem component to represent each model in the selector
+function ModelItem() {
+  return (
+    <div className="relative w-24 h-36 p-2 hover:bg-stone-700 border border-stone-600 rounded-md cursor-pointer transition duration-150 ease-in-out">
+      <div className="absolute top-6 left-1/2 transform -translate-x-1/2 w-10 h-10  rounded-md">
+        <Image
+          src="openai.svg"
+          alt="Model Image"
+          fill
+          className="object-cover rounded-md"
+        />
+      </div>
+      <p className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-xs font-medium text-stone-200 bg-stone-700/70 px-2 py-0.5 rounded-md shadow-sm whitespace-nowrap">
+        GPT 4.1 Nano
+      </p>
+    </div>
+  );
+}
+
 // Separate components for better organization
 function LoadingState() {
   return (
@@ -125,7 +175,8 @@ function EmptyState({ input, handleInputChange, handleSubmit }) {
               }
             }}
           />
-          <div className="flex justify-end mt-2">
+          <div className="flex justify-between mt-2">
+            <ModelSelector />
             <Button variant="outline" onClick={handleSubmit}>
               <Send size={16} />
             </Button>
