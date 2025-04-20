@@ -198,47 +198,12 @@ function LoadingState() {
   );
 }
 
-function EmptyState({ input, handleInputChange, onSubmit }) {
-  return (
-    <div className="flex flex-col justify-center mx-auto w-[80%] max-w-3xl h-screen">
-      <div className="flex flex-col">
-        <h1 className="text-3xl font-bold tracking-tight mb-4 bg-gradient-to-r from-stone-100 via-stone-300 to-stone-100 inline-block text-transparent bg-clip-text drop-shadow-sm">
-          Good Afternoon, Aneesh!
-        </h1>
-        <div className="flex flex-col p-4 bg-stone-800 rounded-md border border-stone-600">
-          <TextareaAutosize
-            value={input}
-            onChange={handleInputChange}
-            minRows={1}
-            maxRows={4}
-            placeholder="Type your message here..."
-            className="w-full p-2 border-none rounded-md text-white overflow-y-auto focus:outline-none transition-all duration-150 ease-in-out resize-none"
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                onSubmit(e);
-              }
-            }}
-          />
-          <div className="flex justify-between mt-2">
-            <ModelSelector />
-            <Button variant="outline" onClick={onSubmit}>
-              <Send size={16} />
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 const SentMessage = React.memo(function SentMessage({ message }) {
   return (
     <div className="flex justify-end w-full">
-      <div
-        className="max-w-[60%] px-4 py-2 bg-stone-700 rounded-2xl rounded-tr-none text-white shadow-sm prose prose-invert whitespace-pre-wrap"
-        dangerouslySetInnerHTML={{ __html: micromark(message) }}
-      />
+      <div className="max-w-[60%] px-4 py-2 bg-stone-700 rounded-2xl rounded-tr-none text-white shadow-sm prose prose-invert whitespace-pre-wrap break-words">
+        {message}
+      </div>
     </div>
   );
 });
