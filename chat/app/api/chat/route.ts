@@ -1,5 +1,6 @@
 // /app/api/chat/route.ts
 import { openai } from "@ai-sdk/openai";
+import { google } from "@ai-sdk/google";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { streamText } from "ai";
 import { errorHandler } from "./errorhandler";
@@ -24,6 +25,12 @@ export async function POST(req: Request) {
   } else if (data?.provider === "openrouter") {
     result = await streamText({
       model: openrouter(modelId),
+      temperature: 1,
+      messages,
+    });
+  } else if (data?.provider === "gemini") {
+    result = await streamText({
+      model: google(modelId),
       temperature: 1,
       messages,
     });

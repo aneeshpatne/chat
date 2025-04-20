@@ -64,6 +64,13 @@ export const models = {
     provider: "openrouter",
     img: "gemini.svg",
   },
+  "Gemini 2.0 Flash": {
+    name: "Gemini 2.0 Flash",
+    id: "gemini-2.0-flash",
+    provider: "gemini",
+    img: "gemini.svg",
+  },
+
   "Claude 3.7": {
     name: "Claude 3.7",
     id: "anthropic/claude-3.7-sonnet",
