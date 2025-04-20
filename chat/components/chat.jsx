@@ -20,10 +20,11 @@ export default function Chat() {
   const [model, setModel] = useState({
     name: "GPT 4.1 Nano",
     id: "gpt-4.1-nano",
+    provider: "openai",
   });
   const onSubmit = (e) => {
     handleSubmit(e, {
-      data: { model: model.id },
+      data: { model: model.id, provider: model.provider },
     });
   };
 
@@ -144,6 +145,7 @@ function ModelSelector({ model, setModel }) {
                 setModel={setModel}
                 image={model.img}
                 setVisibility={setVisibility}
+                provider={model.provider}
               />
             ))}
           </div>
@@ -156,7 +158,7 @@ function ModelSelector({ model, setModel }) {
 // ModelItem component to represent each model in the selector
 function ModelItem({ name, setModel, setVisibility, image, id }) {
   function handleClick() {
-    setModel({ name, id });
+    setModel({ name, id, provider });
     setVisibility(false);
   }
   return (
