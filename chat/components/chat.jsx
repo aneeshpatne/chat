@@ -156,7 +156,7 @@ function ModelSelector({ model, setModel }) {
 }
 
 // ModelItem component to represent each model in the selector
-function ModelItem({ name, setModel, setVisibility, image, id }) {
+function ModelItem({ name, setModel, setVisibility, image, id, provider }) {
   function handleClick() {
     setModel({ name, id, provider });
     setVisibility(false);
