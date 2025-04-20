@@ -7,16 +7,29 @@ import { useChat } from "@ai-sdk/react";
 import { micromark } from "micromark";
 import { ReceivedMessage } from "./ReceivedMessage";
 import { LayoutTemplate, X } from "lucide-react";
+import { models } from "./models";
 import Image from "next/image";
-const
+
 export default function Chat() {
   const { messages, input, handleInputChange, handleSubmit } = useChat({
+    sendExtraMessageFields: true,
     onError: (error) => {
       console.log("Error:", error);
     },
   });
+  const [model, setModel] = useState({
+    name: "GPT 4.1 Nano",
+    id: "gpt-4.1-nano",
+  });
+  const onSubmit = (e) => {
+    handleSubmit(e, {
+      data: { model: model.id },
+    });
+  };
+
   const [mounted, setMounted] = useState(false);
-  const [model, setModel] = useState("testing");
+
+  //const [model, setModel] = useState("gpt-4.1-nano");
 
   useEffect(() => {
     setMounted(true);
@@ -58,11 +71,11 @@ export default function Chat() {
           <TextAreaComponent
             input={input}
             handleInputChange={handleInputChange}
-            handleSubmit={handleSubmit}
+            onSubmit={onSubmit}
           />
           <div className="flex justify-between mt-2">
             <ModelSelector model={model} setModel={setModel} />
-            <Button variant="outline" onClick={handleSubmit}>
+            <Button variant="outline" onClick={(e) => onSubmit(e)}>
               <Send size={16} />
             </Button>
           </div>
@@ -75,7 +88,7 @@ export default function Chat() {
 const TextAreaComponent = React.memo(function TextAreaComponent({
   input,
   handleInputChange,
-  handleSubmit,
+  onSubmit,
 }) {
   return (
     <TextareaAutosize
@@ -88,7 +101,7 @@ const TextAreaComponent = React.memo(function TextAreaComponent({
       onKeyDown={(e) => {
         if (e.key === "Enter" && !e.shiftKey) {
           e.preventDefault();
-          handleSubmit(e);
+          onSubmit(e);
         }
       }}
     />
@@ -103,7 +116,7 @@ function ModelSelector({ model, setModel }) {
         <>
           <Button variant="outline" onClick={() => setVisibility(!visbility)}>
             <LayoutTemplate size={16} className="mr-2" />
-            <span>{model}</span>
+            <span>{model.name}</span>
           </Button>
         </>
       ) : (
@@ -123,13 +136,16 @@ function ModelSelector({ model, setModel }) {
         bg-stone-800 p-2 border border-stone-600 rounded-md shadow-lg
       "
           >
-            <ModelItem
-              name={"latestGPT"}
-              setModel={setModel}
-              setVisibility={setVisibility}
-            />
-            <ModelItem />
-            <ModelItem />
+            {Object.values(models).map((model) => (
+              <ModelItem
+                key={model.id}
+                id={model.id}
+                name={model.name}
+                setModel={setModel}
+                image={model.img}
+                setVisibility={setVisibility}
+              />
+            ))}
           </div>
         </div>
       )}
@@ -138,9 +154,9 @@ function ModelSelector({ model, setModel }) {
 }
 
 // ModelItem component to represent each model in the selector
-function ModelItem({ name, setModel, setVisibility }) {
+function ModelItem({ name, setModel, setVisibility, image, id }) {
   function handleClick() {
-    setModel(name);
+    setModel({ name, id });
     setVisibility(false);
   }
   return (
@@ -150,13 +166,13 @@ function ModelItem({ name, setModel, setVisibility }) {
     >
       <div className="absolute top-6 left-1/2 transform -translate-x-1/2 w-10 h-10  rounded-md">
         <Image
-          src="openai.svg"
+          src={image}
           alt="Model Image"
           fill
           className="object-cover rounded-md"
         />
       </div>
-      <p className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-xs font-medium text-stone-200 bg-stone-700/70 px-2 py-0.5 rounded-md shadow-sm whitespace-nowrap">
+      <p className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-xs font-medium text-stone-200 bg-stone-700/70 px-2 py-0.5 rounded-md shadow-sm text-center">
         {name}
       </p>
     </div>
@@ -180,7 +196,7 @@ function LoadingState() {
   );
 }
 
-function EmptyState({ input, handleInputChange, handleSubmit }) {
+function EmptyState({ input, handleInputChange, onSubmit }) {
   return (
     <div className="flex flex-col justify-center mx-auto w-[80%] max-w-3xl h-screen">
       <div className="flex flex-col">
@@ -198,13 +214,13 @@ function EmptyState({ input, handleInputChange, handleSubmit }) {
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
-                handleSubmit(e);
+                onSubmit(e);
               }
             }}
           />
           <div className="flex justify-between mt-2">
             <ModelSelector />
-            <Button variant="outline" onClick={handleSubmit}>
+            <Button variant="outline" onClick={onSubmit}>
               <Send size={16} />
             </Button>
           </div>
