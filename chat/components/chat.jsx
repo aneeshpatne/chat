@@ -18,7 +18,7 @@ export default function Chat() {
     },
   });
   const [model, setModel] = useState({
-    name: "GPT 4.1 Nano",
+    name: "4.1 Nano",
     id: "gpt-4.1-nano",
     provider: "openai",
   });
