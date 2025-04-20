@@ -6,8 +6,9 @@ import { Send } from "lucide-react";
 import { useChat } from "@ai-sdk/react";
 import { micromark } from "micromark";
 import { ReceivedMessage } from "./ReceivedMessage";
-import { LayoutTemplate } from "lucide-react";
+import { LayoutTemplate, X } from "lucide-react";
 import Image from "next/image";
+const
 export default function Chat() {
   const { messages, input, handleInputChange, handleSubmit } = useChat({
     onError: (error) => {
@@ -15,7 +16,7 @@ export default function Chat() {
     },
   });
   const [mounted, setMounted] = useState(false);
-  const [model, setModel] = useState("gpt-4.1-nano");
+  const [model, setModel] = useState("testing");
 
   useEffect(() => {
     setMounted(true);
@@ -54,22 +55,13 @@ export default function Chat() {
 
       <div className="mx-auto w-[80%] max-w-4xl">
         <div className="flex flex-col p-4 bg-stone-800 rounded-md border border-stone-600">
-          <TextareaAutosize
-            value={input}
-            onChange={handleInputChange}
-            minRows={1}
-            maxRows={4}
-            placeholder="Type your message here..."
-            className="w-full p-2 border-none rounded-md text-white overflow-y-auto focus:outline-none transition-all duration-150 ease-in-out resize-none"
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                handleSubmit(e);
-              }
-            }}
+          <TextAreaComponent
+            input={input}
+            handleInputChange={handleInputChange}
+            handleSubmit={handleSubmit}
           />
           <div className="flex justify-between mt-2">
-            <ModelSelector model={model} />
+            <ModelSelector model={model} setModel={setModel} />
             <Button variant="outline" onClick={handleSubmit}>
               <Send size={16} />
             </Button>
@@ -79,7 +71,31 @@ export default function Chat() {
     </div>
   );
 }
-function ModelSelector({ model }) {
+
+const TextAreaComponent = React.memo(function TextAreaComponent({
+  input,
+  handleInputChange,
+  handleSubmit,
+}) {
+  return (
+    <TextareaAutosize
+      value={input}
+      onChange={handleInputChange}
+      minRows={1}
+      maxRows={4}
+      placeholder="Type your message here..."
+      className="w-full p-2 border-none rounded-md text-white overflow-y-auto focus:outline-none transition-all duration-150 ease-in-out resize-none"
+      onKeyDown={(e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          handleSubmit(e);
+        }
+      }}
+    />
+  );
+});
+
+function ModelSelector({ model, setModel }) {
   const [visbility, setVisibility] = useState(false);
   return (
     <div className="relative w-full">
@@ -92,7 +108,7 @@ function ModelSelector({ model }) {
         </>
       ) : (
         <Button variant="destructive" onClick={() => setVisibility(!visbility)}>
-          <LayoutTemplate size={16} className="mr-2" />
+          <X size={16} className="mr-2" />
           <span>Close</span>
         </Button>
       )}
@@ -107,7 +123,11 @@ function ModelSelector({ model }) {
         bg-stone-800 p-2 border border-stone-600 rounded-md shadow-lg
       "
           >
-            <ModelItem />
+            <ModelItem
+              name={"latestGPT"}
+              setModel={setModel}
+              setVisibility={setVisibility}
+            />
             <ModelItem />
             <ModelItem />
           </div>
@@ -118,9 +138,16 @@ function ModelSelector({ model }) {
 }
 
 // ModelItem component to represent each model in the selector
-function ModelItem() {
+function ModelItem({ name, setModel, setVisibility }) {
+  function handleClick() {
+    setModel(name);
+    setVisibility(false);
+  }
   return (
-    <div className="relative w-24 h-36 p-2 hover:bg-stone-700 border border-stone-600 rounded-md cursor-pointer transition duration-150 ease-in-out">
+    <div
+      className="relative w-24 h-36 p-2 hover:bg-stone-700 border border-stone-600 rounded-md cursor-pointer transition duration-150 ease-in-out"
+      onClick={handleClick}
+    >
       <div className="absolute top-6 left-1/2 transform -translate-x-1/2 w-10 h-10  rounded-md">
         <Image
           src="openai.svg"
@@ -130,7 +157,7 @@ function ModelItem() {
         />
       </div>
       <p className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-xs font-medium text-stone-200 bg-stone-700/70 px-2 py-0.5 rounded-md shadow-sm whitespace-nowrap">
-        GPT 4.1 Nano
+        {name}
       </p>
     </div>
   );
