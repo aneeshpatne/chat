@@ -11,11 +11,22 @@ import { models } from "./models";
 import Image from "next/image";
 
 export default function Chat() {
+  const [token, setToken] = useState({});
   const { messages, input, handleInputChange, handleSubmit, stop, status } =
     useChat({
       sendExtraMessageFields: true,
       onError: (error) => {
         console.log("Error:", error);
+      },
+      onFinish: (message, options) => {
+        setToken((prevTokens) => ({
+          ...prevTokens,
+          [message.id]: {
+            completionTokens: options.usage.completionTokens,
+            promptTokens: options.usage.promptTokens,
+            totalTokens: options.usage.totalTokens,
+          },
+        }));
       },
     });
   const [model, setModel] = useState({
@@ -23,6 +34,7 @@ export default function Chat() {
     id: "gpt-4.1-nano",
     provider: "openai",
   });
+
   const onSubmit = (e) => {
     handleSubmit(e, {
       data: { model: model.id, provider: model.provider },
@@ -74,7 +86,11 @@ export default function Chat() {
               ) : message.id === "loading" ? (
                 <MessageLoadingIndicator key={index} />
               ) : (
-                <ReceivedMessage key={index} message={text} />
+                <ReceivedMessage
+                  key={index}
+                  message={text}
+                  token={token[message.id]}
+                />
               );
             })}
           </div>
