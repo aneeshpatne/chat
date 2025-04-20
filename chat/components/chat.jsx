@@ -6,17 +6,18 @@ import { Send } from "lucide-react";
 import { useChat } from "@ai-sdk/react";
 import { micromark } from "micromark";
 import { ReceivedMessage } from "./ReceivedMessage";
-import { LayoutTemplate, X } from "lucide-react";
+import { LayoutTemplate, X, OctagonX } from "lucide-react";
 import { models } from "./models";
 import Image from "next/image";
 
 export default function Chat() {
-  const { messages, input, handleInputChange, handleSubmit } = useChat({
-    sendExtraMessageFields: true,
-    onError: (error) => {
-      console.log("Error:", error);
-    },
-  });
+  const { messages, input, handleInputChange, handleSubmit, stop, status } =
+    useChat({
+      sendExtraMessageFields: true,
+      onError: (error) => {
+        console.log("Error:", error);
+      },
+    });
   const [model, setModel] = useState({
     name: "4.1 Nano",
     id: "gpt-4.1-nano",
@@ -38,6 +39,17 @@ export default function Chat() {
   if (!mounted) {
     return <LoadingState />;
   }
+  const renderedMessages =
+    status === "submitted"
+      ? [
+          ...messages,
+          {
+            id: "loading",
+            role: "assistant",
+            parts: [{ type: "text", text: "" }],
+          },
+        ]
+      : messages;
 
   return (
     <div className="flex flex-col w-full h-full">
@@ -51,7 +63,7 @@ export default function Chat() {
       <div className="w-full h-full overflow-y-auto">
         <div className="mx-auto w-[80%] max-w-4xl pb-4">
           <div className="flex flex-col w-full gap-3 p-3">
-            {messages.map((message, index) => {
+            {renderedMessages.map((message, index) => {
               const text = message.parts
                 .filter((part) => part.type === "text")
                 .map((part) => part.text)
@@ -59,6 +71,8 @@ export default function Chat() {
 
               return message.role === "user" ? (
                 <SentMessage key={index} message={text} />
+              ) : message.id === "loading" ? (
+                <MessageLoadingIndicator key={index} />
               ) : (
                 <ReceivedMessage key={index} message={text} />
               );
@@ -76,9 +90,16 @@ export default function Chat() {
           />
           <div className="flex justify-between mt-2">
             <ModelSelector model={model} setModel={setModel} />
-            <Button variant="outline" onClick={(e) => onSubmit(e)}>
-              <Send size={16} />
-            </Button>
+
+            {status === "streaming" ? (
+              <Button variant="destructive" onClick={stop}>
+                <OctagonX />
+              </Button>
+            ) : (
+              <Button variant="outline" onClick={(e) => onSubmit(e)}>
+                <Send size={16} />
+              </Button>
+            )}
           </div>
         </div>
       </div>
@@ -199,6 +220,48 @@ function ModelItem({
         {name}
       </p>
     </div>
+  );
+}
+
+// Component for the message loading indicator
+function MessageLoadingIndicator() {
+  return (
+    <>
+      <style jsx>{`
+        @keyframes fastFade {
+          0%,
+          80%,
+          100% {
+            opacity: 0.4;
+            transform: scale(0.9);
+          }
+          40% {
+            opacity: 1;
+            transform: scale(1.2);
+          }
+        }
+      `}</style>
+      <div className="flex items-center space-x-1">
+        <span
+          className="h-2 w-2 rounded-full bg-stone-400"
+          style={{ animation: "fastFade 0.7s infinite", animationDelay: "0s" }}
+        ></span>
+        <span
+          className="h-2 w-2 rounded-full bg-stone-400"
+          style={{
+            animation: "fastFade 0.7s infinite",
+            animationDelay: "0.15s",
+          }}
+        ></span>
+        <span
+          className="h-2 w-2 rounded-full bg-stone-400"
+          style={{
+            animation: "fastFade 0.7s infinite",
+            animationDelay: "0.3s",
+          }}
+        ></span>
+      </div>
+    </>
   );
 }
 
