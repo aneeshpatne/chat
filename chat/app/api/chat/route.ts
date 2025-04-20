@@ -12,23 +12,26 @@ const openrouter = createOpenRouter({
 
 export async function POST(req: Request) {
   const { messages, data, provider } = await req.json();
+  console.log(provider);
   const modelId = data?.model || "gpt-4.1-nano"; // Default to gpt-4.1 if no model is provided
   let result;
-  if (provider == "openai") {
+  if (provider === "openai") {
     result = await streamText({
       model: openai(modelId),
       temperature: 1,
       messages,
     });
-  } else {
+  } else if (provider === "openrouter") {
     result = await streamText({
       model: openrouter(modelId),
       temperature: 1,
       messages,
     });
   }
-
-  const stream = result.toDataStream();
+  // Handle other providers here if needed
+  else {
+    return new Response("Unsupported provider", { status: 400 });
+  }
 
   return result.toDataStreamResponse({ getErrorMessage: errorHandler });
 }

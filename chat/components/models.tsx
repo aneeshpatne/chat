@@ -46,4 +46,10 @@ export const models = {
     provider: "openai",
     img: "openai.svg",
   },
+  "Gemini 2.5 Pro": {
+    name: "Gemini 2.5 Pro",
+    id: "google/gemini-2.5-pro-preview-03-25",
+    provider: "openrouter",
+    img: "gemini.svg",
+  },
 };
