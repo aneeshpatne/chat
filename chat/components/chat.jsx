@@ -19,14 +19,16 @@ export default function Chat() {
         console.log("Error:", error);
       },
       onFinish: (message, options) => {
-        setToken((prevTokens) => ({
-          ...prevTokens,
-          [message.id]: {
-            completionTokens: options.usage.completionTokens,
-            promptTokens: options.usage.promptTokens,
-            totalTokens: options.usage.totalTokens,
-          },
-        }));
+        setToken((prevTokens) => {
+          return {
+            ...prevTokens,
+            [message.id]: {
+              completionTokens: options.usage.completionTokens,
+              promptTokens: options.usage.promptTokens,
+              totalTokens: options.usage.totalTokens,
+            },
+          };
+        });
       },
     });
   const [model, setModel] = useState({
