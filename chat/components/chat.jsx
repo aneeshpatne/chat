@@ -90,6 +90,7 @@ export default function Chat() {
                   key={index}
                   message={text}
                   token={token[message.id]}
+                  status={status}
                 />
               );
             })}

@@ -1,11 +1,13 @@
 import React, { Suspense, useRef } from "react";
 import { useMemo, useDeferredValue, useEffect, useState } from "react";
 import { parseMarkdownIntoBlocks } from "./CodeBlock";
+import { AnimatePresence, motion } from "framer-motion";
 import MemoizedMarkdownBlock from "./MemoizedMarkdownBlock";
 import { Copy, Check } from "lucide-react";
 export const ReceivedMessage = React.memo(function ReceivedMessage({
   message,
   token,
+  status,
 }) {
   // let React defer large markdown updates
   const deferredMessage = useDeferredValue(message);
@@ -45,7 +47,29 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
           className="text-white"
           aria-label="Copy Message"
         >
-          {copySuccess ? <Check size={17} /> : <Copy size={17} />}
+          <AnimatePresence mode="wait" initial={false}>
+            {copySuccess ? (
+              <motion.div
+                key="check"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Check size={17} />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="copy"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Copy size={17} />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </button>
         <small className="text-xs text-gray-500 italic flex space-x-8">
           {token && (
