@@ -31,6 +31,10 @@ export default function Chat() {
       try {
         const res = await fetch("/api/session");
         sessionStorage.setItem("initialMessage", input);
+        messages.push({
+          role: "user",
+          parts: [{ type: "text", text: input }],
+        });
         const data = await res.json();
         const newSessionId = data.sessionId;
         setSessionId(newSessionId);

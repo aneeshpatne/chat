@@ -42,7 +42,18 @@ export default function Chat({ sessionid }) {
   useEffect(() => {
     const initial = sessionStorage.getItem("initialMessage");
     if (initial && messages.length === 0) {
-      append({ role: "user", content: initial });
+      append(
+        {
+          role: "user",
+          content: initial,
+        },
+        {
+          data: {
+            model: model.id,
+            provider: model.provider,
+          },
+        }
+      );
       sessionStorage.removeItem("initialMessage");
     }
   }, []);
