@@ -3,7 +3,7 @@ import { useState } from "react";
 import { ArrowRight, ArrowLeft, User } from "lucide-react";
 
 export default function NavBar() {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const toggle = () => setOpen(!open);
 
   return (
