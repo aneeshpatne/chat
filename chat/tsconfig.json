@@ -29,7 +29,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "components/ReceivedMessage.jsx"
+    "components/ReceivedMessage.jsx",
+    "app/chat/[id]/page.jsx"
   ],
   "exclude": ["node_modules"]
 }

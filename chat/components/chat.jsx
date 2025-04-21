@@ -10,27 +10,42 @@ import { LayoutTemplate, X, OctagonX } from "lucide-react";
 import { models } from "./models";
 import Image from "next/image";
 
-export default function Chat() {
+export default function Chat({ sessionid }) {
   const [token, setToken] = useState({});
-  const { messages, input, handleInputChange, handleSubmit, stop, status } =
-    useChat({
-      sendExtraMessageFields: true,
-      onError: (error) => {
-        console.log("Error:", error);
-      },
-      onFinish: (message, options) => {
-        setToken((prevTokens) => {
-          return {
-            ...prevTokens,
-            [message.id]: {
-              completionTokens: options.usage.completionTokens,
-              promptTokens: options.usage.promptTokens,
-              totalTokens: options.usage.totalTokens,
-            },
-          };
-        });
-      },
-    });
+  const {
+    messages,
+    input,
+    handleInputChange,
+    handleSubmit,
+    stop,
+    status,
+    append,
+  } = useChat({
+    id: sessionid,
+    sendExtraMessageFields: true,
+    onError: (error) => {
+      console.log("Error:", error);
+    },
+    onFinish: (message, options) => {
+      setToken((prevTokens) => {
+        return {
+          ...prevTokens,
+          [message.id]: {
+            completionTokens: options.usage.completionTokens,
+            promptTokens: options.usage.promptTokens,
+            totalTokens: options.usage.totalTokens,
+          },
+        };
+      });
+    },
+  });
+  useEffect(() => {
+    const initial = sessionStorage.getItem("initialMessage");
+    if (initial && messages.length === 0) {
+      append({ role: "user", content: initial });
+      sessionStorage.removeItem("initialMessage");
+    }
+  }, []);
   const [model, setModel] = useState({
     name: "4.1 Nano",
     id: "gpt-4.1-nano",

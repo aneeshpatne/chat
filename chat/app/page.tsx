@@ -1,5 +1,5 @@
 import NavBar from "@/components/navbar";
-import Chat from "@/components/chat";
+import Chat from "@/components/initalChat";
 export default function Home() {
   return (
     <div className="flex h-screen">

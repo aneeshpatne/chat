@@ -6,14 +6,17 @@ import { Send } from "lucide-react";
 import { useChat } from "@ai-sdk/react";
 import { ReceivedMessage } from "./ReceivedMessage";
 import { LayoutTemplate, X, OctagonX } from "lucide-react";
+import { useRouter } from "next/navigation";
+
 import { models } from "./models";
 import Image from "next/image";
 
 export default function Chat() {
+  const router = useRouter();
+
   const [token, setToken] = useState({});
   const [sessionId, setSessionId] = useState(null);
-  const { messages, input, handleInputChange, handleSubmit, stop, status } =
-    useChat();
+  const { messages, input, handleInputChange, stop, status } = useChat();
   const [model, setModel] = useState({
     name: "4.1 Nano",
     id: "gpt-4.1-nano",
@@ -27,6 +30,7 @@ export default function Chat() {
     if (!sessionId) {
       try {
         const res = await fetch("/api/session");
+        sessionStorage.setItem("initialMessage", input);
         const data = await res.json();
         const newSessionId = data.sessionId;
         setSessionId(newSessionId);
