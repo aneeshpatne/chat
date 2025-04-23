@@ -7,6 +7,7 @@ import { Copy, Check } from "lucide-react";
 export const ReceivedMessage = React.memo(function ReceivedMessage({
   message,
   token,
+  reasoning,
   status,
 }) {
   // let React defer large markdown updates
@@ -38,6 +39,11 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
 
   return (
     <div className="justify-start w-full space-y-2">
+      {reasoning && (
+        <div className="flex items-center justify-start w-full p-2 text-sm text-gray-500 bg-gray-100 rounded-md">
+          <span className="font-semibold">Reasoning:</span> {reasoning}
+        </div>
+      )}
       {blocks.map((block, idx) => (
         <MemoizedMarkdownBlock content={block} key={idx} />
       ))}

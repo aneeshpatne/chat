@@ -21,6 +21,11 @@ export async function POST(req: Request) {
       model: openai(modelId),
       temperature: 1,
       messages,
+      providerOptions: {
+        openai: {
+          reasoningSummary: "detailed",
+        },
+      },
     });
   } else if (data?.provider === "openrouter") {
     result = await streamText({

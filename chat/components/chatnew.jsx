@@ -56,6 +56,10 @@ export default function Chat({
                 .filter((part) => part.type === "text")
                 .map((part) => part.text)
                 .join("");
+              const reasoning = message.parts
+                .filter((part) => part.type === "reasoning")
+                .map((part) => part.text)
+                .join("");
 
               return message.role === "user" ? (
                 <SentMessage key={index} message={text} />
@@ -67,6 +71,7 @@ export default function Chat({
                   message={text}
                   token={token[message.id]}
                   status={status}
+                  reasoning={reasoning}
                 />
               );
             })}
