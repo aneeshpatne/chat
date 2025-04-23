@@ -1,12 +1,14 @@
 import { google } from "@ai-sdk/google";
 import { generateText } from "ai";
 export async function POST(req: Request) {
-  const { message } = await req.json();
+  let { message } = await req.json();
+  const truncatedMessage = message.slice(0, 500);
+  message = truncatedMessage;
   try {
     const { text } = await generateText({
       model: google("gemini-2.0-flash-lite"),
       prompt: `You are a helpful assistant that creates short, relevant titles for chatbot conversations.
-
+Generate a TITLE for a chat based on the user's first message.
 Generate a **catchy and concise chat title** (maximum 5 words) based on the user's first message to a chatbot.  
 The title should reflect the **main topic or intent** of the message.
 
