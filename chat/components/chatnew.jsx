@@ -58,7 +58,7 @@ export default function Chat({
                 .join("");
               const reasoning = message.parts
                 .filter((part) => part.type === "reasoning")
-                .map((part) => part.text)
+                .map((part) => part.textDelta)
                 .join("");
 
               return message.role === "user" ? (

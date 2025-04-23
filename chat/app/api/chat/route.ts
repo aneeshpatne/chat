@@ -17,33 +17,33 @@ export async function POST(req: Request) {
   const modelId = data?.model || "gpt-4.1-nano"; // Default to gpt-4.1 if no model is provided
   let result;
   if (data?.provider === "openai") {
-    result = await streamText({
-      model: openai(modelId),
-      temperature: 1,
-      messages,
+    result = streamText({
+      model: openai.responses("o3-mini"),
+      prompt: "tell me about venus",
       providerOptions: {
         openai: {
-          reasoningSummary: "detailed",
+          reasoningSummary: "auto", // 'auto' for condensed or 'detailed' for comprehensive
         },
       },
     });
   } else if (data?.provider === "openrouter") {
-    result = await streamText({
+    result = streamText({
       model: openrouter(modelId),
       temperature: 1,
       messages,
     });
   } else if (data?.provider === "gemini") {
-    result = await streamText({
+    result = streamText({
       model: google(modelId),
       temperature: 1,
       messages,
     });
-  }
-  // Handle other providers here if needed
-  else {
+  } else {
     return new Response("Unsupported provider", { status: 400 });
   }
 
-  return result.toDataStreamResponse({ getErrorMessage: errorHandler });
+  return result.toDataStreamResponse({
+    getErrorMessage: errorHandler,
+    sendReasoning: true, // 💡 THIS is the magic flag
+  });
 }
