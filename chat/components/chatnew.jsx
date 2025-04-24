@@ -38,7 +38,7 @@ export default function Chat({
           },
         ]
       : messages;
-
+  console.log("renderedMessages", renderedMessages);
   return (
     <div className="flex flex-col w-full h-full">
       {!input && messages.length === 0 && (
@@ -58,7 +58,7 @@ export default function Chat({
                 .join("");
               const reasoning = message.parts
                 .filter((part) => part.type === "reasoning")
-                .map((part) => part.textDelta)
+                .map((part) => part.reasoning)
                 .join("");
 
               return message.role === "user" ? (

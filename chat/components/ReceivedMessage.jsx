@@ -3,6 +3,8 @@ import { useMemo, useDeferredValue, useEffect, useState } from "react";
 import { parseMarkdownIntoBlocks } from "./CodeBlock";
 import { AnimatePresence, motion } from "framer-motion";
 import MemoizedMarkdownBlock from "./MemoizedMarkdownBlock";
+
+import Marked from "react-markdown";
 import { Copy, Check } from "lucide-react";
 export const ReceivedMessage = React.memo(function ReceivedMessage({
   message,
@@ -13,7 +15,7 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
   // let React defer large markdown updates
   const deferredMessage = useDeferredValue(message);
   const [copySuccess, setCopySuccess] = useState(false);
-
+  const [active, setActive] = useState(true);
   const blocks = useMemo(
     () => parseMarkdownIntoBlocks(deferredMessage),
     [deferredMessage]
@@ -36,12 +38,24 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
       // Handle error (e.g., show an error message)
     }
   };
-
+  useEffect(() => {
+    if (status === "streaming") {
+      setActive(true); // Reset active state when status changes to submitted
+    } else {
+      setActive(false);
+    }
+  }, [status]);
   return (
     <div className="justify-start w-full space-y-2">
       {reasoning && (
-        <div className="flex items-center justify-start w-full p-2 text-sm text-gray-500 bg-gray-100 rounded-md">
-          <span className="font-semibold">Reasoning:</span> {reasoning}
+        <div className="flex flex-col justify-start w-full p-2 text-sm text-gray-100 rounded-md">
+          <div className="flex gap-2">
+            <span className="font-semibold">Reasoning:</span>
+            <button onClick={() => setActive((prev) => !prev)}>
+              Close/Open
+            </button>
+          </div>
+          {active && <Marked>{reasoning}</Marked>}
         </div>
       )}
       {blocks.map((block, idx) => (
