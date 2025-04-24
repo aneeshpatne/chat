@@ -18,11 +18,11 @@ export async function POST(req: Request) {
   let result;
   if (data?.provider === "openai") {
     result = streamText({
-      model: openai.responses("o3-mini"),
-      prompt: "tell me about venus",
+      model: openai.responses(modelId),
+      messages,
       providerOptions: {
         openai: {
-          reasoningSummary: "auto", // 'auto' for condensed or 'detailed' for comprehensive
+          reasoningSummary: "detailed", // 'auto' for condensed or 'detailed' for comprehensive
         },
       },
     });
@@ -43,7 +43,6 @@ export async function POST(req: Request) {
   }
 
   return result.toDataStreamResponse({
-    getErrorMessage: errorHandler,
-    sendReasoning: true, // 💡 THIS is the magic flag
+    sendReasoning: true,
   });
 }
