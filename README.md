@@ -2,7 +2,7 @@
 
 A sophisticated conversational AI platform built with Next.js that supports multiple AI models from providers including OpenAI, Google, and Anthropic.
 
-![Chat Interface](https://placehold.co/800x400?text=Chat)
+![Chat Interface](https://placehold.co/200?text=Chat)
 
 ## Features
 
@@ -104,12 +104,6 @@ yarn dev
 | `OPENAI_API_KEY`     | API key for OpenAI services                                 |
 | `OPENROUTER_API_KEY` | API key for OpenRouter (provides access to multiple models) |
 | `GOOGLE_API_KEY`     | API key for Google AI services                              |
-
-## Deployment
-
-This application can be easily deployed on Vercel:
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fyourusername%2Fai-chat-platform)
 
 ## Technologies
 
