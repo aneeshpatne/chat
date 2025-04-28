@@ -1,4 +1,3 @@
-// ✅ LAYOUT: app/chat/layout.jsx
 "use client";
 
 import { useChat } from "@ai-sdk/react";
@@ -51,6 +50,7 @@ export default function ChatLayout({ children }) {
 
       const res = await fetch("/api/session");
       const data = await res.json();
+
       router.push(`/chat/${data.sessionId}`);
     } else {
       chat.handleSubmit(e, {
@@ -71,7 +71,7 @@ export default function ChatLayout({ children }) {
 
   return (
     <ChatContext.Provider
-      value={{ ...chat, model, setModel, handleSubmit, token }}
+      value={{ ...chat, model, setModel, handleSubmit, token, pendingMessage }}
     >
       <div className="flex h-screen">{children}</div>
     </ChatContext.Provider>

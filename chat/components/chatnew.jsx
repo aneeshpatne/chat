@@ -18,8 +18,10 @@ export default function Chat({
   model,
   setModel,
   token,
+  pendingMessage,
 }) {
   const [mounted, setMounted] = useState(false);
+  const [messagesStatus, setMessagesStatus] = useState({});
 
   useEffect(() => {
     setMounted(true);
@@ -27,21 +29,29 @@ export default function Chat({
   if (!mounted) {
     return <LoadingState />;
   }
-  const renderedMessages =
-    status === "submitted"
-      ? [
-          ...messages,
-          {
-            id: "loading",
-            role: "assistant",
-            parts: [{ type: "text", text: "" }],
-          },
-        ]
-      : messages;
-  console.log("renderedMessages", renderedMessages);
+
+  const renderedMessages = [
+    ...messages,
+    pendingMessage && {
+      id: "pending-user",
+      role: "user",
+      parts: [{ type: "text", text: pendingMessage }],
+      pending: true,
+    },
+    status === "submitted" && {
+      id: "loading-assistant",
+      role: "assistant",
+      parts: [{ type: "text", text: "" }],
+      pending: true,
+    },
+  ].filter(Boolean);
+
+  const currentlyStreamingId =
+    status === "streaming" ? messages[messages.length - 1]?.id : null;
+
   return (
     <div className="flex flex-col w-full h-full">
-      {!input && messages.length === 0 && (
+      {!input && messages.length === 0 && !pendingMessage && (
         <div className="flex items-center justify-center h-[calc(100vh-6rem)]">
           <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-stone-100 via-stone-300 to-stone-100 inline-block text-transparent bg-clip-text drop-shadow-sm">
             Good Afternoon, Aneesh!
@@ -60,6 +70,7 @@ export default function Chat({
                 .filter((part) => part.type === "reasoning")
                 .map((part) => part.reasoning)
                 .join("");
+              const messageID = message.id;
 
               return message.role === "user" ? (
                 <SentMessage key={index} message={text} />
@@ -67,11 +78,13 @@ export default function Chat({
                 <MessageLoadingIndicator key={index} />
               ) : (
                 <ReceivedMessage
-                  key={index}
+                  key={message.id}
+                  id={messageID}
                   message={text}
                   token={token[message.id]}
                   status={status}
                   reasoning={reasoning}
+                  currentlyStreamingId={currentlyStreamingId}
                 />
               );
             })}
@@ -222,7 +235,7 @@ function ModelItem({
 }
 
 // Component for the message loading indicator
-function MessageLoadingIndicator() {
+export function MessageLoadingIndicator() {
   return (
     <>
       <style jsx>{`
