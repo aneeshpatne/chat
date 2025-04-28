@@ -197,7 +197,7 @@ const TextAreaComponent = React.memo(function TextAreaComponent({
       minRows={1}
       maxRows={4}
       placeholder="Type your message here..."
-      className="w-full p-2 border-none rounded-md text-white overflow-y-auto focus:outline-none transition-all duration-150 ease-in-out resize-none"
+      className="w-full p-3 border-none rounded-lg bg-stone-700/40 text-stone-100 placeholder-stone-400 overflow-y-auto focus:outline-none focus:ring-1 focus:ring-stone-500/50 transition-all duration-200 ease-in-out resize-none"
       onKeyDown={(e) => {
         if (e.key === "Enter" && !e.shiftKey) {
           e.preventDefault();
@@ -214,28 +214,28 @@ function ModelSelector({ model, setModel }) {
     <div className="relative w-full">
       {!visbility ? (
         <>
-          <Button variant="outline" onClick={() => setVisibility(!visbility)}>
-            <LayoutTemplate size={16} className="mr-2" />
-            <span>{model.name}</span>
+          <Button
+            variant="outline"
+            onClick={() => setVisibility(!visbility)}
+            className="bg-stone-700/40 border-stone-600/50 hover:bg-stone-700/60 hover:border-stone-500/50 transition-all duration-200"
+          >
+            <LayoutTemplate size={16} className="mr-2 text-stone-300" />
+            <span className="text-stone-200">{model.name}</span>
           </Button>
         </>
       ) : (
-        <Button variant="destructive" onClick={() => setVisibility(!visbility)}>
+        <Button
+          variant="destructive"
+          onClick={() => setVisibility(!visbility)}
+          className="hover:bg-red-900/80 transition-all duration-200"
+        >
           <X size={16} className="mr-2" />
           <span>Close</span>
         </Button>
       )}
       {visbility && (
-        <div className="absolute bottom-full mb-2">
-          <div
-            className="
-        flex flex-wrap gap-2 justify-between
-        max-w-[700px]
-        max-h-[80vh] 
-        overflow-y-auto
-        bg-stone-800 p-2 border border-stone-600 rounded-md shadow-lg
-      "
-          >
+        <div className="absolute bottom-full mb-3">
+          <div className="flex flex-wrap gap-3 p-3 max-w-[700px] max-h-[80vh] overflow-y-auto bg-stone-800/95 backdrop-blur-sm border border-stone-600/50 rounded-xl shadow-xl">
             {Object.values(models).map((m) => (
               <ModelItem
                 key={m.id}
@@ -271,21 +271,21 @@ function ModelItem({
   }
   return (
     <div
-      className={`relative w-24 h-36 p-2 border rounded-md cursor-pointer transition duration-150 ease-in-out
-    ${
-      isSelected
-        ? "border-stone-200 border-2 shadow-md"
-        : "hover:bg-stone-700 border-stone-600"
-    }
-  `}
+      className={`relative w-24 h-36 p-2 border rounded-xl cursor-pointer transition-all duration-200 ease-in-out
+        ${
+          isSelected
+            ? "border-stone-300 border-2 shadow-lg bg-stone-700/60"
+            : "hover:bg-stone-700/40 border-stone-600/50 hover:border-stone-500/50"
+        }
+      `}
       onClick={handleClick}
     >
       {provider !== "openai" && (
-        <div className="absolute top-2 left-1/2 transform -translate-x-1/2 bg-stone-700/70 text-xs font-medium text-stone-200 px-1 py-0.5 rounded-md shadow-sm">
+        <div className="absolute top-2 left-1/2 transform -translate-x-1/2 bg-stone-700/70 backdrop-blur-sm text-xs font-medium text-stone-200 px-2 py-1 rounded-md shadow-sm">
           {provider}
         </div>
       )}
-      <div className="absolute top-8 left-1/2 transform -translate-x-1/2 w-10 h-10  overflow-hidden">
+      <div className="absolute top-8 left-1/2 transform -translate-x-1/2 w-10 h-10 overflow-hidden rounded-lg shadow-md">
         <Image
           src={image}
           alt="Model Image"
@@ -294,7 +294,7 @@ function ModelItem({
           className="object-cover"
         />
       </div>
-      <p className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-xs font-medium text-stone-200 bg-stone-700/70 px-2 py-0.5 rounded-md shadow-sm text-center">
+      <p className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-xs font-medium text-stone-200 bg-stone-700/70 backdrop-blur-sm px-2 py-1 rounded-md shadow-sm text-center w-[90%]">
         {name}
       </p>
     </div>
