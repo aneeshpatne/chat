@@ -2,7 +2,11 @@
 
 A sophisticated conversational AI platform built with Next.js that supports multiple AI models from providers including OpenAI, Google, and Anthropic.
 
-![Chat Interface](https://placehold.co/200?text=Chat)
+## Screenshots
+
+<img src="./img/img1.png" alt="Screenshot 1" width="350" height="300"/>
+
+<img src="./img/img2.png" alt="Screenshot 2" width="350" height="300"/>
 
 ## Features
 
