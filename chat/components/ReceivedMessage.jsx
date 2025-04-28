@@ -7,7 +7,6 @@ import { MessageLoadingIndicator } from "./chatnew";
 import { ArrowUp, ArrowDown } from "lucide-react";
 import Marked from "react-markdown";
 import { Copy, Check } from "lucide-react";
-import { ClipLoader } from "react-spinners";
 export const ReceivedMessage = React.memo(function ReceivedMessage({
   message,
   token,
@@ -33,14 +32,13 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
   }, [blocks]);
   const handleCopyClick = async () => {
     try {
-      await navigator.clipboard.writeText(message); // Copy the message!
+      await navigator.clipboard.writeText(message);
       setCopySuccess(true);
       setTimeout(() => {
-        setCopySuccess(false); // Reset confirmation after a delay
-      }, 2000); // Show success for 2 seconds
+        setCopySuccess(false);
+      }, 2000);
     } catch (err) {
       console.error("Failed to copy message: ", err);
-      // Handle error (e.g., show an error message)
     }
   };
   useEffect(() => {
