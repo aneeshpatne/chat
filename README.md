@@ -2,7 +2,7 @@
 
 A sophisticated conversational AI platform built with Next.js that supports multiple AI models from providers including OpenAI, Google, and Anthropic.
 
-![Chat Interface](https://via.placeholder.com/800x400?text=AI+Chat+Platform)
+![Chat Interface](https://placehold.co/800x400?text=Chat)
 
 ## Features
 
@@ -77,20 +77,23 @@ yarn dev
 ## Project Structure
 
 ```
-├── app/                       # Next.js app directory
-│   ├── (chat)/                # Chat routes
-│   ├── api/                   # API routes
-│   │   └── (chat)/            # Chat API endpoints
-│   └── globals.css            # Global styles
-├── components/                # React components
-│   ├── chat.jsx               # Main chat component
-│   ├── chatnew.jsx            # New chat interface
-│   ├── CodeBlock.jsx          # Code block rendering
-│   ├── mdcomponents.jsx       # Markdown components
-│   ├── models.tsx             # AI model configurations
-│   ├── ReceivedMessage.jsx    # Message display component
-│   └── ui/                    # UI components
-└── lib/                       # Utility functions
+├── package.json                # Root package.json
+├── tailwind.config.js          # Tailwind configuration
+└── chat/                       # Main application directory
+    ├── app/                    # Next.js app directory
+    │   ├── (chat)/             # Chat routes
+    │   ├── api/                # API routes
+    │   │   └── (chat)/         # Chat API endpoints
+    │   └── globals.css         # Global styles
+    ├── components/             # React components
+    │   ├── chat.jsx            # Main chat component
+    │   ├── chatnew.jsx         # New chat interface
+    │   ├── CodeBlock.jsx       # Code block rendering
+    │   ├── mdcomponents.jsx    # Markdown components
+    │   ├── models.tsx          # AI model configurations
+    │   ├── ReceivedMessage.jsx # Message display component
+    │   └── ui/                 # UI components
+    └── lib/                    # Utility functions
 ```
 
 ## Environment Variables
@@ -119,14 +122,3 @@ This application can be easily deployed on Vercel:
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Acknowledgements
-
-- [OpenAI](https://openai.com/) for GPT models
-- [Google](https://ai.google.dev/) for Gemini models
-- [Anthropic](https://www.anthropic.com/) for Claude models
-- [OpenRouter](https://openrouter.ai/) for unified model access
