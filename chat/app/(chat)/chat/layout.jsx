@@ -85,43 +85,46 @@ export default function ChatLayout({ children }) {
       value={{ ...chat, model, setModel, handleSubmit, token, pendingMessage }}
     >
       <div className="flex flex-col h-screen">
-        <div className="flex-grow overflow-auto">
-          {children}
-        </div>
-        
-        <div className="mx-auto w-[80%] max-w-4xl mb-4">
+        <div className="flex-grow overflow-auto">{children}</div>
+
+        <div className="mx-auto w-[85%] max-w-5xl mb-6">
           {mounted ? (
-            <div className="flex flex-col p-4 bg-stone-800 rounded-md border border-stone-600">
+            <div className="flex flex-col p-5 bg-stone-800/90 backdrop-blur-sm rounded-xl border border-stone-600/50 shadow-lg transition-all duration-200 hover:border-stone-500/50">
               <TextAreaComponent
                 input={input}
                 handleInputChange={handleInputChange}
                 onSubmit={handleSubmit}
               />
-              <div className="flex justify-between mt-2">
+              <div className="flex justify-between mt-3">
                 <ModelSelector model={model} setModel={setModel} />
 
                 {status === "streaming" ? (
-                  <Button variant="destructive" onClick={stop}>
-                    <OctagonX />
+                  <Button
+                    variant="destructive"
+                    onClick={stop}
+                    className="shadow-md hover:shadow-lg transition-all duration-200"
+                  >
+                    <OctagonX className="w-5 h-5" />
                   </Button>
                 ) : (
-                  <Button variant="outline" onClick={handleSubmit}>
-                    <Send size={16} />
+                  <Button
+                    variant="outline"
+                    onClick={handleSubmit}
+                    className="bg-stone-700/50 shadow-md hover:shadow-lg hover:bg-stone-700 transition-all duration-200"
+                  >
+                    <Send className="w-5 h-5" />
                   </Button>
                 )}
               </div>
             </div>
           ) : (
-            <div className="flex flex-col p-4 bg-stone-800 rounded-md border border-stone-600">
-              <div className="w-full min-h-[38px] p-2 border-none rounded-md bg-stone-700/80 mb-2 flex items-center justify-center">
+            <div className="flex flex-col p-5 bg-stone-800/90 backdrop-blur-sm rounded-xl border border-stone-600/50 shadow-lg">
+              <div className="w-full min-h-[38px] p-2 border-none rounded-lg bg-stone-700/60 mb-3 flex items-center justify-center">
                 <MessageLoadingAnimation />
               </div>
-              <div className="flex justify-between mt-2">
-                <div className="h-9 rounded-md border border-stone-600 px-4 py-2 text-sm font-medium flex items-center justify-center bg-stone-800/70 text-stone-400">
-                  <span>4.1 Nano</span>
-                </div>
-                <div className="h-9 w-9 rounded-md border border-stone-600 flex items-center justify-center bg-stone-800/70">
-                </div>
+              <div className="flex justify-between mt-3">
+                <div className="h-10 w-28 rounded-lg border border-stone-600/50 bg-stone-800/70 backdrop-blur-sm"></div>
+                <div className="h-10 w-10 rounded-lg border border-stone-600/50 flex items-center justify-center bg-stone-800/70 backdrop-blur-sm"></div>
               </div>
             </div>
           )}
@@ -136,39 +139,48 @@ function MessageLoadingAnimation() {
   return (
     <>
       <style jsx>{`
-        @keyframes wave {
-          0% {
-            transform: translateX(-100%);
-          }
+        @keyframes pulse {
+          0%,
+          80%,
           100% {
-            transform: translateX(100%);
+            transform: scale(0);
+            opacity: 0.5;
+          }
+          40% {
+            transform: scale(1);
+            opacity: 1;
           }
         }
-        .loading-bar {
-          position: relative;
-          overflow: hidden;
-          height: 24px;
-          width: 100%;
-          border-radius: 4px;
-          background: rgba(100, 100, 100, 0.2);
+        .dot-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 24px; /* Match the original height */
         }
-        .loading-bar::after {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: 0;
-          height: 100%;
-          width: 60%;
-          background: linear-gradient(
-            90deg,
-            transparent,
-            rgba(150, 150, 150, 0.5),
-            transparent
-          );
-          animation: wave 1.5s infinite ease-in-out;
+        .dot {
+          width: 8px;
+          height: 8px;
+          margin: 0 3px;
+          background-color: rgba(150, 150, 150, 0.8); /* Use a visible color */
+          border-radius: 50%;
+          display: inline-block;
+          animation: pulse 1.4s infinite ease-in-out both;
+        }
+        .dot1 {
+          animation-delay: -0.32s;
+        }
+        .dot2 {
+          animation-delay: -0.16s;
+        }
+        .dot3 {
+          animation-delay: 0s;
         }
       `}</style>
-      <div className="loading-bar"></div>
+      <div className="dot-container">
+        <div className="dot dot1"></div>
+        <div className="dot dot2"></div>
+        <div className="dot dot3"></div>
+      </div>
     </>
   );
 }
