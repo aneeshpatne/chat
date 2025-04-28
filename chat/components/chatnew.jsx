@@ -39,7 +39,7 @@ export default function Chat({
     <div className="flex flex-col w-full h-full">
       {!input && messages.length === 0 && !pendingMessage && (
         <div className="flex items-center justify-center h-[calc(100vh-6rem)]">
-          <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-stone-100 via-stone-300 to-stone-100 inline-block text-transparent bg-clip-text drop-shadow-sm">
+          <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-indigo-300 via-purple-300 to-blue-300 inline-block text-transparent bg-clip-text drop-shadow-sm">
             Good Afternoon, Aneesh!
           </h1>
         </div>
@@ -101,18 +101,18 @@ export function MessageLoadingIndicator() {
       `}</style>
       <div className="flex items-center space-x-1">
         <span
-          className="h-2 w-2 rounded-full bg-stone-400"
+          className="h-2 w-2 rounded-full bg-accent"
           style={{ animation: "fastFade 0.7s infinite", animationDelay: "0s" }}
         ></span>
         <span
-          className="h-2 w-2 rounded-full bg-stone-400"
+          className="h-2 w-2 rounded-full bg-accent"
           style={{
             animation: "fastFade 0.7s infinite",
             animationDelay: "0.15s",
           }}
         ></span>
         <span
-          className="h-2 w-2 rounded-full bg-stone-400"
+          className="h-2 w-2 rounded-full bg-accent"
           style={{
             animation: "fastFade 0.7s infinite",
             animationDelay: "0.3s",
@@ -126,7 +126,7 @@ export function MessageLoadingIndicator() {
 const SentMessage = React.memo(function SentMessage({ message }) {
   return (
     <div className="flex justify-end w-full">
-      <div className="max-w-[60%] px-4 py-2 bg-stone-700 rounded-2xl rounded-tr-none text-white shadow-sm prose prose-invert whitespace-pre-wrap break-words">
+      <div className="max-w-[60%] px-4 py-2 bg-primary/60 rounded-2xl rounded-tr-none text-primary-foreground shadow-sm prose prose-invert whitespace-pre-wrap break-words">
         {message}
       </div>
     </div>

@@ -56,15 +56,15 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
   return (
     <div className="justify-start w-full space-y-2">
       {reasoning && (
-        <div className="flex flex-col justify-start w-full p-3 mb-3 text-sm text-stone-200 border border-stone-600 bg-stone-800/50 rounded-md shadow-md overflow-hidden transition-all duration-200">
+        <div className="flex flex-col justify-start w-full p-3 mb-3 text-sm text-foreground border border-border bg-secondary/40 rounded-md shadow-md overflow-hidden transition-all duration-200">
           <div className="flex items-center justify-between gap-2 mb-2">
-            <span className="font-semibold text-stone-100 flex items-center">
-              <div className="w-1.5 h-1.5 bg-blue-400 rounded-full mr-2"></div>
+            <span className="font-semibold text-foreground flex items-center">
+              <div className="w-1.5 h-1.5 bg-accent rounded-full mr-2"></div>
               Reasoning
             </span>
             <button
               onClick={() => setActive((prev) => !prev)}
-              className="p-1.5 hover:bg-stone-700 rounded-md transition-colors duration-150"
+              className="p-1.5 hover:bg-secondary rounded-md transition-colors duration-150"
               aria-label={active ? "Collapse reasoning" : "Expand reasoning"}
             >
               <AnimatePresence mode="wait" initial={false}>
@@ -76,7 +76,7 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.15 }}
                   >
-                    <ArrowUp size={16} />
+                    <ArrowUp size={16} className="text-accent" />
                   </motion.div>
                 ) : (
                   <motion.div
@@ -86,7 +86,7 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.15 }}
                   >
-                    <ArrowDown size={16} />
+                    <ArrowDown size={16} className="text-accent" />
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -102,7 +102,7 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
                 transition={{ duration: 0.2 }}
                 className="overflow-hidden"
               >
-                <div className="pt-2 border-t border-stone-700">
+                <div className="pt-2 border-t border-border">
                   <Marked
                     components={{
                       // Wrapper div with the desired classes
@@ -127,7 +127,7 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
       <div className="flex items-center justify-between">
         <button
           onClick={handleCopyClick}
-          className="text-white"
+          className="text-accent hover:text-accent/80 transition-colors"
           aria-label="Copy Message"
         >
           <AnimatePresence mode="wait" initial={false}>
@@ -154,19 +154,25 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
             )}
           </AnimatePresence>
         </button>
-        <small className="text-xs text-gray-500 italic flex space-x-8">
+        <small className="text-xs text-muted-foreground italic flex space-x-8">
           {token && (
             <>
               <span>
-                <span className="font-semibold">Input Tokens:</span>{" "}
+                <span className="font-semibold text-accent/90">
+                  Input Tokens:
+                </span>{" "}
                 {token.promptTokens}
               </span>
               <span>
-                <span className="font-semibold">Output Tokens:</span>{" "}
+                <span className="font-semibold text-accent/90">
+                  Output Tokens:
+                </span>{" "}
                 {token.completionTokens}
               </span>
               <span>
-                <span className="font-semibold">Total Tokens:</span>{" "}
+                <span className="font-semibold text-accent/90">
+                  Total Tokens:
+                </span>{" "}
                 {token.totalTokens}
               </span>
             </>

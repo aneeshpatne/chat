@@ -97,7 +97,7 @@ export default function ChatLayout({ children }) {
 
         <div className="mx-auto w-[85%] max-w-5xl mb-6">
           {mounted ? (
-            <div className="flex flex-col p-5 bg-stone-800/90 backdrop-blur-sm rounded-xl border border-stone-600/50 shadow-lg transition-all duration-200 hover:border-stone-500/50">
+            <div className="flex flex-col p-5 bg-card/90 backdrop-blur-sm rounded-xl border border-border shadow-lg transition-all duration-200 hover:border-primary/30">
               <TextAreaComponent
                 input={input}
                 handleInputChange={handleInputChange}
@@ -118,7 +118,7 @@ export default function ChatLayout({ children }) {
                   <Button
                     variant="outline"
                     onClick={handleSubmit}
-                    className="bg-stone-700/50 shadow-md hover:shadow-lg hover:bg-stone-700 transition-all duration-200"
+                    className="bg-primary/80 hover:bg-primary text-primary-foreground hover:text-primary-foreground border-primary/30 shadow-md hover:shadow-lg transition-all duration-200"
                   >
                     <Send className="w-5 h-5" />
                   </Button>
@@ -126,13 +126,13 @@ export default function ChatLayout({ children }) {
               </div>
             </div>
           ) : (
-            <div className="flex flex-col p-5 bg-stone-800/90 backdrop-blur-sm rounded-xl border border-stone-600/50 shadow-lg">
-              <div className="w-full min-h-[38px] p-2 border-none rounded-lg bg-stone-700/60 mb-3 flex items-center justify-center">
+            <div className="flex flex-col p-5 bg-card/90 backdrop-blur-sm rounded-xl border border-border shadow-lg">
+              <div className="w-full min-h-[38px] p-2 border-none rounded-lg bg-secondary/60 mb-3 flex items-center justify-center">
                 <MessageLoadingAnimation />
               </div>
               <div className="flex justify-between mt-3">
-                <div className="h-10 w-28 rounded-lg border border-stone-600/50 bg-stone-800/70 backdrop-blur-sm"></div>
-                <div className="h-10 w-10 rounded-lg border border-stone-600/50 flex items-center justify-center bg-stone-800/70 backdrop-blur-sm"></div>
+                <div className="h-10 w-28 rounded-lg border border-border bg-secondary/50 backdrop-blur-sm"></div>
+                <div className="h-10 w-10 rounded-lg border border-border flex items-center justify-center bg-secondary/50 backdrop-blur-sm"></div>
               </div>
             </div>
           )}
@@ -163,13 +163,18 @@ function MessageLoadingAnimation() {
           display: flex;
           justify-content: center;
           align-items: center;
-          height: 24px; /* Match the original height */
+          height: 24px;
         }
         .dot {
           width: 8px;
           height: 8px;
           margin: 0 3px;
-          background-color: rgba(150, 150, 150, 0.8); /* Use a visible color */
+          background-color: rgba(
+            153,
+            204,
+            255,
+            0.8
+          ); /* Matching accent color */
           border-radius: 50%;
           display: inline-block;
           animation: pulse 1.4s infinite ease-in-out both;
@@ -205,7 +210,7 @@ const TextAreaComponent = React.memo(function TextAreaComponent({
       minRows={1}
       maxRows={4}
       placeholder="Type your message here..."
-      className="w-full p-3 border-none rounded-lg  text-stone-100 placeholder-stone-400 overflow-y-auto focus:outline-none focus:ring-1 focus:ring-stone-500/50 transition-all duration-200 ease-in-out resize-none"
+      className="w-full p-3 border-none rounded-lg bg-secondary/80 text-foreground placeholder-muted-foreground overflow-y-auto focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all duration-200 ease-in-out resize-none"
       onKeyDown={(e) => {
         if (e.key === "Enter" && !e.shiftKey) {
           e.preventDefault();
@@ -220,27 +225,32 @@ function ModelSelector({ model, setModel }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="bg-stone-700/40 border-stone-600/50 hover:bg-stone-700/60 hover:border-stone-500/50 transition-all duration-200 min-w-[140px]">
+        <Button
+          variant="outline"
+          className="bg-secondary/50 border-border hover:bg-secondary hover:border-primary/30 transition-all duration-200 min-w-[140px]"
+        >
           <div className="flex items-center gap-2">
             {model.provider !== "openai" && (
-              <div className="text-xs font-medium text-stone-300 px-1.5 py-0.5 rounded-md bg-stone-600/50">
+              <div className="text-xs font-medium text-foreground/80 px-1.5 py-0.5 rounded-md bg-secondary">
                 {model.provider}
               </div>
             )}
-            <span className="text-stone-200">{model.name}</span>
-            <LayoutTemplate size={16} className="ml-auto text-stone-300" />
+            <span className="text-foreground">{model.name}</span>
+            <LayoutTemplate size={16} className="ml-auto text-accent" />
           </div>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-[280px] max-h-[70vh] overflow-auto bg-stone-800/95 backdrop-blur-sm border-stone-600/50">
+      <DropdownMenuContent className="w-[280px] max-h-[70vh] overflow-auto bg-card/95 backdrop-blur-sm border-border">
         <DropdownMenuGroup>
           {Object.values(models).map((m) => (
             <DropdownMenuItem
               key={m.id}
-              onClick={() => setModel({ name: m.name, id: m.id, provider: m.provider })}
+              onClick={() =>
+                setModel({ name: m.name, id: m.id, provider: m.provider })
+              }
               className={cn(
-                "flex items-center gap-3 py-3 px-4 cursor-pointer hover:bg-stone-700/60",
-                m.id === model.id && "bg-stone-700/80"
+                "flex items-center gap-3 py-3 px-4 cursor-pointer hover:bg-secondary/70",
+                m.id === model.id && "bg-secondary"
               )}
             >
               <div className="relative w-8 h-8">
@@ -252,13 +262,17 @@ function ModelSelector({ model, setModel }) {
                 />
               </div>
               <div className="flex flex-col gap-0.5">
-                <span className="text-sm font-medium text-stone-200">{m.name}</span>
+                <span className="text-sm font-medium text-foreground">
+                  {m.name}
+                </span>
                 {m.provider !== "openai" && (
-                  <span className="text-xs text-stone-400">{m.provider}</span>
+                  <span className="text-xs text-muted-foreground">
+                    {m.provider}
+                  </span>
                 )}
               </div>
               {m.id === model.id && (
-                <CheckIcon size={16} className="ml-auto text-stone-300" />
+                <CheckIcon size={16} className="ml-auto text-primary" />
               )}
             </DropdownMenuItem>
           ))}

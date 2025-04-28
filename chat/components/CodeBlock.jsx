@@ -28,15 +28,15 @@ const CodeBlock = React.memo(function CodeBlock({
     }
   };
 
-  const codeBg = "#09090b";
+  const codeBg = "#0c0e1a"; // Dark blue-black background for code blocks
 
   return match ? (
-    <div className="rounded-md my-4 overflow-hidden">
-      <div className="flex items-center justify-between bg-stone-800 px-4 py-1.5 text-xs text-gray-400">
+    <div className="rounded-md my-4 overflow-hidden border border-border">
+      <div className="flex items-center justify-between bg-secondary px-4 py-1.5 text-xs text-muted-foreground">
         <span className="lowercase">{language}</span>
         <button
           onClick={copyToClipboard}
-          className="flex items-center gap-1 hover:text-gray-200 transition-colors"
+          className="flex items-center gap-1 hover:text-accent transition-colors"
         >
           <Copy size={14} className="inline-block" />
           {isCopied ? "Copied!" : "Copy code"}
@@ -66,7 +66,7 @@ const CodeBlock = React.memo(function CodeBlock({
   ) : (
     <code
       {...props}
-      className={`${className} bg-gray-200 text-gray-800 dark:bg-stone-700 dark:text-stone-300 rounded px-1 py-0.5 text-sm`}
+      className={`${className} bg-secondary text-foreground/90 rounded px-1 py-0.5 text-sm`}
     >
       {children}
     </code>
