@@ -9,8 +9,10 @@ A sophisticated conversational AI platform built with Next.js that supports mult
 - **Multi-model Support**: Choose from a variety of AI models including:
   - OpenAI's GPT-4.1 family (4.1, 4.1 Mini, 4.1 Nano)
   - OpenAI's GPT-4o models
+  - OpenAI's O-Series models (o3, o3 Mini, o4 Mini, o3 Mini High, o4 Mini High)
   - Google's Gemini models (2.5 Pro, 2.0 Flash)
   - Anthropic's Claude models (3.7, 3.5)
+  - X.Ai's Grok
 - **Modern UI**: Clean, responsive interface with dark mode support
 - **Session Management**: Persistent chat sessions with unique URLs
 - **Auto-generated Titles**: Automatically generates relevant titles for chat sessions
@@ -27,8 +29,7 @@ A sophisticated conversational AI platform built with Next.js that supports mult
 - Node.js 18.0 or higher
 - API keys for the AI providers you wish to use:
   - OpenAI API key
-  - OpenRouter API key (for Anthropic and some Google models)
-  - Google AI API key (for native Gemini access)
+  - OpenRouter API key (for Anthropic and some Google models
 
 ### Installation
 
