@@ -30,7 +30,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "components/ReceivedMessage.jsx",
-    "app/chat/[id]/page.jsx"
+    "app/(chat)/chat/[id]/page.jsx"
   ],
   "exclude": ["node_modules"]
 }
