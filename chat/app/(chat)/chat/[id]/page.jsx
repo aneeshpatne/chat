@@ -2,7 +2,7 @@
 import Chat from "@/components/chatnew";
 import { useEffect, useState } from "react";
 import { useContext } from "react";
-import { ChatContext } from "@/app/chat/layout";
+import { ChatContext } from "@/app/(chat)/chat/layout"; // Corrected import path
 export default function ChatSessionPage() {
   const [title, setTitle] = useState("");
   const { model, setModel, ...chat } = useContext(ChatContext);
