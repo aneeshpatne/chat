@@ -2,13 +2,21 @@
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { Button } from "./ui/button";
-import { Send } from "lucide-react";
+import { Send, CheckIcon } from "lucide-react";
 import { useChat } from "@ai-sdk/react";
 import { micromark } from "micromark";
 import { ReceivedMessage } from "./ReceivedMessage";
 import { LayoutTemplate, X, OctagonX } from "lucide-react";
 import { models } from "./models";
 import Image from "next/image";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+  DropdownMenuItem,
+  DropdownMenuGroup,
+} from "./ui/dropdown-menu";
+import { cn } from "@/lib/utils";
 
 export default function Chat({ sessionid }) {
   const [token, setToken] = useState({});
@@ -176,49 +184,54 @@ const TextAreaComponent = React.memo(function TextAreaComponent({
 });
 
 function ModelSelector({ model, setModel }) {
-  const [visbility, setVisibility] = useState(false);
   return (
-    <div className="relative w-full">
-      {!visbility ? (
-        <>
-          <Button variant="outline" onClick={() => setVisibility(!visbility)}>
-            <LayoutTemplate size={16} className="mr-2" />
-            <span>{model.name}</span>
-          </Button>
-        </>
-      ) : (
-        <Button variant="destructive" onClick={() => setVisibility(!visbility)}>
-          <X size={16} className="mr-2" />
-          <span>Close</span>
-        </Button>
-      )}
-      {visbility && (
-        <div className="absolute bottom-full mb-2">
-          <div
-            className="
-        flex flex-wrap gap-2 justify-between
-        max-w-[700px]
-        max-h-[80vh] 
-        overflow-y-auto
-        bg-stone-800 p-2 border border-stone-600 rounded-md shadow-lg
-      "
-          >
-            {Object.values(models).map((m) => (
-              <ModelItem
-                key={m.id}
-                id={m.id}
-                name={m.name}
-                setModel={setModel}
-                image={m.img}
-                setVisibility={setVisibility}
-                provider={m.provider}
-                isSelected={m.id === model.id}
-              />
-            ))}
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline" className="bg-stone-700/40 border-stone-600/50 hover:bg-stone-700/60 hover:border-stone-500/50 transition-all duration-200 min-w-[140px]">
+          <div className="flex items-center gap-2">
+            {model.provider !== "openai" && (
+              <div className="text-xs font-medium text-stone-300 px-1.5 py-0.5 rounded-md bg-stone-600/50">
+                {model.provider}
+              </div>
+            )}
+            <span className="text-stone-200">{model.name}</span>
+            <LayoutTemplate size={16} className="ml-auto text-stone-300" />
           </div>
-        </div>
-      )}
-    </div>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-[280px] max-h-[70vh] overflow-auto bg-stone-800/95 backdrop-blur-sm border-stone-600/50">
+        <DropdownMenuGroup>
+          {Object.values(models).map((m) => (
+            <DropdownMenuItem
+              key={m.id}
+              onClick={() => setModel({ name: m.name, id: m.id, provider: m.provider })}
+              className={cn(
+                "flex items-center gap-3 py-3 px-4 cursor-pointer hover:bg-stone-700/60",
+                m.id === model.id && "bg-stone-700/80"
+              )}
+            >
+              <div className="relative w-8 h-8">
+                <Image
+                  src={m.img}
+                  alt={m.name}
+                  fill
+                  className="object-contain"
+                />
+              </div>
+              <div className="flex flex-col gap-0.5">
+                <span className="text-sm font-medium text-stone-200">{m.name}</span>
+                {m.provider !== "openai" && (
+                  <span className="text-xs text-stone-400">{m.provider}</span>
+                )}
+              </div>
+              {m.id === model.id && (
+                <CheckIcon size={16} className="ml-auto text-stone-300" />
+              )}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 
