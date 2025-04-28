@@ -6,6 +6,8 @@ A sophisticated conversational AI platform built with Next.js that supports mult
 
 <img src="./img/img1.png" alt="Screenshot 1" width="350" height="300"/>
 
+<br/>
+
 <img src="./img/img2.png" alt="Screenshot 2" width="350" height="300"/>
 
 ## Features
