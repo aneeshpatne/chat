@@ -29,7 +29,7 @@ A sophisticated conversational AI platform built with Next.js that supports mult
 - Node.js 18.0 or higher
 - API keys for the AI providers you wish to use:
   - OpenAI API key
-  - OpenRouter API key (for Anthropic and some Google models
+  - OpenRouter API key (for Anthropic and some Google models)
 
 ### Installation
 
