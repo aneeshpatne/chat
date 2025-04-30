@@ -23,7 +23,9 @@ export default function NavBar() {
           open && "border-r border-sidebar-border" // Use sidebar theme colors
         }`}
       >
-        <div className="flex items-center justify-between p-4 border-b border-sidebar-border"> {/* Use sidebar theme colors */}
+        <div className="flex items-center justify-between p-4 border-b border-sidebar-border">
+          {" "}
+          {/* Use sidebar theme colors */}
           {open && (
             <h1 className="text-xl font-bold whitespace-nowrap">
               Welcome to Chat!
@@ -38,11 +40,17 @@ export default function NavBar() {
         </div>
 
         {open && (
-          <div className="mt-auto flex items-center justify-between p-4 border-t border-sidebar-border"> {/* Use sidebar theme colors */}
-            <span className="font-medium text-sidebar-foreground/80 hover:text-sidebar-foreground transition-colors"> {/* Use sidebar theme colors */}
+          <div className="mt-auto flex items-center justify-between p-4 border-t border-sidebar-border">
+            {" "}
+            {/* Use sidebar theme colors */}
+            <span className="font-medium text-sidebar-foreground/80 hover:text-sidebar-foreground transition-colors">
+              {" "}
+              {/* Use sidebar theme colors */}
               Login
             </span>
-            <button className="p-2 rounded-full hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-all cursor-pointer"> {/* Use sidebar theme colors */}
+            <button className="p-2 rounded-full hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-all cursor-pointer">
+              {" "}
+              {/* Use sidebar theme colors */}
               <User className="h-5 w-5" />
             </button>
           </div>

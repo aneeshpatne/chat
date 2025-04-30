@@ -1,4 +1,5 @@
 import { google } from "@ai-sdk/google";
+import { openai } from "@ai-sdk/openai";
 import { generateText } from "ai";
 export async function POST(req: Request) {
   let { message } = await req.json();
@@ -6,7 +7,7 @@ export async function POST(req: Request) {
   message = truncatedMessage;
   try {
     const { text } = await generateText({
-      model: google("gemini-2.0-flash-lite"),
+      model: openai("gpt-4.1-nano"),
       prompt: `You are a helpful assistant that creates short, relevant titles for chatbot conversations.
 Generate a TITLE for a chat based on the user's first message.
 Generate a **catchy and concise chat title** (maximum 5 words) based on the user's first message to a chatbot.  

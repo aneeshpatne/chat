@@ -31,8 +31,12 @@ const CodeBlock = React.memo(function CodeBlock({
   const codeBg = "var(--card)"; // Use CSS variable for background
 
   return match ? (
-    <div className="rounded-md overflow-hidden border border-border"> {/* Removed my-4 */}
-      <div className="flex items-center justify-between bg-secondary px-4 py-1.5 text-xs text-secondary-foreground"> {/* Use theme colors */}
+    <div className="rounded-md overflow-hidden border border-border">
+      {" "}
+      {/* Removed my-4 */}
+      <div className="flex items-center justify-between bg-secondary px-4 py-1.5 text-xs text-secondary-foreground">
+        {" "}
+        {/* Use theme colors */}
         <span className="lowercase">{language}</span>
         <button
           onClick={copyToClipboard}
