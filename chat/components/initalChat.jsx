@@ -2,19 +2,12 @@
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { Button } from "./ui/button";
-import { Send, CheckIcon } from "lucide-react";
+import { Send } from "lucide-react";
 import { useChat } from "@ai-sdk/react";
 import { ReceivedMessage } from "./ReceivedMessage";
 import { LayoutTemplate, X, OctagonX } from "lucide-react";
 import { useRouter } from "next/navigation";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-  DropdownMenuItem,
-  DropdownMenuGroup,
-} from "./ui/dropdown-menu";
-import { cn } from "@/lib/utils";
+
 import { models } from "./models";
 import Image from "next/image";
 
@@ -149,22 +142,20 @@ const TextAreaComponent = React.memo(function TextAreaComponent({
 });
 
 function ModelSelector({ model, setModel }) {
+  const [visbility, setVisibility] = useState(false);
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="outline"
-          className="bg-stone-700/40 border-stone-600/50 hover:bg-stone-700/60 hover:border-stone-500/50 transition-all duration-200 min-w-[140px]"
-        >
-          <div className="flex items-center gap-2">
-            {model.provider !== "openai" && (
-              <div className="text-xs font-medium text-stone-300 px-1.5 py-0.5 rounded-md bg-stone-600/50">
-                {model.provider}
-              </div>
-            )}
-            <span className="text-stone-200">{model.name}</span>
-            <LayoutTemplate size={16} className="ml-auto text-stone-300" />
-          </div>
+    <div className="relative w-full">
+      {!visbility ? (
+        <>
+          <Button variant="outline" onClick={() => setVisibility(!visbility)}>
+            <LayoutTemplate size={16} className="mr-2" />
+            <span>{model.name}</span>
+          </Button>
+        </>
+      ) : (
+        <Button variant="destructive" onClick={() => setVisibility(!visbility)}>
+          <X size={16} className="mr-2" />
+          <span>Close</span>
         </Button>
       )}
       {visbility && (
@@ -263,7 +254,8 @@ function LoadingState() {
 const SentMessage = React.memo(function SentMessage({ message }) {
   return (
     <div className="flex justify-end w-full">
-      <div className="max-w-[60%] px-4 py-2 bg-primary text-primary-foreground rounded-2xl rounded-tr-none shadow-sm prose prose-invert whitespace-pre-wrap break-words"> {/* Use primary theme colors */}
+      <div className="max-w-[60%] px-4 py-2 bg-primary text-primary-foreground rounded-2xl rounded-tr-none shadow-sm prose prose-invert whitespace-pre-wrap break-words">
+        {" "}
         {message}
       </div>
     </div>

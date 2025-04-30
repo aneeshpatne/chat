@@ -2,21 +2,13 @@
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { Button } from "./ui/button";
-import { Send, CheckIcon } from "lucide-react";
+import { Send } from "lucide-react";
 import { useChat } from "@ai-sdk/react";
 import { micromark } from "micromark";
 import { ReceivedMessage } from "./ReceivedMessage";
 import { LayoutTemplate, X, OctagonX } from "lucide-react";
 import { models } from "./models";
 import Image from "next/image";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-  DropdownMenuItem,
-  DropdownMenuGroup,
-} from "./ui/dropdown-menu";
-import { cn } from "@/lib/utils";
 
 export default function Chat({ sessionid }) {
   const [token, setToken] = useState({});
@@ -103,7 +95,7 @@ export default function Chat({ sessionid }) {
     <div className="flex flex-col w-full h-full">
       {!input && messages.length === 0 && (
         <div className="flex items-center justify-center h-[calc(100vh-6rem)]">
-          <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-indigo-300 via-purple-300 to-blue-300 inline-block text-transparent bg-clip-text drop-shadow-sm">
+          <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-stone-100 via-stone-300 to-stone-100 inline-block text-transparent bg-clip-text drop-shadow-sm">
             Good Afternoon, Aneesh!
           </h1>
         </div>
@@ -135,7 +127,7 @@ export default function Chat({ sessionid }) {
       </div>
 
       <div className="mx-auto w-[80%] max-w-4xl">
-        <div className="flex flex-col p-4 bg-card rounded-md border border-border">
+        <div className="flex flex-col p-4 bg-stone-800 rounded-md border border-stone-600">
           <TextAreaComponent
             input={input}
             handleInputChange={handleInputChange}
@@ -149,11 +141,7 @@ export default function Chat({ sessionid }) {
                 <OctagonX />
               </Button>
             ) : (
-              <Button
-                variant="outline"
-                onClick={(e) => onSubmit(e)}
-                className="bg-primary/80 hover:bg-primary text-primary-foreground hover:text-primary-foreground border-primary/30"
-              >
+              <Button variant="outline" onClick={(e) => onSubmit(e)}>
                 <Send size={16} />
               </Button>
             )}
@@ -176,7 +164,7 @@ const TextAreaComponent = React.memo(function TextAreaComponent({
       minRows={1}
       maxRows={4}
       placeholder="Type your message here..."
-      className="w-full p-2 bg-secondary/80 border-none rounded-md text-foreground overflow-y-auto focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all duration-150 ease-in-out resize-none"
+      className="w-full p-2 border-none rounded-md text-white overflow-y-auto focus:outline-none transition-all duration-150 ease-in-out resize-none"
       onKeyDown={(e) => {
         if (e.key === "Enter" && !e.shiftKey) {
           e.preventDefault();
@@ -188,22 +176,20 @@ const TextAreaComponent = React.memo(function TextAreaComponent({
 });
 
 function ModelSelector({ model, setModel }) {
+  const [visbility, setVisibility] = useState(false);
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="outline"
-          className="bg-secondary/50 border-border hover:bg-secondary hover:border-primary/30 transition-all duration-200 min-w-[140px]"
-        >
-          <div className="flex items-center gap-2">
-            {model.provider !== "openai" && (
-              <div className="text-xs font-medium text-foreground/80 px-1.5 py-0.5 rounded-md bg-secondary">
-                {model.provider}
-              </div>
-            )}
-            <span className="text-foreground">{model.name}</span>
-            <LayoutTemplate size={16} className="ml-auto text-accent" />
-          </div>
+    <div className="relative w-full">
+      {!visbility ? (
+        <>
+          <Button variant="outline" onClick={() => setVisibility(!visbility)}>
+            <LayoutTemplate size={16} className="mr-2" />
+            <span>{model.name}</span>
+          </Button>
+        </>
+      ) : (
+        <Button variant="destructive" onClick={() => setVisibility(!visbility)}>
+          <X size={16} className="mr-2" />
+          <span>Close</span>
         </Button>
       )}
       {visbility && (
@@ -255,18 +241,18 @@ function ModelItem({
       className={`relative w-24 h-36 p-2 border rounded-md cursor-pointer transition duration-150 ease-in-out
     ${
       isSelected
-        ? "border-primary border-2 shadow-md"
-        : "hover:bg-secondary border-border"
+        ? "border-stone-200 border-2 shadow-md"
+        : "hover:bg-stone-700 border-stone-600"
     }
   `}
       onClick={handleClick}
     >
       {provider !== "openai" && (
-        <div className="absolute top-2 left-1/2 transform -translate-x-1/2 bg-secondary/70 text-xs font-medium text-foreground px-1 py-0.5 rounded-md shadow-sm">
+        <div className="absolute top-2 left-1/2 transform -translate-x-1/2 bg-stone-700/70 text-xs font-medium text-stone-200 px-1 py-0.5 rounded-md shadow-sm">
           {provider}
         </div>
       )}
-      <div className="absolute top-8 left-1/2 transform -translate-x-1/2 w-10 h-10 overflow-hidden">
+      <div className="absolute top-8 left-1/2 transform -translate-x-1/2 w-10 h-10  overflow-hidden">
         <Image
           src={image}
           alt="Model Image"
@@ -275,7 +261,7 @@ function ModelItem({
           className="object-cover"
         />
       </div>
-      <p className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-xs font-medium text-foreground bg-secondary/70 px-2 py-0.5 rounded-md shadow-sm text-center">
+      <p className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-xs font-medium text-stone-200 bg-stone-700/70 px-2 py-0.5 rounded-md shadow-sm text-center">
         {name}
       </p>
     </div>
@@ -302,18 +288,18 @@ function MessageLoadingIndicator() {
       `}</style>
       <div className="flex items-center space-x-1">
         <span
-          className="h-2 w-2 rounded-full bg-accent"
+          className="h-2 w-2 rounded-full bg-stone-400"
           style={{ animation: "fastFade 0.7s infinite", animationDelay: "0s" }}
         ></span>
         <span
-          className="h-2 w-2 rounded-full bg-accent"
+          className="h-2 w-2 rounded-full bg-stone-400"
           style={{
             animation: "fastFade 0.7s infinite",
             animationDelay: "0.15s",
           }}
         ></span>
         <span
-          className="h-2 w-2 rounded-full bg-accent"
+          className="h-2 w-2 rounded-full bg-stone-400"
           style={{
             animation: "fastFade 0.7s infinite",
             animationDelay: "0.3s",
@@ -329,11 +315,11 @@ function LoadingState() {
   return (
     <div className="flex flex-1 justify-center items-center h-screen">
       <div className="flex flex-col w-[80%] max-w-2xl">
-        <div className="h-10 w-3/4 bg-secondary/30 rounded-md mb-4 animate-pulse"></div>
-        <div className="flex flex-col p-4 bg-card rounded-md border border-border">
-          <div className="w-full h-10 bg-secondary/50 rounded-md animate-pulse"></div>
+        <div className="h-10 w-3/4 bg-stone-700/30 rounded-md mb-4 animate-pulse"></div>
+        <div className="flex flex-col p-4 bg-stone-800 rounded-md border border-stone-600">
+          <div className="w-full h-10 bg-stone-700/50 rounded-md animate-pulse"></div>
           <div className="flex justify-end mt-2">
-            <div className="w-10 h-10 bg-secondary/50 rounded-md animate-pulse"></div>
+            <div className="w-10 h-10 bg-stone-700/50 rounded-md animate-pulse"></div>
           </div>
         </div>
       </div>
@@ -344,7 +330,9 @@ function LoadingState() {
 const SentMessage = React.memo(function SentMessage({ message }) {
   return (
     <div className="flex justify-end w-full">
-      <div className="max-w-[60%] px-4 py-2 bg-primary text-primary-foreground rounded-2xl rounded-tr-none shadow-sm prose prose-invert whitespace-pre-wrap break-words"> {/* Use primary theme colors */}
+      <div className="max-w-[60%] px-4 py-2 bg-primary text-primary-foreground rounded-2xl rounded-tr-none shadow-sm prose prose-invert whitespace-pre-wrap break-words">
+        {" "}
+        {/* Use primary theme colors */}
         {message}
       </div>
     </div>
