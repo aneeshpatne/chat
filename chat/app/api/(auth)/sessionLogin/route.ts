@@ -16,13 +16,11 @@ export async function POST(request: Request) {
       expiresIn,
     });
 
-    // Create a response
     const response = NextResponse.json(
       { message: "Session created" },
       { status: 200 }
     );
 
-    // Set the cookie using NextResponse's cookies API
     response.cookies.set("session", sessionCookie, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
