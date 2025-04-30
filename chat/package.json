@@ -21,6 +21,7 @@
     "clsx": "^2.1.1",
     "dompurify": "^3.2.5",
     "firebase": "^11.6.1",
+    "firebase-admin": "^13.3.0",
     "framer-motion": "^12.7.4",
     "hast-util-to-jsx-runtime": "^2.3.6",
     "highlight.js": "^11.11.1",
