@@ -39,7 +39,7 @@ export default function Chat({
     <div className="flex flex-col w-full h-full">
       {!input && messages.length === 0 && !pendingMessage && (
         <div className="flex items-center justify-center h-[calc(100vh-6rem)]">
-          <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-stone-100 via-stone-300 to-stone-100 inline-block text-transparent bg-clip-text drop-shadow-sm">
+          <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-indigo-300 via-purple-300 to-blue-300 inline-block text-transparent bg-clip-text drop-shadow-sm">
             Good Afternoon, Aneesh!
           </h1>
         </div>

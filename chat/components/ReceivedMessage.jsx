@@ -56,10 +56,15 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
   return (
     <div className="justify-start w-full space-y-2">
       {reasoning && (
-        <div className="flex flex-col justify-start w-full p-3 mb-3 text-sm text-muted-foreground border border-border bg-card/50 rounded-md shadow-md overflow-hidden transition-all duration-200"> {/* Use theme colors */}
+        <div className="flex flex-col justify-start w-full p-3 mb-3 text-sm text-muted-foreground border border-border bg-card/50 rounded-md shadow-md overflow-hidden transition-all duration-200">
+          {" "}
+          {/* Use theme colors */}
           <div className="flex items-center justify-between gap-2 mb-2">
-            <span className="font-semibold text-foreground flex items-center"> {/* Use theme colors */}
-              <div className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></div> {/* Use primary color */}
+            <span className="font-semibold text-foreground flex items-center">
+              {" "}
+              {/* Use theme colors */}
+              <div className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></div>{" "}
+              {/* Use primary color */}
               Reasoning
             </span>
             <button
@@ -76,7 +81,7 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.15 }}
                   >
-                    <ArrowUp size={16} />
+                    <ArrowUp size={16} className="text-accent" />
                   </motion.div>
                 ) : (
                   <motion.div
@@ -86,13 +91,12 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.15 }}
                   >
-                    <ArrowDown size={16} />
+                    <ArrowDown size={16} className="text-accent" />
                   </motion.div>
                 )}
               </AnimatePresence>
             </button>
           </div>
-
           <AnimatePresence>
             {active && (
               <motion.div
@@ -102,7 +106,9 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
                 transition={{ duration: 0.2 }}
                 className="overflow-hidden"
               >
-                <div className="pt-2 border-t border-border"> {/* Use theme colors */}
+                <div className="pt-2 border-t border-border">
+                  {" "}
+                  {/* Use theme colors */}
                   <Marked
                     components={{
                       // Wrapper div with the desired classes
@@ -154,19 +160,27 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
             )}
           </AnimatePresence>
         </button>
-        <small className="text-xs text-muted-foreground italic flex space-x-8"> {/* Use theme colors */}
+        <small className="text-xs text-muted-foreground italic flex space-x-8">
+          {" "}
+          {/* Use theme colors */}
           {token && (
             <>
               <span>
-                <span className="font-semibold">Input Tokens:</span>{" "}
+                <span className="font-semibold text-accent/90">
+                  Input Tokens:
+                </span>{" "}
                 {token.promptTokens}
               </span>
               <span>
-                <span className="font-semibold">Output Tokens:</span>{" "}
+                <span className="font-semibold text-accent/90">
+                  Output Tokens:
+                </span>{" "}
                 {token.completionTokens}
               </span>
               <span>
-                <span className="font-semibold">Total Tokens:</span>{" "}
+                <span className="font-semibold text-accent/90">
+                  Total Tokens:
+                </span>{" "}
                 {token.totalTokens}
               </span>
             </>

@@ -4,7 +4,7 @@ import { useChat } from "@ai-sdk/react";
 import { createContext, useContext, useState, useEffect } from "react";
 import { useParams, useRouter, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Send, LayoutTemplate, X, OctagonX } from "lucide-react";
+import { Send, LayoutTemplate, X, OctagonX, CheckIcon } from "lucide-react";
 import TextareaAutosize from "react-textarea-autosize";
 import React from "react";
 import { models } from "@/components/models";
@@ -97,36 +97,53 @@ export default function ChatLayout({ children }) {
 
         <div className="mx-auto w-[80%] max-w-4xl mb-4">
           {mounted ? (
-            <div className="flex flex-col p-4 bg-card rounded-md border border-border"> {/* Use theme colors */}
+            <div className="flex flex-col p-4 bg-card rounded-md border border-border">
+              {" "}
+              {/* Use theme colors */}
               <TextAreaComponent
                 input={input}
                 handleInputChange={handleInputChange}
                 onSubmit={handleSubmit}
               />
-              <div className="flex justify-between mt-2">
+              <div className="flex justify-between mt-3">
                 <ModelSelector model={model} setModel={setModel} />
 
                 {status === "streaming" ? (
-                  <Button variant="destructive" onClick={stop}>
-                    <OctagonX />
+                  <Button
+                    variant="destructive"
+                    onClick={stop}
+                    className="shadow-md hover:shadow-lg transition-all duration-200"
+                  >
+                    <OctagonX className="w-5 h-5" />
                   </Button>
                 ) : (
-                  <Button variant="outline" onClick={handleSubmit}>
-                    <Send size={16} />
+                  <Button
+                    variant="outline"
+                    onClick={handleSubmit}
+                    className="bg-primary/80 hover:bg-primary text-primary-foreground hover:text-primary-foreground border-primary/30 shadow-md hover:shadow-lg transition-all duration-200"
+                  >
+                    <Send className="w-5 h-5" />
                   </Button>
                 )}
               </div>
             </div>
           ) : (
-            <div className="flex flex-col p-4 bg-card rounded-md border border-border"> {/* Use theme colors */}
-              <div className="w-full min-h-[38px] p-2 border-none rounded-md bg-muted/80 mb-2 flex items-center justify-center"> {/* Use theme colors */}
+            <div className="flex flex-col p-4 bg-card rounded-md border border-border">
+              {" "}
+              {/* Use theme colors */}
+              <div className="w-full min-h-[38px] p-2 border-none rounded-md bg-muted/80 mb-2 flex items-center justify-center">
+                {" "}
+                {/* Use theme colors */}
                 <MessageLoadingAnimation />
               </div>
               <div className="flex justify-between mt-2">
-                <div className="h-9 rounded-md border border-border px-4 py-2 text-sm font-medium flex items-center justify-center bg-card/70 text-muted-foreground"> {/* Use theme colors */}
+                <div className="h-9 rounded-md border border-border px-4 py-2 text-sm font-medium flex items-center justify-center bg-card/70 text-muted-foreground">
+                  {" "}
+                  {/* Use theme colors */}
                   <span>4.1 Nano</span>
                 </div>
-                <div className="h-9 w-9 rounded-md border border-border flex items-center justify-center bg-card/70"></div> {/* Use theme colors */}
+                <div className="h-9 w-9 rounded-md border border-border flex items-center justify-center bg-card/70"></div>{" "}
+                {/* Use theme colors */}
               </div>
             </div>
           )}
@@ -141,17 +158,22 @@ function MessageLoadingAnimation() {
   return (
     <>
       <style jsx>{`
-        @keyframes wave {
-          0% {
-            transform: translateX(-100%);
-          }
+        @keyframes pulse {
+          0%,
+          80%,
           100% {
-            transform: translateX(100%);
+            transform: scale(0);
+            opacity: 0.5;
+          }
+          40% {
+            transform: scale(1);
+            opacity: 1;
           }
         }
-        .loading-bar {
-          position: relative;
-          overflow: hidden;
+        .dot-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
           height: 24px;
           width: 100%;
           border-radius: 4px;
@@ -173,7 +195,11 @@ function MessageLoadingAnimation() {
           animation: wave 1.5s infinite ease-in-out;
         }
       `}</style>
-      <div className="loading-bar"></div>
+      <div className="dot-container">
+        <div className="dot dot1"></div>
+        <div className="dot dot2"></div>
+        <div className="dot dot3"></div>
+      </div>
     </>
   );
 }
@@ -246,7 +272,9 @@ function ModelItem({ name, setModel, id, provider, isSelected }) {
     <DropdownMenuItem
       className={cn(
         "cursor-pointer focus:bg-muted focus:text-foreground flex items-center gap-2 p-2", // Use theme colors for focus
-        isSelected ? "bg-accent text-accent-foreground font-semibold" : "hover:bg-muted" // Use theme colors for selected and hover
+        isSelected
+          ? "bg-accent text-accent-foreground font-semibold"
+          : "hover:bg-muted" // Use theme colors for selected and hover
       )}
       onClick={handleClick}
       style={{ outline: "none" }}
@@ -262,9 +290,9 @@ function ModelItem({ name, setModel, id, provider, isSelected }) {
       )}
       <span className="flex-grow truncate">{name}</span>{" "}
       {provider !== "openai" && (
-        <span className="text-xs text-muted-foreground ml-auto flex-shrink-0"> {/* Use theme colors */}
+        <span className="text-xs text-muted-foreground ml-auto flex-shrink-0">
           {" "}
-          {provider}
+          {/* Use theme colors */} {provider}
         </span>
       )}
     </DropdownMenuItem>
