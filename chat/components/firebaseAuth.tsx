@@ -12,6 +12,12 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { AiOutlineLoading } from "react-icons/ai";
 
+// Define FirebaseError interface
+interface FirebaseError {
+  code: string;
+  message: string;
+}
+
 export default function GoogleLogin() {
   const router = useRouter();
   const auth = getAuth(app);
@@ -19,6 +25,7 @@ export default function GoogleLogin() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [initialCheckDone, setInitialCheckDone] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Check if user is already signed in
   useEffect(() => {
@@ -37,18 +44,41 @@ export default function GoogleLogin() {
 
   const handleLogin = async () => {
     setIsLoading(true);
+    setError(null); // Reset any previous errors
     try {
       const result = await signInWithPopup(auth, provider);
-      console.log("User signed in:", result.user);
       // Set isSignedIn to true after successful login
       setIsSignedIn(true);
-    } catch (error) {
-      console.error("Popup sign-in failed:", error);
+    } catch (err) {
+      // Cast error to FirebaseError type
+      const firebaseError = err as FirebaseError;
+
+      // Handle specific Firebase auth errors with user-friendly messages
+      if (firebaseError.code === "auth/popup-closed-by-user") {
+        setError("Sign-in was cancelled. Please try again.");
+      } else if (firebaseError.code === "auth/cancelled-popup-request") {
+        setError("Another sign-in attempt is in progress.");
+      } else if (firebaseError.code === "auth/popup-blocked") {
+        setError(
+          "Sign-in popup was blocked by your browser. Please allow popups for this site."
+        );
+      } else if (firebaseError.code === "auth/unauthorized-domain") {
+        setError(
+          "This domain is not authorized for sign-in. Please contact support."
+        );
+      } else if (firebaseError.code === "auth/operation-not-allowed") {
+        setError(
+          "Google sign-in is not enabled for this app. Please try another method or contact support."
+        );
+      } else {
+        setError(
+          "Login is currently not allowed. Please try again later or contact support."
+        );
+      }
       setIsLoading(false);
     }
   };
 
-  // Show loading while checking authentication state
   if (!initialCheckDone) {
     return (
       <div className="flex items-center justify-center gap-3">
@@ -58,7 +88,6 @@ export default function GoogleLogin() {
     );
   }
 
-  // If already signed in, show message with button to go to chat
   if (isSignedIn) {
     return (
       <div className="flex flex-col items-center gap-3">
@@ -101,22 +130,41 @@ export default function GoogleLogin() {
 
   // If not signed in, show the login button
   return (
-    <button
-      onClick={handleLogin}
-      disabled={isLoading}
-      className="flex items-center justify-center gap-3 w-full sm:w-auto px-6 py-3 rounded-md bg-white text-gray-800 hover:bg-gray-100 border border-gray-300 shadow-sm transition-all duration-200 ease-in-out font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:opacity-70 disabled:cursor-not-allowed"
-    >
-      {isLoading ? (
-        <>
-          <AiOutlineLoading className="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-500" />
-          Signing in...
-        </>
-      ) : (
-        <>
-          <Image src="/google.svg" alt="Google logo" width={20} height={20} />
-          Sign in with Google
-        </>
+    <div className="flex flex-col items-center gap-3">
+      {error && (
+        <div className="flex items-center justify-center gap-2 p-3 mb-3 w-full text-red-600 bg-red-50 border border-red-200 rounded-md">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fillRule="evenodd"
+              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+              clipRule="evenodd"
+            />
+          </svg>
+          <span>{error}</span>
+        </div>
       )}
-    </button>
+      <button
+        onClick={handleLogin}
+        disabled={isLoading}
+        className="flex items-center justify-center gap-3 w-full sm:w-auto px-6 py-3 rounded-md bg-white text-gray-800 hover:bg-gray-100 border border-gray-300 shadow-sm transition-all duration-200 ease-in-out font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:opacity-70 disabled:cursor-not-allowed"
+      >
+        {isLoading ? (
+          <>
+            <AiOutlineLoading className="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-500" />
+            Signing in...
+          </>
+        ) : (
+          <>
+            <Image src="/google.svg" alt="Google logo" width={20} height={20} />
+            Sign in with Google
+          </>
+        )}
+      </button>
+    </div>
   );
 }
