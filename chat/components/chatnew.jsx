@@ -101,18 +101,18 @@ export function MessageLoadingIndicator() {
       `}</style>
       <div className="flex items-center space-x-1">
         <span
-          className="h-2 w-2 rounded-full bg-accent"
+          className="h-2 w-2 rounded-full bg-muted-foreground"
           style={{ animation: "fastFade 0.7s infinite", animationDelay: "0s" }}
         ></span>
         <span
-          className="h-2 w-2 rounded-full bg-accent"
+          className="h-2 w-2 rounded-full bg-muted-foreground"
           style={{
             animation: "fastFade 0.7s infinite",
             animationDelay: "0.15s",
           }}
         ></span>
         <span
-          className="h-2 w-2 rounded-full bg-accent"
+          className="h-2 w-2 rounded-full bg-muted-foreground"
           style={{
             animation: "fastFade 0.7s infinite",
             animationDelay: "0.3s",
@@ -126,7 +126,9 @@ export function MessageLoadingIndicator() {
 const SentMessage = React.memo(function SentMessage({ message }) {
   return (
     <div className="flex justify-end w-full">
-      <div className="max-w-[60%] px-4 py-2 bg-primary/60 rounded-2xl rounded-tr-none text-primary-foreground shadow-sm prose prose-invert whitespace-pre-wrap break-words">
+      <div className="max-w-[60%] px-4 py-2 bg-primary text-primary-foreground rounded-2xl rounded-tr-none shadow-sm prose prose-invert whitespace-pre-wrap break-words">
+        {" "}
+        {/* Use primary theme colors */}
         {message}
       </div>
     </div>

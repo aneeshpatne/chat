@@ -12,12 +12,12 @@ import Image from "next/image";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuTrigger,
   DropdownMenuItem,
-  DropdownMenuGroup,
-} from "@/components/ui/dropdown-menu";
-import { cn } from "@/lib/utils";
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"; // Import DropdownMenu components
+import { cn } from "@/lib/utils"; // Import cn utility
 
+const modelList = Object.values(models);
 export const ChatContext = createContext(null);
 
 export default function ChatLayout({ children }) {
@@ -95,9 +95,11 @@ export default function ChatLayout({ children }) {
       <div className="flex flex-col h-screen">
         <div className="flex-grow overflow-auto">{children}</div>
 
-        <div className="mx-auto w-[85%] max-w-5xl mb-6">
+        <div className="mx-auto w-[80%] max-w-4xl mb-4">
           {mounted ? (
-            <div className="flex flex-col p-5 bg-card/90 backdrop-blur-sm rounded-xl border border-border shadow-lg transition-all duration-200 hover:border-primary/30">
+            <div className="flex flex-col p-4 bg-card rounded-md border border-border">
+              {" "}
+              {/* Use theme colors */}
               <TextAreaComponent
                 input={input}
                 handleInputChange={handleInputChange}
@@ -126,13 +128,22 @@ export default function ChatLayout({ children }) {
               </div>
             </div>
           ) : (
-            <div className="flex flex-col p-5 bg-card/90 backdrop-blur-sm rounded-xl border border-border shadow-lg">
-              <div className="w-full min-h-[38px] p-2 border-none rounded-lg bg-secondary/60 mb-3 flex items-center justify-center">
+            <div className="flex flex-col p-4 bg-card rounded-md border border-border">
+              {" "}
+              {/* Use theme colors */}
+              <div className="w-full min-h-[38px] p-2 border-none rounded-md bg-muted/80 mb-2 flex items-center justify-center">
+                {" "}
+                {/* Use theme colors */}
                 <MessageLoadingAnimation />
               </div>
-              <div className="flex justify-between mt-3">
-                <div className="h-10 w-28 rounded-lg border border-border bg-secondary/50 backdrop-blur-sm"></div>
-                <div className="h-10 w-10 rounded-lg border border-border flex items-center justify-center bg-secondary/50 backdrop-blur-sm"></div>
+              <div className="flex justify-between mt-2">
+                <div className="h-9 rounded-md border border-border px-4 py-2 text-sm font-medium flex items-center justify-center bg-card/70 text-muted-foreground">
+                  {" "}
+                  {/* Use theme colors */}
+                  <span>4.1 Nano</span>
+                </div>
+                <div className="h-9 w-9 rounded-md border border-border flex items-center justify-center bg-card/70"></div>{" "}
+                {/* Use theme colors */}
               </div>
             </div>
           )}
@@ -164,29 +175,24 @@ function MessageLoadingAnimation() {
           justify-content: center;
           align-items: center;
           height: 24px;
+          width: 100%;
+          border-radius: 4px;
+          background: rgba(100, 100, 100, 0.2);
         }
-        .dot {
-          width: 8px;
-          height: 8px;
-          margin: 0 3px;
-          background-color: rgba(
-            153,
-            204,
-            255,
-            0.8
-          ); /* Matching accent color */
-          border-radius: 50%;
-          display: inline-block;
-          animation: pulse 1.4s infinite ease-in-out both;
-        }
-        .dot1 {
-          animation-delay: -0.32s;
-        }
-        .dot2 {
-          animation-delay: -0.16s;
-        }
-        .dot3 {
-          animation-delay: 0s;
+        .loading-bar::after {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          height: 100%;
+          width: 60%;
+          background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(150, 150, 150, 0.5),
+            transparent
+          );
+          animation: wave 1.5s infinite ease-in-out;
         }
       `}</style>
       <div className="dot-container">
@@ -208,9 +214,9 @@ const TextAreaComponent = React.memo(function TextAreaComponent({
       value={input}
       onChange={handleInputChange}
       minRows={1}
-      maxRows={4}
+      maxRows={10}
       placeholder="Type your message here..."
-      className="w-full p-3 border-none rounded-lg bg-secondary/80 text-foreground placeholder-muted-foreground overflow-y-auto focus:outline-none focus:ring-1 focus:ring-primary/50 transition-all duration-200 ease-in-out resize-none"
+      className="w-full p-2 border-none rounded-md text-foreground bg-transparent overflow-y-auto focus:outline-none transition-all duration-150 ease-in-out resize-none" // Use text-foreground, bg-transparent
       onKeyDown={(e) => {
         if (e.key === "Enter" && !e.shiftKey) {
           e.preventDefault();
@@ -225,59 +231,70 @@ function ModelSelector({ model, setModel }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="outline"
-          className="bg-secondary/50 border-border hover:bg-secondary hover:border-primary/30 transition-all duration-200 min-w-[140px]"
-        >
-          <div className="flex items-center gap-2">
-            {model.provider !== "openai" && (
-              <div className="text-xs font-medium text-foreground/80 px-1.5 py-0.5 rounded-md bg-secondary">
-                {model.provider}
-              </div>
-            )}
-            <span className="text-foreground">{model.name}</span>
-            <LayoutTemplate size={16} className="ml-auto text-accent" />
-          </div>
+        <Button variant="outline">
+          <LayoutTemplate size={16} className="mr-2" />
+          <span>{model.name}</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-[280px] max-h-[70vh] overflow-auto bg-card/95 backdrop-blur-sm border-border">
-        <DropdownMenuGroup>
-          {Object.values(models).map((m) => (
-            <DropdownMenuItem
-              key={m.id}
-              onClick={() =>
-                setModel({ name: m.name, id: m.id, provider: m.provider })
-              }
-              className={cn(
-                "flex items-center gap-3 py-3 px-4 cursor-pointer hover:bg-secondary/70",
-                m.id === model.id && "bg-secondary"
-              )}
-            >
-              <div className="relative w-8 h-8">
-                <Image
-                  src={m.img}
-                  alt={m.name}
-                  fill
-                  className="object-contain"
-                />
-              </div>
-              <div className="flex flex-col gap-0.5">
-                <span className="text-sm font-medium text-foreground">
-                  {m.name}
-                </span>
-                {m.provider !== "openai" && (
-                  <span className="text-xs text-muted-foreground">
-                    {m.provider}
-                  </span>
-                )}
-              </div>
-              {m.id === model.id && (
-                <CheckIcon size={16} className="ml-auto text-primary" />
-              )}
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuGroup>
+      <DropdownMenuContent
+        className="
+        max-h-[80vh]
+        overflow-y-auto
+        bg-popover p-1 border border-border rounded-md shadow-lg // Use popover theme colors
+        min-w-[200px]
+      "
+      >
+        {modelList.map((m) => (
+          <ModelItem
+            key={m.id}
+            id={m.id}
+            name={m.name}
+            setModel={setModel}
+            provider={m.provider}
+            isSelected={m.id === model.id}
+          />
+        ))}
       </DropdownMenuContent>
     </DropdownMenu>
+  );
+}
+
+function ModelItem({ name, setModel, id, provider, isSelected }) {
+  // Find the model details (including image) from the modelList
+  const modelDetails = modelList.find((m) => m.id === id);
+  const image = modelDetails?.img; // Get the image path
+
+  function handleClick() {
+    setModel({ name, id, provider });
+  }
+
+  return (
+    <DropdownMenuItem
+      className={cn(
+        "cursor-pointer focus:bg-muted focus:text-foreground flex items-center gap-2 p-2", // Use theme colors for focus
+        isSelected
+          ? "bg-accent text-accent-foreground font-semibold"
+          : "hover:bg-muted" // Use theme colors for selected and hover
+      )}
+      onClick={handleClick}
+      style={{ outline: "none" }}
+    >
+      {image && (
+        <Image
+          src={image}
+          alt={`${name} logo`}
+          height={20} // Adjust size as needed
+          width={20}
+          className="object-contain flex-shrink-0"
+        />
+      )}
+      <span className="flex-grow truncate">{name}</span>{" "}
+      {provider !== "openai" && (
+        <span className="text-xs text-muted-foreground ml-auto flex-shrink-0">
+          {" "}
+          {/* Use theme colors */} {provider}
+        </span>
+      )}
+    </DropdownMenuItem>
   );
 }

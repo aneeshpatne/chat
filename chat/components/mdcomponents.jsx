@@ -27,7 +27,12 @@ export const mdComponents = {
     <li className="text-foreground/90 mb-1" {...props} />
   ),
   a: ({ node, ...props }) => (
-    <a className="text-accent hover:text-accent/80 underline" {...props} />
+    <a
+      className="text-accent hover:text-accent/80 underline"
+      target="_blank"
+      rel="noopener noreferrer"
+      {...props}
+    />
   ),
   blockquote: ({ node, ...props }) => (
     <blockquote
@@ -35,6 +40,7 @@ export const mdComponents = {
       {...props}
     />
   ),
+  hr: ({ node, ...props }) => <hr className="border-border my-4" {...props} />,
   hr: ({ node, ...props }) => <hr className="border-border my-4" {...props} />,
   img: ({ node, ...props }) => (
     <img className="max-w-full rounded-lg my-4" {...props} />
@@ -50,6 +56,7 @@ export const mdComponents = {
       <table className="border-collapse w-full" {...props} />
     </div>
   ),
+  thead: ({ node, ...props }) => <thead className="bg-secondary" {...props} />,
   thead: ({ node, ...props }) => <thead className="bg-secondary" {...props} />,
   tbody: ({ node, ...props }) => (
     <tbody className="divide-y divide-border" {...props} />
