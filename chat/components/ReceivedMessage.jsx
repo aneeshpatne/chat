@@ -56,15 +56,15 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
   return (
     <div className="justify-start w-full space-y-2">
       {reasoning && (
-        <div className="flex flex-col justify-start w-full p-3 mb-3 text-sm text-stone-200 border border-stone-600 bg-stone-800/50 rounded-md shadow-md overflow-hidden transition-all duration-200">
+        <div className="flex flex-col justify-start w-full p-3 mb-3 text-sm text-muted-foreground border border-border bg-card/50 rounded-md shadow-md overflow-hidden transition-all duration-200"> {/* Use theme colors */}
           <div className="flex items-center justify-between gap-2 mb-2">
-            <span className="font-semibold text-stone-100 flex items-center">
-              <div className="w-1.5 h-1.5 bg-blue-400 rounded-full mr-2"></div>
+            <span className="font-semibold text-foreground flex items-center"> {/* Use theme colors */}
+              <div className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></div> {/* Use primary color */}
               Reasoning
             </span>
             <button
               onClick={() => setActive((prev) => !prev)}
-              className="p-1.5 hover:bg-stone-700 rounded-md transition-colors duration-150"
+              className="p-1.5 hover:bg-muted rounded-md transition-colors duration-150" // Use theme colors
               aria-label={active ? "Collapse reasoning" : "Expand reasoning"}
             >
               <AnimatePresence mode="wait" initial={false}>
@@ -102,7 +102,7 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
                 transition={{ duration: 0.2 }}
                 className="overflow-hidden"
               >
-                <div className="pt-2 border-t border-stone-700">
+                <div className="pt-2 border-t border-border"> {/* Use theme colors */}
                   <Marked
                     components={{
                       // Wrapper div with the desired classes
@@ -127,7 +127,7 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
       <div className="flex items-center justify-between">
         <button
           onClick={handleCopyClick}
-          className="text-white"
+          className="text-muted-foreground hover:text-foreground" // Use theme colors
           aria-label="Copy Message"
         >
           <AnimatePresence mode="wait" initial={false}>
@@ -154,7 +154,7 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
             )}
           </AnimatePresence>
         </button>
-        <small className="text-xs text-gray-500 italic flex space-x-8">
+        <small className="text-xs text-muted-foreground italic flex space-x-8"> {/* Use theme colors */}
           {token && (
             <>
               <span>

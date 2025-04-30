@@ -28,15 +28,15 @@ const CodeBlock = React.memo(function CodeBlock({
     }
   };
 
-  const codeBg = "#09090b";
+  const codeBg = "var(--card)"; // Use CSS variable for background
 
   return match ? (
-    <div className="rounded-md my-4 overflow-hidden">
-      <div className="flex items-center justify-between bg-stone-800 px-4 py-1.5 text-xs text-gray-400">
+    <div className="rounded-md overflow-hidden border border-border"> {/* Removed my-4 */}
+      <div className="flex items-center justify-between bg-secondary px-4 py-1.5 text-xs text-secondary-foreground"> {/* Use theme colors */}
         <span className="lowercase">{language}</span>
         <button
           onClick={copyToClipboard}
-          className="flex items-center gap-1 hover:text-gray-200 transition-colors"
+          className="flex items-center gap-1 hover:text-foreground transition-colors" // Use theme colors
         >
           <Copy size={14} className="inline-block" />
           {isCopied ? "Copied!" : "Copy code"}
@@ -46,13 +46,15 @@ const CodeBlock = React.memo(function CodeBlock({
         {...props}
         PreTag="div"
         language={language}
-        style={vscDarkPlus}
+        style={vscDarkPlus} // Keep syntax highlighting style, but override background
         customStyle={{
           backgroundColor: codeBg,
           padding: "1rem",
           margin: 0,
           overflowX: "auto",
           fontSize: "0.875rem",
+          // Ensure text color contrasts with the new background if needed
+          // color: 'var(--card-foreground)' // Optional: uncomment if text becomes hard to read
         }}
         codeTagProps={{
           style: {
@@ -66,7 +68,8 @@ const CodeBlock = React.memo(function CodeBlock({
   ) : (
     <code
       {...props}
-      className={`${className} bg-gray-200 text-gray-800 dark:bg-stone-700 dark:text-stone-300 rounded px-1 py-0.5 text-sm`}
+      // Use muted background/text for inline code
+      className={`${className} bg-muted text-muted-foreground rounded px-1 py-0.5 text-sm`}
     >
       {children}
     </code>

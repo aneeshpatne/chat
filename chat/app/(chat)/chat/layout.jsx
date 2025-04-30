@@ -97,7 +97,7 @@ export default function ChatLayout({ children }) {
 
         <div className="mx-auto w-[80%] max-w-4xl mb-4">
           {mounted ? (
-            <div className="flex flex-col p-4 bg-stone-800 rounded-md border border-stone-600">
+            <div className="flex flex-col p-4 bg-card rounded-md border border-border"> {/* Use theme colors */}
               <TextAreaComponent
                 input={input}
                 handleInputChange={handleInputChange}
@@ -118,15 +118,15 @@ export default function ChatLayout({ children }) {
               </div>
             </div>
           ) : (
-            <div className="flex flex-col p-4 bg-stone-800 rounded-md border border-stone-600">
-              <div className="w-full min-h-[38px] p-2 border-none rounded-md bg-stone-700/80 mb-2 flex items-center justify-center">
+            <div className="flex flex-col p-4 bg-card rounded-md border border-border"> {/* Use theme colors */}
+              <div className="w-full min-h-[38px] p-2 border-none rounded-md bg-muted/80 mb-2 flex items-center justify-center"> {/* Use theme colors */}
                 <MessageLoadingAnimation />
               </div>
               <div className="flex justify-between mt-2">
-                <div className="h-9 rounded-md border border-stone-600 px-4 py-2 text-sm font-medium flex items-center justify-center bg-stone-800/70 text-stone-400">
+                <div className="h-9 rounded-md border border-border px-4 py-2 text-sm font-medium flex items-center justify-center bg-card/70 text-muted-foreground"> {/* Use theme colors */}
                   <span>4.1 Nano</span>
                 </div>
-                <div className="h-9 w-9 rounded-md border border-stone-600 flex items-center justify-center bg-stone-800/70"></div>
+                <div className="h-9 w-9 rounded-md border border-border flex items-center justify-center bg-card/70"></div> {/* Use theme colors */}
               </div>
             </div>
           )}
@@ -190,7 +190,7 @@ const TextAreaComponent = React.memo(function TextAreaComponent({
       minRows={1}
       maxRows={10}
       placeholder="Type your message here..."
-      className="w-full p-2 border-none rounded-md text-white overflow-y-auto focus:outline-none transition-all duration-150 ease-in-out resize-none"
+      className="w-full p-2 border-none rounded-md text-foreground bg-transparent overflow-y-auto focus:outline-none transition-all duration-150 ease-in-out resize-none" // Use text-foreground, bg-transparent
       onKeyDown={(e) => {
         if (e.key === "Enter" && !e.shiftKey) {
           e.preventDefault();
@@ -213,9 +213,9 @@ function ModelSelector({ model, setModel }) {
       <DropdownMenuContent
         className="
         max-h-[80vh]
-        overflow-y-auto 
-        bg-stone-800 p-1 border border-stone-600 rounded-md shadow-lg 
-        min-w-[200px] 
+        overflow-y-auto
+        bg-popover p-1 border border-border rounded-md shadow-lg // Use popover theme colors
+        min-w-[200px]
       "
       >
         {modelList.map((m) => (
@@ -245,8 +245,8 @@ function ModelItem({ name, setModel, id, provider, isSelected }) {
   return (
     <DropdownMenuItem
       className={cn(
-        "cursor-pointer focus:bg-stone-700 focus:text-white flex items-center gap-2 p-2", // Use flexbox for layout
-        isSelected ? "bg-stone-700 font-semibold" : ""
+        "cursor-pointer focus:bg-muted focus:text-foreground flex items-center gap-2 p-2", // Use theme colors for focus
+        isSelected ? "bg-accent text-accent-foreground font-semibold" : "hover:bg-muted" // Use theme colors for selected and hover
       )}
       onClick={handleClick}
       style={{ outline: "none" }}
@@ -262,7 +262,7 @@ function ModelItem({ name, setModel, id, provider, isSelected }) {
       )}
       <span className="flex-grow truncate">{name}</span>{" "}
       {provider !== "openai" && (
-        <span className="text-xs text-stone-400 ml-auto flex-shrink-0">
+        <span className="text-xs text-muted-foreground ml-auto flex-shrink-0"> {/* Use theme colors */}
           {" "}
           {provider}
         </span>

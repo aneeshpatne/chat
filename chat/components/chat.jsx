@@ -198,13 +198,13 @@ function ModelSelector({ model, setModel }) {
             className="
         flex flex-wrap gap-2 justify-between
         max-w-[700px]
-        max-h-[80vh] 
+        max-h-[80vh]
         overflow-y-auto
-        bg-stone-800 p-2 border border-stone-600 rounded-md shadow-lg
+        bg-popover text-popover-foreground p-2 border border-border rounded-md shadow-lg {/* Use popover theme colors */}
       "
           >
-            {Object.values(models).map((m) => (
-              <ModelItem
+            {models.map((m) => (
+              <Button
                 key={m.id}
                 id={m.id}
                 name={m.name}
@@ -330,7 +330,7 @@ function LoadingState() {
 const SentMessage = React.memo(function SentMessage({ message }) {
   return (
     <div className="flex justify-end w-full">
-      <div className="max-w-[60%] px-4 py-2 bg-stone-700 rounded-2xl rounded-tr-none text-white shadow-sm prose prose-invert whitespace-pre-wrap break-words">
+      <div className="max-w-[60%] px-4 py-2 bg-primary text-primary-foreground rounded-2xl rounded-tr-none shadow-sm prose prose-invert whitespace-pre-wrap break-words"> {/* Use primary theme colors */}
         {message}
       </div>
     </div>
