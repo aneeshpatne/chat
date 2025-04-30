@@ -37,7 +37,7 @@ const CodeBlock = React.memo(function CodeBlock({
         <span className="lowercase">{language}</span>
         <button
           onClick={copyToClipboard}
-          className="flex items-center gap-1 hover:text-foreground transition-colors" // Use theme colors
+          className="flex items-center gap-1 hover:text-foreground transition-colors"
         >
           <Copy size={14} className="inline-block" />
           {isCopied ? "Copied!" : "Copy code"}
@@ -47,15 +47,13 @@ const CodeBlock = React.memo(function CodeBlock({
         {...props}
         PreTag="div"
         language={language}
-        style={vscDarkPlus} // Keep syntax highlighting style, but override background
+        style={vscDarkPlus}
         customStyle={{
           backgroundColor: codeBg,
           padding: "1rem",
           margin: 0,
           overflowX: "auto",
           fontSize: "0.875rem",
-          // Ensure text color contrasts with the new background if needed
-          // color: 'var(--card-foreground)' // Optional: uncomment if text becomes hard to read
         }}
         codeTagProps={{
           style: {
@@ -69,7 +67,6 @@ const CodeBlock = React.memo(function CodeBlock({
   ) : (
     <code
       {...props}
-      // Use muted background/text for inline code
       className={`${className} bg-muted text-muted-foreground rounded px-1 py-0.5 text-sm`}
     >
       {children}
