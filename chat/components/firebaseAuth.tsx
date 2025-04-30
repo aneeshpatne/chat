@@ -10,6 +10,7 @@ import { app } from "@/lib/firebaseConfig";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { AiOutlineLoading } from "react-icons/ai";
 
 export default function GoogleLogin() {
   const router = useRouter();
@@ -51,9 +52,7 @@ export default function GoogleLogin() {
   if (!initialCheckDone) {
     return (
       <div className="flex items-center justify-center gap-3">
-        <div className="animate-spin h-5 w-5 text-blue-500">
-          <Image src="/spinner.svg" alt="Loading" width={20} height={20} />
-        </div>
+        <AiOutlineLoading className="animate-spin h-5 w-5 text-blue-500" />
         <span>Checking authentication...</span>
       </div>
     );
@@ -109,9 +108,7 @@ export default function GoogleLogin() {
     >
       {isLoading ? (
         <>
-          <div className="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-500">
-            <Image src="/spinner.svg" alt="Loading" width={20} height={20} />
-          </div>
+          <AiOutlineLoading className="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-500" />
           Signing in...
         </>
       ) : (
