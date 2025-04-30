@@ -212,10 +212,10 @@ function ModelSelector({ model, setModel }) {
       </DropdownMenuTrigger>
       <DropdownMenuContent
         className="
-        max-h-[80vh] // Keep max height
-        overflow-y-auto // Keep scroll
-        bg-stone-800 p-1 border border-stone-600 rounded-md shadow-lg // Basic styling
-        min-w-[200px] // Set a min width for the dropdown
+        max-h-[80vh]
+        overflow-y-auto 
+        bg-stone-800 p-1 border border-stone-600 rounded-md shadow-lg 
+        min-w-[200px] 
       "
       >
         {modelList.map((m) => (
@@ -249,7 +249,6 @@ function ModelItem({ name, setModel, id, provider, isSelected }) {
         isSelected ? "bg-stone-700 font-semibold" : ""
       )}
       onClick={handleClick}
-      // Prevent default focus styling which might interfere
       style={{ outline: "none" }}
     >
       {image && (
@@ -258,15 +257,13 @@ function ModelItem({ name, setModel, id, provider, isSelected }) {
           alt={`${name} logo`}
           height={20} // Adjust size as needed
           width={20}
-          className="object-contain flex-shrink-0" // Prevent image from shrinking too much
+          className="object-contain flex-shrink-0"
         />
       )}
       <span className="flex-grow truncate">{name}</span>{" "}
-      {/* Allow name to grow and truncate */}
       {provider !== "openai" && (
         <span className="text-xs text-stone-400 ml-auto flex-shrink-0">
           {" "}
-          {/* Provider on the right */}
           {provider}
         </span>
       )}
