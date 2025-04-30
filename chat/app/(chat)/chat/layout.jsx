@@ -98,8 +98,6 @@ export default function ChatLayout({ children }) {
         <div className="mx-auto w-[80%] max-w-4xl mb-4">
           {mounted ? (
             <div className="flex flex-col p-4 bg-card rounded-md border border-border">
-              {" "}
-              {/* Use theme colors */}
               <TextAreaComponent
                 input={input}
                 handleInputChange={handleInputChange}
@@ -140,7 +138,7 @@ export default function ChatLayout({ children }) {
                 <div className="h-9 rounded-md border border-border px-4 py-2 text-sm font-medium flex items-center justify-center bg-card/70 text-muted-foreground">
                   {" "}
                   {/* Use theme colors */}
-                  <span>4.1 Nano</span>
+                  <span>Loading</span>
                 </div>
                 <div className="h-9 w-9 rounded-md border border-border flex items-center justify-center bg-card/70"></div>{" "}
                 {/* Use theme colors */}
@@ -236,22 +234,13 @@ function ModelSelector({ model, setModel }) {
           <span>{model.name}</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent
-        className="
-        max-h-[80vh]
-        overflow-y-auto
-        bg-popover p-1 border border-border rounded-md shadow-lg // Use popover theme colors
-        min-w-[200px]
-      "
-      >
+      <DropdownMenuContent className="max-h-[80vh] overflow-y-auto bg-popover p-1 border border-border rounded-md shadow-lg min-w-[200px]">
         {modelList.map((m) => (
           <ModelItem
             key={m.id}
-            id={m.id}
-            name={m.name}
-            setModel={setModel}
-            provider={m.provider}
+            model={m}
             isSelected={m.id === model.id}
+            setModel={setModel}
           />
         ))}
       </DropdownMenuContent>
@@ -259,40 +248,34 @@ function ModelSelector({ model, setModel }) {
   );
 }
 
-function ModelItem({ name, setModel, id, provider, isSelected }) {
-  // Find the model details (including image) from the modelList
-  const modelDetails = modelList.find((m) => m.id === id);
-  const image = modelDetails?.img; // Get the image path
+function ModelItem({ model, isSelected, setModel }) {
+  const { name, id, provider, img } = model;
 
-  function handleClick() {
-    setModel({ name, id, provider });
-  }
+  const handleClick = () => setModel(model);
 
   return (
     <DropdownMenuItem
+      onClick={handleClick}
       className={cn(
-        "cursor-pointer focus:bg-muted focus:text-foreground flex items-center gap-2 p-2", // Use theme colors for focus
+        "cursor-pointer flex items-center gap-2 p-2 focus:bg-muted focus:text-foreground",
         isSelected
           ? "bg-accent text-accent-foreground font-semibold"
-          : "hover:bg-muted" // Use theme colors for selected and hover
+          : "hover:bg-muted"
       )}
-      onClick={handleClick}
-      style={{ outline: "none" }}
     >
-      {image && (
+      {img && (
         <Image
-          src={image}
+          src={img}
           alt={`${name} logo`}
-          height={20} // Adjust size as needed
+          height={20}
           width={20}
           className="object-contain flex-shrink-0"
         />
       )}
-      <span className="flex-grow truncate">{name}</span>{" "}
+      <span className="flex-grow truncate">{name}</span>
       {provider !== "openai" && (
         <span className="text-xs text-muted-foreground ml-auto flex-shrink-0">
-          {" "}
-          {/* Use theme colors */} {provider}
+          {provider}
         </span>
       )}
     </DropdownMenuItem>
