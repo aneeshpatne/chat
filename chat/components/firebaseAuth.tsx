@@ -47,13 +47,30 @@ export default function GoogleLogin() {
     setError(null); // Reset any previous errors
     try {
       const result = await signInWithPopup(auth, provider);
-      // Set isSignedIn to true after successful login
+      const user = result.user;
+
+      // Get Firebase ID token
+      const token = await user.getIdToken();
+
+      // Send token to server to set session cookie
+      const res = await fetch("/api/sessionLogin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to set session cookie.");
+      }
+
+      // Update state and redirect
       setIsSignedIn(true);
+      router.push("/chat");
     } catch (err) {
-      // Cast error to FirebaseError type
       const firebaseError = err as FirebaseError;
 
-      // Handle specific Firebase auth errors with user-friendly messages
       if (firebaseError.code === "auth/popup-closed-by-user") {
         setError("Sign-in was cancelled. Please try again.");
       } else if (firebaseError.code === "auth/cancelled-popup-request") {
@@ -75,6 +92,7 @@ export default function GoogleLogin() {
           "Login is currently not allowed. Please try again later or contact support."
         );
       }
+
       setIsLoading(false);
     }
   };
