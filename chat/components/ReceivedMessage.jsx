@@ -1,12 +1,18 @@
-import React, { Suspense, useRef } from "react";
-import { useMemo, useDeferredValue, useEffect, useState } from "react";
+"use client";
+import React, {
+  useMemo,
+  useDeferredValue,
+  useEffect,
+  useState,
+  useRef,
+} from "react";
 import { parseMarkdownIntoBlocks } from "./CodeBlock";
 import { AnimatePresence, motion } from "framer-motion";
 import MemoizedMarkdownBlock from "./MemoizedMarkdownBlock";
-import { MessageLoadingIndicator } from "./chatnew";
-import { ArrowUp, ArrowDown } from "lucide-react";
 import Marked from "react-markdown";
-import { Copy, Check } from "lucide-react";
+import { ArrowUp, ArrowDown, Copy, Check } from "lucide-react";
+import { MessageLoadingIndicator } from "./chatnew";
+
 export const ReceivedMessage = React.memo(function ReceivedMessage({
   message,
   token,
@@ -14,33 +20,30 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
   status,
   id,
   currentlyStreamingId,
+  setSelectedText,
+  selectedText,
+  setaddMessage,
 }) {
-  // let React defer large markdown updates
-  const [curID, setID] = useState(id);
-  const deferredMessage = useDeferredValue(message);
+  const containerRef = useRef(null);
+  const bottomRef = useRef(null);
+
+  const [showButton, setShowButton] = useState(false);
+  const [buttonPosition, setButtonPosition] = useState({ x: 0, y: 0 });
   const [copySuccess, setCopySuccess] = useState(false);
   const [active, setActive] = useState(true);
+
+  const deferredMessage = useDeferredValue(message);
   const blocks = useMemo(
     () => parseMarkdownIntoBlocks(deferredMessage),
     [deferredMessage]
   );
-  const bottomRef = useRef(null);
+
   useEffect(() => {
     if (bottomRef.current) {
       bottomRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [blocks]);
-  const handleCopyClick = async () => {
-    try {
-      await navigator.clipboard.writeText(message);
-      setCopySuccess(true);
-      setTimeout(() => {
-        setCopySuccess(false);
-      }, 2000);
-    } catch (err) {
-      console.error("Failed to copy message: ", err);
-    }
-  };
+
   useEffect(() => {
     if (status === "streaming" && currentlyStreamingId === id) {
       setActive(true);
@@ -48,26 +51,94 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
       setActive(false);
     }
   }, [status, currentlyStreamingId, id]);
+
+  useEffect(() => {
+    const handleSelectionChange = () => {
+      const selection = window.getSelection();
+      if (selection.toString().trim().length === 0) {
+        setShowButton(false);
+        setaddMessage("");
+      }
+    };
+    document.addEventListener("selectionchange", handleSelectionChange);
+    return () => {
+      document.removeEventListener("selectionchange", handleSelectionChange);
+    };
+  }, [setaddMessage]);
+
+  const handleMouseUp = () => {
+    const selection = window.getSelection();
+    const text = selection.toString().trim();
+
+    if (text.length > 0 && containerRef.current) {
+      const range = selection.getRangeAt(0);
+      const rect = range.getBoundingClientRect();
+      const containerRect = containerRef.current.getBoundingClientRect();
+
+      setButtonPosition({
+        x: rect.right - containerRect.left,
+        y: rect.top - containerRect.top,
+      });
+      setSelectedText(text);
+      setShowButton(true);
+    } else {
+      setShowButton(false);
+      setSelectedText("");
+    }
+  };
+
+  const handleAddClick = () => {
+    setaddMessage(selectedText);
+    setShowButton(false);
+    setSelectedText("");
+  };
+
+  const handleCopyClick = async () => {
+    try {
+      await navigator.clipboard.writeText(message);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy message: ", err);
+    }
+  };
+
+  // ✅ All hooks are declared above — now we safely return
   if (!message && !reasoning) {
     return <MessageLoadingIndicator />;
   }
+
   return (
-    <div className="justify-start w-full space-y-2">
+    <div
+      className="justify-start w-full space-y-2 relative"
+      onMouseUp={handleMouseUp}
+      ref={containerRef}
+    >
+      {showButton && (
+        <button
+          onClick={handleAddClick}
+          style={{
+            position: "absolute",
+            top: buttonPosition.y,
+            left: buttonPosition.x,
+            zIndex: 10,
+          }}
+          className="bg-blue-500 text-white px-2 py-1 rounded shadow"
+        >
+          Add
+        </button>
+      )}
+
       {reasoning && (
         <div className="flex flex-col justify-start w-full p-3 mb-3 text-sm text-muted-foreground border border-border bg-card/50 rounded-md shadow-md overflow-hidden transition-all duration-200">
-          {" "}
-          {/* Use theme colors */}
           <div className="flex items-center justify-between gap-2 mb-2">
             <span className="font-semibold text-foreground flex items-center">
-              {" "}
-              {/* Use theme colors */}
-              <div className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></div>{" "}
-              {/* Use primary color */}
+              <div className="w-1.5 h-1.5 bg-primary rounded-full mr-2"></div>
               Reasoning
             </span>
             <button
               onClick={() => setActive((prev) => !prev)}
-              className="p-1.5 hover:bg-muted rounded-md transition-colors duration-150" // Use theme colors
+              className="p-1.5 hover:bg-muted rounded-md transition-colors duration-150"
               aria-label={active ? "Collapse reasoning" : "Expand reasoning"}
             >
               <AnimatePresence mode="wait" initial={false}>
@@ -105,11 +176,8 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
                 className="overflow-hidden"
               >
                 <div className="pt-2 border-t border-border">
-                  {" "}
-                  {/* Use theme colors */}
                   <Marked
                     components={{
-                      // Wrapper div with the desired classes
                       root: ({ children }) => (
                         <div className="prose prose-invert prose-sm max-w-none">
                           {children}
@@ -125,13 +193,15 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
           </AnimatePresence>
         </div>
       )}
+
       {blocks.map((block, idx) => (
         <MemoizedMarkdownBlock content={block} key={idx} />
       ))}
+
       <div className="flex items-center justify-between">
         <button
           onClick={handleCopyClick}
-          className="text-muted-foreground hover:text-foreground" // Use theme colors
+          className="text-muted-foreground hover:text-foreground"
           aria-label="Copy Message"
         >
           <AnimatePresence mode="wait" initial={false}>
@@ -158,9 +228,8 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
             )}
           </AnimatePresence>
         </button>
+
         <small className="text-xs text-muted-foreground italic flex space-x-8">
-          {" "}
-          {/* Use theme colors */}
           {token && (
             <>
               <span>
@@ -185,9 +254,8 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
           )}
         </small>
       </div>
+
       <div ref={bottomRef} />
     </div>
   );
 });
-
-export default ReceivedMessage;

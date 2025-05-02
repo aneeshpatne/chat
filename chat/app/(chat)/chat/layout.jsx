@@ -102,56 +102,16 @@ export default function ChatLayout({ children }) {
       handleSubmit,
       token,
       pendingMessage,
+      setSelectedText,
+      setaddMessage,
+      selectedText,
     }),
     [chat, model, token, pendingMessage, handleSubmit]
   );
-  const handleMouseUp = () => {
-    const selection = window.getSelection();
-    const text = selection.toString().trim();
-
-    if (text.length > 0) {
-      const range = selection.getRangeAt(0);
-      const rect = range.getBoundingClientRect();
-      setButtonPosition({
-        x: rect.right + window.scrollX,
-        y: rect.top + window.scrollY,
-      });
-      setSelectedText(text);
-      setShowButton(true);
-    } else {
-      setShowButton(false);
-      setSelectedText("");
-    }
-  };
-
-  const handleSelectionChange = () => {
-    const selection = window.getSelection();
-    if (selection.toString().trim().length === 0) {
-      setShowButton(false);
-      setaddMessage("");
-    }
-  };
-
-  const handleAddClick = () => {
-    setaddMessage(selectedText);
-    setShowButton(false);
-    setSelectedText("");
-  };
-
-  useEffect(() => {
-    document.addEventListener("selectionchange", handleSelectionChange);
-    return () => {
-      document.removeEventListener("selectionchange", handleSelectionChange);
-    };
-  }, []);
 
   return (
     <ChatContext.Provider value={contextValue}>
-      <div
-        className="flex flex-col h-screen relative"
-        onMouseUp={handleMouseUp}
-        ref={containerRef}
-      >
+      <div className="flex flex-col h-screen relative">
         {showButton && (
           <SelectionButton onClick={handleAddClick} position={buttonPosition} />
         )}
@@ -160,7 +120,10 @@ export default function ChatLayout({ children }) {
         <div className="absolute left-0 right-0 bottom-0 mx-auto w-[80%] max-w-4xl mb-4">
           {mounted ? (
             <div className="flex flex-col p-4 bg-card rounded-md border border-border flex-shrink-0">
-              <AdditionalMessage message={addMessage} />
+              <AdditionalMessage
+                message={addMessage}
+                setaddMessage={setaddMessage}
+              />
               <TextAreaComponent
                 input={input}
                 handleInputChange={handleInputChange}
@@ -202,7 +165,11 @@ export default function ChatLayout({ children }) {
     </ChatContext.Provider>
   );
 }
-const AdditionalMessage = ({ message }) => {
+const AdditionalMessage = ({ message, setaddMessage }) => {
+  const handleClick = () => {
+    setaddMessage("");
+  };
+  if (!message) return null;
   return (
     <div className="w-full bg-card/70 backdrop-blur-sm border border-border/50 rounded-lg p-3 shadow-md relative mb-5">
       <div className="line-clamp-3 text-sm text-muted-foreground pr-6">
@@ -212,7 +179,7 @@ const AdditionalMessage = ({ message }) => {
         className="absolute top-2 right-2 p-1 rounded-full hover:bg-muted/80 text-muted-foreground transition-colors"
         aria-label="Cancel"
       >
-        <X size={16} />
+        <X size={16} onClick={handleClick} />
       </button>
     </div>
   );

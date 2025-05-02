@@ -13,6 +13,9 @@ export default function Chat({
   setModel,
   token,
   pendingMessage,
+  selectedText,
+  setSelectedText,
+  setaddMessage,
 }) {
   const [messagesStatus, setMessagesStatus] = useState({});
 
@@ -71,6 +74,9 @@ export default function Chat({
                   status={status}
                   reasoning={reasoning}
                   currentlyStreamingId={currentlyStreamingId}
+                  setSelectedText={setSelectedText}
+                  setaddMessage={setaddMessage}
+                  selectedText={selectedText}
                 />
               );
             })}
