@@ -9,7 +9,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import React from "react";
 import { models } from "@/components/models";
 import Image from "next/image";
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import MessageLoadingAnimation from "@/components/MessageLoadingAnimation";
 import {
   DropdownMenu,
@@ -18,6 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"; // Import DropdownMenu components
 import { cn } from "@/lib/utils"; // Import cn utility
+import { set } from "lodash";
 
 const modelList = Object.values(models);
 export const ChatContext = createContext(null);
@@ -34,8 +35,12 @@ export default function ChatLayout({ children }) {
     id: "gpt-4.1-nano",
     provider: "openai",
   });
-
+  const [showButton, setShowButton] = useState(false);
+  const [buttonPosition, setButtonPosition] = useState({ x: 0, y: 0 });
+  const [selectedText, setSelectedText] = useState("");
+  const [addMessage, setaddMessage] = useState("");
   const [token, setToken] = useState({});
+  const containerRef = useRef(null);
 
   const chat = useChat({
     id: sessionId,
@@ -100,15 +105,62 @@ export default function ChatLayout({ children }) {
     }),
     [chat, model, token, pendingMessage, handleSubmit]
   );
+  const handleMouseUp = () => {
+    const selection = window.getSelection();
+    const text = selection.toString().trim();
+
+    if (text.length > 0) {
+      const range = selection.getRangeAt(0);
+      const rect = range.getBoundingClientRect();
+      setButtonPosition({
+        x: rect.right + window.scrollX,
+        y: rect.top + window.scrollY,
+      });
+      setSelectedText(text);
+      setShowButton(true);
+    } else {
+      setShowButton(false);
+      setSelectedText("");
+    }
+  };
+
+  const handleSelectionChange = () => {
+    const selection = window.getSelection();
+    if (selection.toString().trim().length === 0) {
+      setShowButton(false);
+      setaddMessage("");
+    }
+  };
+
+  const handleAddClick = () => {
+    setaddMessage(selectedText);
+    setShowButton(false);
+    setSelectedText("");
+  };
+
+  useEffect(() => {
+    document.addEventListener("selectionchange", handleSelectionChange);
+    return () => {
+      document.removeEventListener("selectionchange", handleSelectionChange);
+    };
+  }, []);
+
   return (
     <ChatContext.Provider value={contextValue}>
-      <div className="flex flex-col h-screen">
+      <div
+        className="flex flex-col h-screen relative"
+        onMouseUp={handleMouseUp}
+        ref={containerRef}
+      >
+        {showButton && (
+          <SelectionButton onClick={handleAddClick} position={buttonPosition} />
+        )}
         <div className="flex-grow overflow-auto">{children}</div>
 
         <div className="absolute left-0 right-0 bottom-0 mx-auto w-[80%] max-w-4xl mb-4">
           {mounted ? (
             <div className="flex flex-col p-4 bg-card rounded-md border border-border flex-shrink-0">
-              <AdditionalMessage message={""} />
+              <AdditionalMessage message={addMessage} />
               <TextAreaComponent
                 input={input}
                 handleInputChange={handleInputChange}
@@ -154,8 +206,7 @@ const AdditionalMessage = ({ message }) => {
   return (
     <div className="w-full bg-card/70 backdrop-blur-sm border border-border/50 rounded-lg p-3 shadow-md relative mb-5">
       <div className="line-clamp-3 text-sm text-muted-foreground pr-6">
-        {message ||
-          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque tempore, vitae deleniti velit corrupti non minima dicta delectus, hic inventore excepturi molestiae? Nulla, eum perspiciatis dignissimos rem pariatur debitis obcaecati voluptate fugit asperiores accusantium harum nostrum autem non veniam placeat odio voluptas a explicabo animi provident reiciendis ipsum quisquam similique."}
+        {message}
       </div>
       <button
         className="absolute top-2 right-2 p-1 rounded-full hover:bg-muted/80 text-muted-foreground transition-colors"
@@ -243,5 +294,22 @@ function ModelItem({ model, isSelected, setModel }) {
         </span>
       )}
     </DropdownMenuItem>
+  );
+}
+
+function SelectionButton({ onClick, position }) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        position: "absolute",
+        top: position.y,
+        left: position.x,
+        zIndex: 10,
+      }}
+      className="bg-blue-500 text-white px-2 py-1 rounded shadow"
+    >
+      Add
+    </button>
   );
 }
