@@ -98,50 +98,43 @@ export default function ChatLayout({ children }) {
 
         <div className="absolute left-0 right-0 bottom-0 mx-auto w-[80%] max-w-4xl mb-4">
           {mounted ? (
-            <div className="flex flex-col p-4 bg-card rounded-md border border-border">
-              <TextAreaComponent
-                input={input}
-                handleInputChange={handleInputChange}
-                onSubmit={handleSubmit}
-              />
-              <div className="flex justify-between mt-3">
-                <ModelSelector model={model} setModel={setModel} />
+            <div className="flex flex-col gap-3">
+              <AdditionalMessage message={""} />
+              <div className="flex flex-col p-4 bg-card rounded-md border border-border flex-shrink-0">
+                <TextAreaComponent
+                  input={input}
+                  handleInputChange={handleInputChange}
+                  onSubmit={handleSubmit}
+                />
+                <div className="flex justify-between mt-3">
+                  <ModelSelector model={model} setModel={setModel} />
 
-                {status === "streaming" ? (
-                  <Button
-                    variant="destructive"
-                    onClick={stop}
-                    className="shadow-md hover:shadow-lg transition-all duration-200"
-                  >
-                    <OctagonX className="w-5 h-5" />
-                  </Button>
-                ) : (
-                  <Button
-                    variant="outline"
-                    onClick={handleSubmit}
-                    className="bg-primary/80 hover:bg-primary text-primary-foreground hover:text-primary-foreground border-primary/30 shadow-md hover:shadow-lg transition-all duration-200"
-                  >
-                    <Send className="w-5 h-5" />
-                  </Button>
-                )}
+                  {status === "streaming" ? (
+                    <Button
+                      variant="destructive"
+                      onClick={stop}
+                      className="shadow-md hover:shadow-lg transition-all duration-200"
+                    >
+                      <OctagonX className="w-5 h-5" />
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="outline"
+                      onClick={handleSubmit}
+                      className="bg-primary/80 hover:bg-primary text-primary-foreground hover:text-primary-foreground border-primary/30 shadow-md hover:shadow-lg transition-all duration-200"
+                    >
+                      <Send className="w-5 h-5" />
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
           ) : (
-            <div className="flex flex-col p-4 bg-card rounded-md border border-border">
-              {" "}
-              {/* Use theme colors */}
-              <div className="w-full min-h-[38px] p-2 border-none rounded-md bg-muted/80 mb-2 flex items-center justify-center">
-                {" "}
-                {/* Use theme colors */}
-                <MessageLoadingAnimation />
-              </div>
+            <div className="flex flex-col p-4 bg-card rounded-md border border-border animate-pulse">
+              <div className="w-full h-10 bg-muted/50 rounded-md mb-3"></div>
               <div className="flex justify-between mt-2">
-                <div className="h-9 rounded-md border border-border px-4 py-2 text-sm font-medium flex items-center justify-center bg-card/70 text-muted-foreground">
-                  {" "}
-                  {/* Use theme colors */}
-                  <span>Loading</span>
-                </div>
-                <div className="h-9 w-9 rounded-md border border-border flex items-center justify-center bg-card/70"></div>{" "}
+                <div className="h-9 w-24 bg-muted/50 rounded-md"></div>
+                <div className="h-9 w-9 bg-muted/50 rounded-md"></div>
               </div>
             </div>
           )}
@@ -150,7 +143,22 @@ export default function ChatLayout({ children }) {
     </ChatContext.Provider>
   );
 }
-
+const AdditionalMessage = ({ message }) => {
+  return (
+    <div className="w-full bg-card/70 backdrop-blur-sm border border-border/50 rounded-lg p-3 shadow-md relative">
+      <div className="line-clamp-3 text-sm text-muted-foreground pr-6">
+        {message ||
+          "Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque tempore, vitae deleniti velit corrupti non minima dicta delectus, hic inventore excepturi molestiae? Nulla, eum perspiciatis dignissimos rem pariatur debitis obcaecati voluptate fugit asperiores accusantium harum nostrum autem non veniam placeat odio voluptas a explicabo animi provident reiciendis ipsum quisquam similique."}
+      </div>
+      <button
+        className="absolute top-2 right-2 p-1 rounded-full hover:bg-muted/80 text-muted-foreground transition-colors"
+        aria-label="Cancel"
+      >
+        <X size={16} />
+      </button>
+    </div>
+  );
+};
 const TextAreaComponent = React.memo(function TextAreaComponent({
   input,
   handleInputChange,
