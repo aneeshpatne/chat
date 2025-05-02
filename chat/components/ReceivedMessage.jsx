@@ -117,13 +117,15 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
           onClick={handleAddClick}
           style={{
             position: "absolute",
-            top: buttonPosition.y,
+            top: buttonPosition.y - 40,
             left: buttonPosition.x,
             zIndex: 10,
           }}
-          className="bg-blue-500 text-white px-2 py-1 rounded shadow"
+          // Using outline variant styles from button.tsx (approximated)
+          className="inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-md text-sm font-medium transition-colors border border-border bg-card shadow-xs hover:bg-card/90 hover:border-ring h-8 px-2.5"
         >
-          Add
+          <span>Ask Follow Up</span>
+          <ArrowDown size={14} />
         </button>
       )}
 
