@@ -9,6 +9,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import React from "react";
 import { models } from "@/components/models";
 import Image from "next/image";
+import { useMemo } from "react";
 import MessageLoadingAnimation from "@/components/MessageLoadingAnimation";
 import {
   DropdownMenu,
@@ -88,11 +89,19 @@ export default function ChatLayout({ children }) {
       setPendingMessage(null);
     }
   }, [sessionId, pendingMessage, append, model]);
-
+  const contextValue = useMemo(
+    () => ({
+      ...chat,
+      model,
+      setModel,
+      handleSubmit,
+      token,
+      pendingMessage,
+    }),
+    [chat, model, token, pendingMessage, handleSubmit]
+  );
   return (
-    <ChatContext.Provider
-      value={{ ...chat, model, setModel, handleSubmit, token, pendingMessage }}
-    >
+    <ChatContext.Provider value={contextValue}>
       <div className="flex flex-col h-screen">
         <div className="flex-grow overflow-auto">{children}</div>
 
