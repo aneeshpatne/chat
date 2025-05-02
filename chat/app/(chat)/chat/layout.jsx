@@ -116,7 +116,7 @@ export default function ChatLayout({ children }) {
 
   return (
     <ChatContext.Provider value={contextValue}>
-      <div className="flex flex-col h-screen relative">
+      <div className="flex flex-col relative" style={{ height: "100dvh" }}>
         {showButton && (
           <SelectionButton onClick={handleAddClick} position={buttonPosition} />
         )}

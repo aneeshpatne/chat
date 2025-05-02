@@ -83,4 +83,16 @@ export const models = {
     provider: "openrouter",
     img: "/anthropic.svg",
   },
+  "Grok 3 Mini": {
+    name: "Grok 3 Mini",
+    id: "x-ai/grok-3-mini-beta",
+    provider: "openrouter",
+    img: "/x-ai.svg",
+  },
+  "Qwen 3": {
+    name: "Qwen 3 Mini",
+    id: "qwen/qwen3-235b-a22b",
+    provider: "openrouter",
+    img: "/qwen.svg",
+  },
 };
