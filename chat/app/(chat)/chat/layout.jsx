@@ -9,6 +9,7 @@ import TextareaAutosize from "react-textarea-autosize";
 import React from "react";
 import { models } from "@/components/models";
 import Image from "next/image";
+import MessageLoadingAnimation from "@/components/MessageLoadingAnimation";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -141,64 +142,12 @@ export default function ChatLayout({ children }) {
                   <span>Loading</span>
                 </div>
                 <div className="h-9 w-9 rounded-md border border-border flex items-center justify-center bg-card/70"></div>{" "}
-                {/* Use theme colors */}
               </div>
             </div>
           )}
         </div>
       </div>
     </ChatContext.Provider>
-  );
-}
-
-// Message loading animation component
-function MessageLoadingAnimation() {
-  return (
-    <>
-      <style jsx>{`
-        @keyframes pulse {
-          0%,
-          80%,
-          100% {
-            transform: scale(0);
-            opacity: 0.5;
-          }
-          40% {
-            transform: scale(1);
-            opacity: 1;
-          }
-        }
-        .dot-container {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          height: 24px;
-          width: 100%;
-          border-radius: 4px;
-          background: rgba(100, 100, 100, 0.2);
-        }
-        .loading-bar::after {
-          content: "";
-          position: absolute;
-          top: 0;
-          left: 0;
-          height: 100%;
-          width: 60%;
-          background: linear-gradient(
-            90deg,
-            transparent,
-            rgba(150, 150, 150, 0.5),
-            transparent
-          );
-          animation: wave 1.5s infinite ease-in-out;
-        }
-      `}</style>
-      <div className="dot-container">
-        <div className="dot dot1"></div>
-        <div className="dot dot2"></div>
-        <div className="dot dot3"></div>
-      </div>
-    </>
   );
 }
 
