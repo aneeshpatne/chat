@@ -5,17 +5,14 @@ import { getAuth } from "firebase-admin/auth";
 const getPrivateKey = () => {
   const key = process.env.FIREBASE_PRIVATE_KEY;
 
-  // If the key already contains newlines
   if (key?.includes("\n")) {
     return key;
   }
 
-  // If the key has encoded newlines
   if (key?.includes("\\n")) {
     return key.replace(/\\n/g, "\n");
   }
 
-  // If the key is JSON stringified
   if (key?.startsWith('"') && key?.endsWith('"')) {
     return JSON.parse(key);
   }
