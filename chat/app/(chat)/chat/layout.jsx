@@ -96,7 +96,7 @@ export default function ChatLayout({ children }) {
       <div className="flex flex-col h-screen">
         <div className="flex-grow overflow-auto">{children}</div>
 
-        <div className="mx-auto w-[80%] max-w-4xl mb-4">
+        <div className="absolute left-0 right-0 bottom-0 mx-auto w-[80%] max-w-4xl mb-4">
           {mounted ? (
             <div className="flex flex-col p-4 bg-card rounded-md border border-border">
               <TextAreaComponent
