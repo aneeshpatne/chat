@@ -44,7 +44,7 @@ export default function Chat({
           </h1>
         </div>
       )}
-      <div className="w-full h-full overflow-y-auto mb-[150px]">
+      <div className="w-full h-full overflow-y-auto pb-30">
         <div className="mx-auto w-[80%] max-w-4xl pb-4">
           <div className="flex flex-col w-full gap-3 p-3">
             {renderedMessages.map((message, index) => {
