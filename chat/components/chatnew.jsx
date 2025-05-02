@@ -44,7 +44,7 @@ export default function Chat({
           </h1>
         </div>
       )}
-      <div className="w-full h-full overflow-y-auto">
+      <div className="w-full h-full overflow-y-auto mb-[150px]">
         <div className="mx-auto w-[80%] max-w-4xl pb-4">
           <div className="flex flex-col w-full gap-3 p-3">
             {renderedMessages.map((message, index) => {
@@ -127,8 +127,6 @@ const SentMessage = React.memo(function SentMessage({ message }) {
   return (
     <div className="flex justify-end w-full">
       <div className="max-w-[60%] px-4 py-2 bg-primary text-primary-foreground rounded-2xl rounded-tr-none shadow-sm prose prose-invert whitespace-pre-wrap break-words">
-        {" "}
-        {/* Use primary theme colors */}
         {message}
       </div>
     </div>
