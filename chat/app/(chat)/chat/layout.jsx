@@ -98,35 +98,33 @@ export default function ChatLayout({ children }) {
 
         <div className="absolute left-0 right-0 bottom-0 mx-auto w-[80%] max-w-4xl mb-4">
           {mounted ? (
-            <div className="flex flex-col">
+            <div className="flex flex-col p-4 bg-card rounded-md border border-border flex-shrink-0">
               <AdditionalMessage message={""} />
-              <div className="flex flex-col p-4 bg-card rounded-md border border-border flex-shrink-0">
-                <TextAreaComponent
-                  input={input}
-                  handleInputChange={handleInputChange}
-                  onSubmit={handleSubmit}
-                />
-                <div className="flex justify-between mt-3">
-                  <ModelSelector model={model} setModel={setModel} />
+              <TextAreaComponent
+                input={input}
+                handleInputChange={handleInputChange}
+                onSubmit={handleSubmit}
+              />
+              <div className="flex justify-between mt-3">
+                <ModelSelector model={model} setModel={setModel} />
 
-                  {status === "streaming" ? (
-                    <Button
-                      variant="destructive"
-                      onClick={stop}
-                      className="shadow-md hover:shadow-lg transition-all duration-200"
-                    >
-                      <OctagonX className="w-5 h-5" />
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="outline"
-                      onClick={handleSubmit}
-                      className="bg-primary/80 hover:bg-primary text-primary-foreground hover:text-primary-foreground border-primary/30 shadow-md hover:shadow-lg transition-all duration-200"
-                    >
-                      <Send className="w-5 h-5" />
-                    </Button>
-                  )}
-                </div>
+                {status === "streaming" ? (
+                  <Button
+                    variant="destructive"
+                    onClick={stop}
+                    className="shadow-md hover:shadow-lg transition-all duration-200"
+                  >
+                    <OctagonX className="w-5 h-5" />
+                  </Button>
+                ) : (
+                  <Button
+                    variant="outline"
+                    onClick={handleSubmit}
+                    className="bg-primary/80 hover:bg-primary text-primary-foreground hover:text-primary-foreground border-primary/30 shadow-md hover:shadow-lg transition-all duration-200"
+                  >
+                    <Send className="w-5 h-5" />
+                  </Button>
+                )}
               </div>
             </div>
           ) : (
@@ -145,7 +143,7 @@ export default function ChatLayout({ children }) {
 }
 const AdditionalMessage = ({ message }) => {
   return (
-    <div className="w-full bg-card/70 backdrop-blur-sm border border-border/50 rounded-lg p-3 shadow-md relative">
+    <div className="w-full bg-card/70 backdrop-blur-sm border border-border/50 rounded-lg p-3 shadow-md relative mb-5">
       <div className="line-clamp-3 text-sm text-muted-foreground pr-6">
         {message ||
           "Lorem ipsum dolor sit amet consectetur adipisicing elit. Eaque tempore, vitae deleniti velit corrupti non minima dicta delectus, hic inventore excepturi molestiae? Nulla, eum perspiciatis dignissimos rem pariatur debitis obcaecati voluptate fugit asperiores accusantium harum nostrum autem non veniam placeat odio voluptas a explicabo animi provident reiciendis ipsum quisquam similique."}
