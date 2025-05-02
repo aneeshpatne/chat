@@ -27,7 +27,6 @@ export default function GoogleLogin() {
   const [initialCheckDone, setInitialCheckDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Check if user is already signed in
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -38,13 +37,12 @@ export default function GoogleLogin() {
       setInitialCheckDone(true);
     });
 
-    // Cleanup subscription on unmount
     return () => unsubscribe();
   }, [auth]);
 
   const handleLogin = async () => {
     setIsLoading(true);
-    setError(null); // Reset any previous errors
+    setError(null);
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
@@ -52,7 +50,6 @@ export default function GoogleLogin() {
       // Get Firebase ID token
       const token = await user.getIdToken();
 
-      // Send token to server to set session cookie
       const res = await fetch("/api/sessionLogin", {
         method: "POST",
         headers: {
@@ -65,7 +62,6 @@ export default function GoogleLogin() {
         throw new Error("Failed to set session cookie.");
       }
 
-      // Update state and redirect
       setIsSignedIn(true);
       router.push("/chat");
     } catch (err) {
@@ -89,7 +85,7 @@ export default function GoogleLogin() {
         );
       } else {
         setError(
-          "Login is currently not allowed. Please try again later or contact support."
+          "Login is restricted to only authorized users, new logins are not allowed."
         );
       }
 
@@ -146,7 +142,6 @@ export default function GoogleLogin() {
     );
   }
 
-  // If not signed in, show the login button
   return (
     <div className="flex flex-col items-center gap-3">
       {error && (
