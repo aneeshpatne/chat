@@ -44,6 +44,7 @@ export default function ChatLayout({ children }) {
 
   const chat = useChat({
     id: sessionId,
+    experimental_throttle: 75,
     sendExtraMessageFields: true,
     onError: (error) => console.error("Chat error:", error),
     onFinish: (message, options) => {
