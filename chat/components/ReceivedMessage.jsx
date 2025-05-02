@@ -57,7 +57,6 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
       const selection = window.getSelection();
       if (selection.toString().trim().length === 0) {
         setShowButton(false);
-        setaddMessage("");
       }
     };
     document.addEventListener("selectionchange", handleSelectionChange);
@@ -103,7 +102,6 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
     }
   };
 
-  // ✅ All hooks are declared above — now we safely return
   if (!message && !reasoning) {
     return <MessageLoadingIndicator />;
   }

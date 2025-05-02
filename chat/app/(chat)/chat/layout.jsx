@@ -65,20 +65,27 @@ export default function ChatLayout({ children }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Combine input and addMessage (if any)
+    const fullMessage = addMessage ? `${addMessage}\n\n${input}` : input;
+
     if (!sessionId) {
-      const message = input;
       handleInputChange({ target: { value: "" } });
-      setPendingMessage(message);
+      setPendingMessage(fullMessage);
 
       const res = await fetch("/api/session");
       const data = await res.json();
 
       router.push(`/chat/${data.sessionId}`);
     } else {
-      chat.handleSubmit(e, {
-        data: { model: model.id, provider: model.provider },
-      });
+      chat.handleSubmit(
+        { ...e, target: { value: fullMessage } },
+        {
+          data: { model: model.id, provider: model.provider },
+        }
+      );
     }
+    handleInputChange({ target: { value: "" } });
+    setaddMessage("");
   };
 
   useEffect(() => {
