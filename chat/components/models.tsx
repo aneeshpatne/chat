@@ -95,4 +95,22 @@ export const models = {
     provider: "openrouter",
     img: "/qwen.svg",
   },
+  "Deepseek v3": {
+    name: "DeepSeek V3",
+    id: "deepseek/deepseek-chat-v3-0324",
+    provider: "openrouter",
+    img: "/deepseek.svg",
+  },
+  "Sonar Reasoning Pro": {
+    name: "Sonar Reasoning Pro",
+    id: "perplexity/sonar-reasoning-pro",
+    provider: "openrouter",
+    img: "/perplexity.svg",
+  },
+  "Sonar Deep Research": {
+    name: "Sonar Reasoning Pro",
+    id: "perplexity/sonar-deep-research",
+    provider: "openrouter",
+    img: "/perplexity.svg",
+  },
 };
