@@ -195,12 +195,12 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
         >
           <motion.div
             key={`block-${idx}`}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             transition={{
-              duration: 0.3,
-              delay: idx * 0.05, // slight staggered effect
-              ease: "easeOut",
+              duration: 0.4,
+              delay: idx * 0.04,
+              ease: "easeIn",
             }}
           >
             <MemoizedMarkdownBlock content={block} key={idx} />
