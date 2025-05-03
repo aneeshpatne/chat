@@ -132,54 +132,70 @@ export default function ChatLayout({ children }) {
         <div ref={containerRef} className="flex-grow overflow-auto">
           {children}
         </div>
-        <div className="absolute left-0 right-0 bottom-0 mx-auto w-[80%] max-w-4xl mb-4">
-          {mounted ? (
-            <div className="flex flex-col p-4 bg-card/70 backdrop-blur-sm rounded-md border border-border flex-shrink-0">
-              <AdditionalMessage
-                message={addMessage}
-                setaddMessage={setaddMessage}
-              />
-              <TextAreaComponent
-                input={input}
-                handleInputChange={handleInputChange}
-                onSubmit={handleSubmit}
-              />
-              <div className="flex justify-between mt-3">
-                <ModelSelector model={model} setModel={setModel} />
+        <div className="flex flex-col items-center gap-2 absolute left-0 right-0 bottom-0 ">
+          <ScrollToBottom />
+          <div className="mx-auto w-[80%] max-w-4xl mb-4">
+            {mounted ? (
+              <div className="flex flex-col p-4 bg-card/70 backdrop-blur-sm rounded-md border border-border flex-shrink-0">
+                <AdditionalMessage
+                  message={addMessage}
+                  setaddMessage={setaddMessage}
+                />
+                <TextAreaComponent
+                  input={input}
+                  handleInputChange={handleInputChange}
+                  onSubmit={handleSubmit}
+                />
+                <div className="flex justify-between mt-3">
+                  <ModelSelector model={model} setModel={setModel} />
 
-                {status === "streaming" ? (
-                  <Button
-                    variant="destructive"
-                    onClick={stop}
-                    className="shadow-md hover:shadow-lg transition-all duration-200"
-                  >
-                    <OctagonX className="w-5 h-5" />
-                  </Button>
-                ) : (
-                  <Button
-                    variant="outline"
-                    onClick={handleSubmit}
-                    className="bg-primary/80 hover:bg-primary text-primary-foreground hover:text-primary-foreground border-primary/30 shadow-md hover:shadow-lg transition-all duration-200"
-                  >
-                    <Send className="w-5 h-5" />
-                  </Button>
-                )}
+                  {status === "streaming" ? (
+                    <Button
+                      variant="destructive"
+                      onClick={stop}
+                      className="shadow-md hover:shadow-lg transition-all duration-200"
+                    >
+                      <OctagonX className="w-5 h-5" />
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="outline"
+                      onClick={handleSubmit}
+                      className="bg-primary/80 hover:bg-primary text-primary-foreground hover:text-primary-foreground border-primary/30 shadow-md hover:shadow-lg transition-all duration-200"
+                    >
+                      <Send className="w-5 h-5" />
+                    </Button>
+                  )}
+                </div>
               </div>
-            </div>
-          ) : (
-            <div className="flex flex-col p-4 bg-card rounded-md border border-border animate-pulse">
-              <div className="w-full h-10 bg-muted/50 rounded-md mb-3"></div>
-              <div className="flex justify-between mt-2">
-                <div className="h-9 w-24 bg-muted/50 rounded-md"></div>
-                <div className="h-9 w-9 bg-muted/50 rounded-md"></div>
+            ) : (
+              <div className="flex flex-col p-4 bg-card rounded-md border border-border animate-pulse">
+                <div className="w-full h-10 bg-muted/50 rounded-md mb-3"></div>
+                <div className="flex justify-between mt-2">
+                  <div className="h-9 w-24 bg-muted/50 rounded-md"></div>
+                  <div className="h-9 w-9 bg-muted/50 rounded-md"></div>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </ChatContext.Provider>
   );
 }
+
+const ScrollToBottom = ({ onClick }) => {
+  return (
+    <div
+      onClick={onClick}
+      className=" z-10 flex w-auto items-center gap-2 bg-card/70 backdrop-blur-sm border border-border/50 rounded-lg p-2 px-3 shadow-md text-sm text-muted-foreground hover:bg-muted/80 transition-colors cursor-pointer"
+      aria-label="Scroll to bottom"
+    >
+      <ChevronDown size={16} />
+      <span>Scroll to Bottom</span>
+    </div>
+  );
+};
 
 const AdditionalMessage = ({ message, setaddMessage }) => {
   const handleClick = () => {
