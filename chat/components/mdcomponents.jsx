@@ -41,7 +41,6 @@ export const mdComponents = {
     />
   ),
   hr: ({ node, ...props }) => <hr className="border-border my-4" {...props} />,
-  hr: ({ node, ...props }) => <hr className="border-border my-4" {...props} />,
   img: ({ node, ...props }) => (
     <img className="max-w-full rounded-lg my-4" {...props} />
   ),
@@ -53,24 +52,34 @@ export const mdComponents = {
   ),
   table: ({ node, ...props }) => (
     <div className="overflow-x-auto my-4">
-      <table className="border-collapse w-full" {...props} />
+      <table
+        className="border-collapse w-full border border-border rounded-md"
+        {...props}
+      />
     </div>
   ),
-  thead: ({ node, ...props }) => <thead className="bg-secondary" {...props} />,
-  thead: ({ node, ...props }) => <thead className="bg-secondary" {...props} />,
+  thead: ({ node, ...props }) => (
+    <thead className="bg-secondary/50" {...props} />
+  ),
   tbody: ({ node, ...props }) => (
     <tbody className="divide-y divide-border" {...props} />
   ),
   tr: ({ node, ...props }) => (
-    <tr className="border-b border-border" {...props} />
+    <tr
+      className="border-b border-border hover:bg-muted/50 transition-colors"
+      {...props}
+    />
   ),
   th: ({ node, ...props }) => (
     <th
-      className="py-3 px-4 text-left font-medium text-foreground"
+      className="py-3 px-4 text-left font-medium text-foreground border-r last:border-r-0 border-border"
       {...props}
     />
   ),
   td: ({ node, ...props }) => (
-    <td className="py-3 px-4 text-foreground/90" {...props} />
+    <td
+      className="py-3 px-4 text-foreground/90 border-r last:border-r-0 border-border"
+      {...props}
+    />
   ),
 };
