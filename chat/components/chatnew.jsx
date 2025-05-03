@@ -17,11 +17,38 @@ export default function Chat({
   selectedText,
   setSelectedText,
   setaddMessage,
+  setShowScroll,
+  scrollToBottomFn,
+  setScrollToBottomFn,
 }) {
   const [messagesStatus, setMessagesStatus] = useState({});
+
   const bottomRef = useRef(null);
-  const chatContainerRef = useRef(null); // Ref for the scrollable container
-  const [isAtBottom, setIsAtBottom] = useState(true); // State to track scroll position
+  const chatContainerRef = useRef(null);
+  const handleScroll = () => {
+    const container = chatContainerRef.current;
+    if (!container) return;
+    const { scrollTop, scrollHeight, clientHeight } = container;
+    const threshold = 50;
+    const canScroll = scrollHeight > clientHeight;
+    const atBottom = scrollHeight - scrollTop <= clientHeight + threshold;
+    setShowScroll(canScroll && !atBottom);
+  };
+  useEffect(() => {
+    if (bottomRef.current) {
+      setScrollToBottomFn(() => () => {
+        bottomRef.current.scrollIntoView({ behavior: "smooth" });
+      });
+    }
+  }, [bottomRef.current, setScrollToBottomFn]);
+
+  useEffect(() => {
+    const container = chatContainerRef.current;
+    if (!container) return;
+    handleScroll();
+    container.addEventListener("scroll", handleScroll);
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const renderedMessages = [
     ...messages,

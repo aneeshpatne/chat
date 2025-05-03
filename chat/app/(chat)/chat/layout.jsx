@@ -49,6 +49,7 @@ export default function ChatLayout({ children }) {
   const [selectedText, setSelectedText] = useState("");
   const [addMessage, setaddMessage] = useState("");
   const [token, setToken] = useState({});
+  const [scrollToBottomFn, setScrollToBottomFn] = useState(() => () => {});
   const containerRef = useRef(null);
 
   const chat = useChat({
@@ -121,8 +122,10 @@ export default function ChatLayout({ children }) {
       setaddMessage,
       selectedText,
       setShowScroll,
+      scrollToBottomFn,
+      setScrollToBottomFn,
     }),
-    [chat, model, token, pendingMessage, handleSubmit]
+    [chat, model, token, pendingMessage, handleSubmit, scrollToBottomFn]
   );
 
   return (
@@ -135,7 +138,7 @@ export default function ChatLayout({ children }) {
           {children}
         </div>
         <div className="flex flex-col items-center gap-2 absolute left-0 right-0 bottom-0 ">
-          {showScroll && <ScrollToBottom />}
+          {showScroll && <ScrollToBottom onClick={scrollToBottomFn} />}
           <div className="mx-auto w-[80%] max-w-4xl mb-4">
             {mounted ? (
               <div className="flex flex-col p-4 bg-card/70 backdrop-blur-sm rounded-md border border-border flex-shrink-0">
