@@ -18,7 +18,7 @@ export default function Chat({
   setaddMessage,
 }) {
   const [messagesStatus, setMessagesStatus] = useState({});
-
+  const bottomRef = useRef(null);
   const renderedMessages = [
     ...messages,
     pendingMessage && {
@@ -83,6 +83,7 @@ export default function Chat({
           </div>
         </div>
       </div>
+      <div ref={bottomRef} />
     </div>
   );
 }
