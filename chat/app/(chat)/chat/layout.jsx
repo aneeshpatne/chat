@@ -4,7 +4,15 @@ import { useChat } from "@ai-sdk/react";
 import { createContext, useContext, useState, useEffect } from "react";
 import { useParams, useRouter, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Send, LayoutTemplate, X, OctagonX, CheckIcon } from "lucide-react";
+import {
+  Send,
+  LayoutTemplate,
+  X,
+  OctagonX,
+  CheckIcon,
+  Scroll,
+  ChevronDown, // Import ChevronDown
+} from "lucide-react";
 import TextareaAutosize from "react-textarea-autosize";
 import React from "react";
 import { models } from "@/components/models";
@@ -36,6 +44,7 @@ export default function ChatLayout({ children }) {
     provider: "openai",
   });
   const [showButton, setShowButton] = useState(false);
+  const [showScroll, setShowScroll] = useState(false);
   const [buttonPosition, setButtonPosition] = useState({ x: 0, y: 0 });
   const [selectedText, setSelectedText] = useState("");
   const [addMessage, setaddMessage] = useState("");
@@ -111,6 +120,7 @@ export default function ChatLayout({ children }) {
       setSelectedText,
       setaddMessage,
       selectedText,
+      setShowScroll,
     }),
     [chat, model, token, pendingMessage, handleSubmit]
   );
@@ -121,56 +131,74 @@ export default function ChatLayout({ children }) {
         {showButton && (
           <SelectionButton onClick={handleAddClick} position={buttonPosition} />
         )}
-        <div className="flex-grow overflow-auto">{children}</div>
+        <div ref={containerRef} className="flex-grow overflow-auto">
+          {children}
+        </div>
+        <div className="flex flex-col items-center gap-2 absolute left-0 right-0 bottom-0 ">
+          {showScroll && <ScrollToBottom />}
+          <div className="mx-auto w-[80%] max-w-4xl mb-4">
+            {mounted ? (
+              <div className="flex flex-col p-4 bg-card/70 backdrop-blur-sm rounded-md border border-border flex-shrink-0">
+                <AdditionalMessage
+                  message={addMessage}
+                  setaddMessage={setaddMessage}
+                />
+                <TextAreaComponent
+                  input={input}
+                  handleInputChange={handleInputChange}
+                  onSubmit={handleSubmit}
+                />
+                <div className="flex justify-between mt-3">
+                  <ModelSelector model={model} setModel={setModel} />
 
-        <div className="absolute left-0 right-0 bottom-0 mx-auto w-[80%] max-w-4xl mb-4">
-          {mounted ? (
-            <div className="flex flex-col p-4 bg-card rounded-md border border-border flex-shrink-0">
-              <AdditionalMessage
-                message={addMessage}
-                setaddMessage={setaddMessage}
-              />
-              <TextAreaComponent
-                input={input}
-                handleInputChange={handleInputChange}
-                onSubmit={handleSubmit}
-              />
-              <div className="flex justify-between mt-3">
-                <ModelSelector model={model} setModel={setModel} />
-
-                {status === "streaming" ? (
-                  <Button
-                    variant="destructive"
-                    onClick={stop}
-                    className="shadow-md hover:shadow-lg transition-all duration-200"
-                  >
-                    <OctagonX className="w-5 h-5" />
-                  </Button>
-                ) : (
-                  <Button
-                    variant="outline"
-                    onClick={handleSubmit}
-                    className="bg-primary/80 hover:bg-primary text-primary-foreground hover:text-primary-foreground border-primary/30 shadow-md hover:shadow-lg transition-all duration-200"
-                  >
-                    <Send className="w-5 h-5" />
-                  </Button>
-                )}
+                  {status === "streaming" ? (
+                    <Button
+                      variant="destructive"
+                      onClick={stop}
+                      className="shadow-md hover:shadow-lg transition-all duration-200"
+                    >
+                      <OctagonX className="w-5 h-5" />
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="outline"
+                      onClick={handleSubmit}
+                      className="bg-primary/80 hover:bg-primary text-primary-foreground hover:text-primary-foreground border-primary/30 shadow-md hover:shadow-lg transition-all duration-200"
+                    >
+                      <Send className="w-5 h-5" />
+                    </Button>
+                  )}
+                </div>
               </div>
-            </div>
-          ) : (
-            <div className="flex flex-col p-4 bg-card rounded-md border border-border animate-pulse">
-              <div className="w-full h-10 bg-muted/50 rounded-md mb-3"></div>
-              <div className="flex justify-between mt-2">
-                <div className="h-9 w-24 bg-muted/50 rounded-md"></div>
-                <div className="h-9 w-9 bg-muted/50 rounded-md"></div>
+            ) : (
+              <div className="flex flex-col p-4 bg-card rounded-md border border-border animate-pulse">
+                <div className="w-full h-10 bg-muted/50 rounded-md mb-3"></div>
+                <div className="flex justify-between mt-2">
+                  <div className="h-9 w-24 bg-muted/50 rounded-md"></div>
+                  <div className="h-9 w-9 bg-muted/50 rounded-md"></div>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </ChatContext.Provider>
   );
 }
+
+const ScrollToBottom = ({ onClick }) => {
+  return (
+    <div
+      onClick={onClick}
+      className=" z-10 flex w-auto items-center gap-2 bg-card/70 backdrop-blur-sm border border-border/50 rounded-lg p-2 px-3 shadow-md text-sm text-muted-foreground hover:bg-muted/80 transition-colors cursor-pointer"
+      aria-label="Scroll to bottom"
+    >
+      <ChevronDown size={16} />
+      <span>Scroll to Bottom</span>
+    </div>
+  );
+};
+
 const AdditionalMessage = ({ message, setaddMessage }) => {
   const handleClick = () => {
     setaddMessage("");
@@ -202,7 +230,7 @@ const TextAreaComponent = React.memo(function TextAreaComponent({
       minRows={1}
       maxRows={10}
       placeholder="Type your message here..."
-      className="w-full p-2 border-none rounded-md text-foreground bg-transparent overflow-y-auto focus:outline-none transition-all duration-150 ease-in-out resize-none" // Use text-foreground, bg-transparent
+      className="w-full p-2 border-none rounded-md text-foreground bg-transparent overflow-y-auto focus:outline-none transition-all duration-150 ease-in-out resize-none"
       onKeyDown={(e) => {
         if (e.key === "Enter" && !e.shiftKey) {
           e.preventDefault();

@@ -1,6 +1,7 @@
 "use client";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react"; // Import useEffect
 import { ReceivedMessage } from "./ReceivedMessage";
+import { ChevronDown } from "lucide-react";
 
 export default function Chat({
   messages,
@@ -18,6 +19,9 @@ export default function Chat({
   setaddMessage,
 }) {
   const [messagesStatus, setMessagesStatus] = useState({});
+  const bottomRef = useRef(null);
+  const chatContainerRef = useRef(null); // Ref for the scrollable container
+  const [isAtBottom, setIsAtBottom] = useState(true); // State to track scroll position
 
   const renderedMessages = [
     ...messages,
@@ -39,7 +43,7 @@ export default function Chat({
     status === "streaming" ? messages[messages.length - 1]?.id : null;
 
   return (
-    <div className="flex flex-col w-full h-full">
+    <div className="flex flex-col w-full h-full relative">
       {!input && messages.length === 0 && !pendingMessage && (
         <div className="flex items-center justify-center h-[calc(100vh-6rem)]">
           <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-indigo-300 via-purple-300 to-blue-300 inline-block text-transparent bg-clip-text drop-shadow-sm">
@@ -47,7 +51,10 @@ export default function Chat({
           </h1>
         </div>
       )}
-      <div className="w-full h-full overflow-y-auto pb-30">
+      <div
+        ref={chatContainerRef}
+        className="w-full h-[calc(100vh-8rem)] overflow-y-auto pb-20"
+      >
         <div className="mx-auto w-[80%] max-w-4xl pb-4">
           <div className="flex flex-col w-full gap-3 p-3">
             {renderedMessages.map((message, index) => {
@@ -82,12 +89,12 @@ export default function Chat({
             })}
           </div>
         </div>
+        <div ref={bottomRef} />
       </div>
     </div>
   );
 }
 
-// Component for the message loading indicator
 export function MessageLoadingIndicator() {
   return (
     <>

@@ -25,7 +25,6 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
   setaddMessage,
 }) {
   const containerRef = useRef(null);
-  const bottomRef = useRef(null);
 
   const [showButton, setShowButton] = useState(false);
   const [buttonPosition, setButtonPosition] = useState({ x: 0, y: 0 });
@@ -37,12 +36,6 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
     () => parseMarkdownIntoBlocks(deferredMessage),
     [deferredMessage]
   );
-
-  useEffect(() => {
-    if (bottomRef.current) {
-      bottomRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [blocks]);
 
   useEffect(() => {
     if (status === "streaming" && currentlyStreamingId === id) {
@@ -254,8 +247,6 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
           )}
         </small>
       </div>
-
-      <div ref={bottomRef} />
     </div>
   );
 });
