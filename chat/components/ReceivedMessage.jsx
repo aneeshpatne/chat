@@ -188,7 +188,24 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
       )}
 
       {blocks.map((block, idx) => (
-        <MemoizedMarkdownBlock content={block} key={idx} />
+        <AnimatePresence
+          mode="popLayout"
+          initial={true}
+          key={`container-${idx}`}
+        >
+          <motion.div
+            key={`block-${idx}`}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.3,
+              delay: idx * 0.05, // slight staggered effect
+              ease: "easeOut",
+            }}
+          >
+            <MemoizedMarkdownBlock content={block} key={idx} />
+          </motion.div>
+        </AnimatePresence>
       ))}
 
       <div className="flex items-center justify-between">
