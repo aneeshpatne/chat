@@ -44,6 +44,7 @@ export default function ChatLayout({ children }) {
     provider: "openai",
   });
   const [showButton, setShowButton] = useState(false);
+  const [showScroll, setShowScroll] = useState(false);
   const [buttonPosition, setButtonPosition] = useState({ x: 0, y: 0 });
   const [selectedText, setSelectedText] = useState("");
   const [addMessage, setaddMessage] = useState("");
@@ -119,6 +120,7 @@ export default function ChatLayout({ children }) {
       setSelectedText,
       setaddMessage,
       selectedText,
+      setShowScroll,
     }),
     [chat, model, token, pendingMessage, handleSubmit]
   );
@@ -133,7 +135,7 @@ export default function ChatLayout({ children }) {
           {children}
         </div>
         <div className="flex flex-col items-center gap-2 absolute left-0 right-0 bottom-0 ">
-          <ScrollToBottom />
+          {showScroll && <ScrollToBottom />}
           <div className="mx-auto w-[80%] max-w-4xl mb-4">
             {mounted ? (
               <div className="flex flex-col p-4 bg-card/70 backdrop-blur-sm rounded-md border border-border flex-shrink-0">
