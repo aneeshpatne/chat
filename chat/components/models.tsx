@@ -108,7 +108,7 @@ export const models = {
     img: "/perplexity.svg",
   },
   "Sonar Deep Research": {
-    name: "Sonar Reasoning Pro",
+    name: "Sonar Deep Research",
     id: "perplexity/sonar-deep-research",
     provider: "openrouter",
     img: "/perplexity.svg",
