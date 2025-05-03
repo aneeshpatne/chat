@@ -56,20 +56,11 @@ export default function Chat({
   useEffect(() => {
     const container = chatContainerRef.current;
     if (container) {
-      // Initial check
       handleScroll();
       container.addEventListener("scroll", handleScroll);
-      // Cleanup listener on unmount
       return () => container.removeEventListener("scroll", handleScroll);
     }
-  }, []); // Run only on mount and unmount
-
-  // Scroll to bottom when new messages arrive if user is already at the bottom
-  useEffect(() => {
-    if (isAtBottom) {
-      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [messages, pendingMessage, status, isAtBottom]);
+  }, []);
 
   return (
     <div className="flex flex-col w-full h-full relative">
@@ -127,8 +118,8 @@ export default function Chat({
             })}
           </div>
         </div>
+        <div ref={bottomRef} />
       </div>
-      <div ref={bottomRef} />
     </div>
   );
 }
