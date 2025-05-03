@@ -4,7 +4,15 @@ import { useChat } from "@ai-sdk/react";
 import { createContext, useContext, useState, useEffect } from "react";
 import { useParams, useRouter, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Send, LayoutTemplate, X, OctagonX, CheckIcon } from "lucide-react";
+import {
+  Send,
+  LayoutTemplate,
+  X,
+  OctagonX,
+  CheckIcon,
+  Scroll,
+  ChevronDown, // Import ChevronDown
+} from "lucide-react";
 import TextareaAutosize from "react-textarea-autosize";
 import React from "react";
 import { models } from "@/components/models";
@@ -121,11 +129,12 @@ export default function ChatLayout({ children }) {
         {showButton && (
           <SelectionButton onClick={handleAddClick} position={buttonPosition} />
         )}
-        <div className="flex-grow overflow-auto">{children}</div>
-
+        <div ref={containerRef} className="flex-grow overflow-auto">
+          {children}
+        </div>
         <div className="absolute left-0 right-0 bottom-0 mx-auto w-[80%] max-w-4xl mb-4">
           {mounted ? (
-            <div className="flex flex-col p-4 bg-card rounded-md border border-border flex-shrink-0">
+            <div className="flex flex-col p-4 bg-card/70 backdrop-blur-sm rounded-md border border-border flex-shrink-0">
               <AdditionalMessage
                 message={addMessage}
                 setaddMessage={setaddMessage}
@@ -171,6 +180,7 @@ export default function ChatLayout({ children }) {
     </ChatContext.Provider>
   );
 }
+
 const AdditionalMessage = ({ message, setaddMessage }) => {
   const handleClick = () => {
     setaddMessage("");
@@ -202,7 +212,7 @@ const TextAreaComponent = React.memo(function TextAreaComponent({
       minRows={1}
       maxRows={10}
       placeholder="Type your message here..."
-      className="w-full p-2 border-none rounded-md text-foreground bg-transparent overflow-y-auto focus:outline-none transition-all duration-150 ease-in-out resize-none" // Use text-foreground, bg-transparent
+      className="w-full p-2 border-none rounded-md text-foreground bg-transparent overflow-y-auto focus:outline-none transition-all duration-150 ease-in-out resize-none"
       onKeyDown={(e) => {
         if (e.key === "Enter" && !e.shiftKey) {
           e.preventDefault();

@@ -1,6 +1,7 @@
 "use client";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react"; // Import useEffect
 import { ReceivedMessage } from "./ReceivedMessage";
+import { ChevronDown } from "lucide-react";
 
 export default function Chat({
   messages,
@@ -19,6 +20,9 @@ export default function Chat({
 }) {
   const [messagesStatus, setMessagesStatus] = useState({});
   const bottomRef = useRef(null);
+  const chatContainerRef = useRef(null); // Ref for the scrollable container
+  const [isAtBottom, setIsAtBottom] = useState(true); // State to track scroll position
+
   const renderedMessages = [
     ...messages,
     pendingMessage && {
@@ -38,8 +42,45 @@ export default function Chat({
   const currentlyStreamingId =
     status === "streaming" ? messages[messages.length - 1]?.id : null;
 
+  const handleScroll = () => {
+    const container = chatContainerRef.current;
+    if (container) {
+      const { scrollTop, scrollHeight, clientHeight } = container;
+      // Consider user at bottom if they are within 50px of the end
+      const threshold = 50;
+      const atBottom = scrollHeight - scrollTop <= clientHeight + threshold;
+      setIsAtBottom(atBottom);
+    }
+  };
+
+  useEffect(() => {
+    const container = chatContainerRef.current;
+    if (container) {
+      // Initial check
+      handleScroll();
+      container.addEventListener("scroll", handleScroll);
+      // Cleanup listener on unmount
+      return () => container.removeEventListener("scroll", handleScroll);
+    }
+  }, []); // Run only on mount and unmount
+
+  // Scroll to bottom when new messages arrive if user is already at the bottom
+  useEffect(() => {
+    if (isAtBottom) {
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages, pendingMessage, status, isAtBottom]);
+
   return (
-    <div className="flex flex-col w-full h-full">
+    <div className="flex flex-col w-full h-full relative">
+      {/* Conditionally render ScrollToBottom button */}
+      {!isAtBottom && (
+        <ScrollToBottom
+          onClick={() =>
+            bottomRef.current?.scrollIntoView({ behavior: "smooth" })
+          }
+        />
+      )}
       {!input && messages.length === 0 && !pendingMessage && (
         <div className="flex items-center justify-center h-[calc(100vh-6rem)]">
           <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-indigo-300 via-purple-300 to-blue-300 inline-block text-transparent bg-clip-text drop-shadow-sm">
@@ -47,7 +88,11 @@ export default function Chat({
           </h1>
         </div>
       )}
-      <div className="w-full h-full overflow-y-auto pb-30">
+      <div
+        ref={chatContainerRef}
+        className="w-full h-[calc(100vh-8rem)] overflow-y-auto pb-20"
+        onScroll={handleScroll}
+      >
         <div className="mx-auto w-[80%] max-w-4xl pb-4">
           <div className="flex flex-col w-full gap-3 p-3">
             {renderedMessages.map((message, index) => {
@@ -88,7 +133,19 @@ export default function Chat({
   );
 }
 
-// Component for the message loading indicator
+const ScrollToBottom = ({ onClick }) => {
+  return (
+    <div
+      onClick={onClick} // Add onClick handler
+      className="absolute left-1/2 transform -translate-x-1/2 bottom-40 z-10 flex items-center gap-2 bg-card/70 backdrop-blur-sm border border-border/50 rounded-lg p-2 px-3 shadow-md text-sm text-muted-foreground hover:bg-muted/80 transition-colors cursor-pointer"
+      aria-label="Scroll to bottom"
+    >
+      <ChevronDown size={16} />
+      <span>Scroll to Bottom</span>
+    </div>
+  );
+};
+
 export function MessageLoadingIndicator() {
   return (
     <>
