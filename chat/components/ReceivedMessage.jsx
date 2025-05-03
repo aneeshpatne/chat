@@ -39,12 +39,6 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
   );
 
   useEffect(() => {
-    if (bottomRef.current) {
-      bottomRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [blocks]);
-
-  useEffect(() => {
     if (status === "streaming" && currentlyStreamingId === id) {
       setActive(true);
     } else {
