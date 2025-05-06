@@ -80,7 +80,7 @@ export default function Chat({
       )}
       <div
         ref={chatContainerRef}
-        className="w-full h-[calc(100vh-8rem)] overflow-y-auto pb-20"
+        className="w-full h-[calc(100vh-3rem)] overflow-y-auto pb-20"
       >
         <div className="mx-auto w-[80%] max-w-4xl pb-4">
           <div className="flex flex-col w-full gap-3 p-3">
