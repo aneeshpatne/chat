@@ -1,12 +1,10 @@
-"use client";
-import dynamic from "next/dynamic";
 import Image from "next/image";
-
-const FirebaseAuthUI = dynamic(() => import("@/components/firebaseAuth"), {
-  ssr: false,
-});
-
-export default function LoginPage() {
+import { signInAction } from "./actions";
+import { Message, FormMessage } from "@/components/ui/form-message";
+export default async function LoginPage(props: {
+  searchParams: Promise<Message>;
+}) {
+  const searchParams = await props.searchParams;
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="max-w-md w-full space-y-8 p-10 bg-opacity-80 backdrop-blur-sm rounded-xl shadow-lg">
@@ -20,37 +18,23 @@ export default function LoginPage() {
 
           {/* AI model providers */}
           <div className="flex justify-center flex-wrap gap-3 mb-6">
-            <div className="flex items-center gap-1 bg-black/30 px-2 py-1 rounded-md">
-              <Image src="/openai.svg" alt="OpenAI" width={18} height={18} />
-              <span className="text-xs text-gray-300">GPT-4</span>
-            </div>
-            <div className="flex items-center gap-1 bg-black/30 px-2 py-1 rounded-md">
-              <Image
-                src="/anthropic.svg"
-                alt="Anthropic"
-                width={18}
-                height={18}
-              />
-              <span className="text-xs text-gray-300">Claude 3</span>
-            </div>
-            <div className="flex items-center gap-1 bg-black/30 px-2 py-1 rounded-md">
-              <Image src="/gemini.svg" alt="Gemini" width={18} height={18} />
-              <span className="text-xs text-gray-300">Gemini Pro</span>
-            </div>
-            <div className="flex items-center gap-1 bg-black/30 px-2 py-1 rounded-md">
-              <Image
-                src="/x-ai.svg"
-                alt="X AI"
-                width={18}
-                height={18}
-                className="text-gray-200"
-              />
-              <span className="text-xs text-gray-300">X AI</span>
-            </div>
-            <div className="flex items-center gap-1 bg-black/30 px-2 py-1 rounded-md">
-              <span className="text-xs text-gray-300 font-semibold">+</span>
-              <span className="text-xs text-gray-300">Many More</span>
-            </div>
+            {[
+              { name: "GPT-4", icon: "openai.svg" },
+              { name: "Claude 3", icon: "anthropic.svg" },
+              { name: "Gemini Pro", icon: "gemini.svg" },
+              { name: "X AI", icon: "x-ai.svg" },
+              { name: "Many More", icon: null },
+            ].map(({ name, icon }) => (
+              <div
+                key={name}
+                className="flex items-center gap-1 bg-black/30 px-2 py-1 rounded-md"
+              >
+                {icon && (
+                  <Image src={`/${icon}`} alt={name} width={18} height={18} />
+                )}
+                <span className="text-xs text-gray-300">{name}</span>
+              </div>
+            ))}
           </div>
 
           <p className="text-gray-400 text-sm mb-6">
@@ -61,46 +45,20 @@ export default function LoginPage() {
 
           {/* Tech stack */}
           <div className="flex flex-wrap justify-center gap-3 mb-4">
-            <div className="flex items-center gap-1 bg-gray-800 px-2 py-1 rounded-full">
-              <Image
-                src="/vercel.svg"
-                alt="Vercel"
-                width={14}
-                height={14}
-                className="invert"
-              />
-              <span className="text-xs text-gray-300">Vercel AI SDK</span>
-            </div>
-            <div className="flex items-center gap-1 bg-gray-800 px-2 py-1 rounded-full">
-              <Image
-                src="/next.svg"
-                alt="Next.js"
-                width={14}
-                height={14}
-                className="invert"
-              />
-              <span className="text-xs text-gray-300">Next.js</span>
-            </div>
-            <div className="flex items-center gap-1 bg-gray-800 px-2 py-1 rounded-full">
-              <Image
-                src="/firebase-logo.svg"
-                alt="Firebase"
-                width={14}
-                height={14}
-                className="text-yellow-500"
-              />
-              <span className="text-xs text-gray-300">Firebase</span>
-            </div>
-            <div className="flex items-center gap-1 bg-gray-800 px-2 py-1 rounded-full">
-              <Image
-                src="/dexie-logo.svg"
-                alt="Dexie.js"
-                width={14}
-                height={14}
-                className="text-blue-400"
-              />
-              <span className="text-xs text-gray-300">Dexie.js</span>
-            </div>
+            {[
+              { name: "Vercel AI SDK", icon: "vercel.svg" },
+              { name: "Next.js", icon: "next.svg" },
+              { name: "Supabase", icon: "supabase-logo.svg" },
+              { name: "Dexie.js", icon: "dexie-logo.svg" },
+            ].map(({ name, icon }) => (
+              <div
+                key={name}
+                className="flex items-center gap-1 bg-gray-800 px-2 py-1 rounded-full"
+              >
+                <Image src={`/${icon}`} alt={name} width={14} height={14} />
+                <span className="text-xs text-gray-300">{name}</span>
+              </div>
+            ))}
           </div>
 
           <p className="text-gray-500 text-xs mb-2">
@@ -113,9 +71,30 @@ export default function LoginPage() {
           <div className="h-0.5 w-24 bg-gradient-to-r from-blue-500 to-purple-600"></div>
         </div>
 
-        <div className="flex justify-center">
-          <FirebaseAuthUI />
-        </div>
+        {/* THIS form now uses your server action directly */}
+        <form action={signInAction} className="space-y-4">
+          <input
+            name="email"
+            type="email"
+            placeholder="Email"
+            className="w-full px-4 py-2 rounded-md bg-gray-900 text-white placeholder-gray-500"
+            required
+          />
+          <input
+            name="password"
+            type="password"
+            placeholder="Password"
+            className="w-full px-4 py-2 rounded-md bg-gray-900 text-white placeholder-gray-500"
+            required
+          />
+          <button
+            type="submit"
+            className="w-full py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-md font-bold hover:opacity-90"
+          >
+            Sign In
+          </button>
+          <FormMessage message={searchParams} />
+        </form>
       </div>
     </div>
   );
