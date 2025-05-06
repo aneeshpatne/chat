@@ -166,7 +166,7 @@ export function MessageLoadingIndicator() {
 const SentMessage = React.memo(function SentMessage({ message }) {
   return (
     <div className="flex justify-end w-full">
-      <div className="max-w-[60%] px-4 py-2 bg-card border border-accent text-primary-foreground rounded-2xl rounded-tr-none shadow-sm prose prose-invert whitespace-pre-wrap break-words">
+      <div className="max-w-[60%] px-4 py-2 bg-card border border-border text-primary-foreground rounded-2xl shadow-sm prose prose-invert whitespace-pre-wrap break-words">
         {message}
       </div>
     </div>
