@@ -141,7 +141,7 @@ export default function ChatLayout({ children }) {
           {showScroll && <ScrollToBottom onClick={scrollToBottomFn} />}
           <div className="mx-auto w-[80%] max-w-4xl mb-4">
             {mounted ? (
-              <div className="flex flex-col p-4 bg-card/70 backdrop-blur-sm rounded-md border border-border flex-shrink-0">
+              <div className="flex flex-col p-4 bg-card/60 backdrop-blur-sm rounded-md border border-border flex-shrink-0">
                 <AdditionalMessage
                   message={addMessage}
                   setaddMessage={setaddMessage}
@@ -208,7 +208,7 @@ const AdditionalMessage = ({ message, setaddMessage }) => {
   };
   if (!message) return null;
   return (
-    <div className="w-full bg-card/70 backdrop-blur-sm border border-border/50 rounded-lg p-3 shadow-md relative mb-5">
+    <div className="w-full bg-transparent border border-border/50 rounded-lg p-3 shadow-md relative mb-5">
       <div className="line-clamp-3 text-sm text-muted-foreground pr-6">
         {message}
       </div>
