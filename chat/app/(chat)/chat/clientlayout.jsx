@@ -33,12 +33,11 @@ import NavBar from "@/components/navbar";
 const modelList = Object.values(models);
 export const ChatContext = createContext(null);
 
-export default function ChatLayout({ children }) {
+export default function ChatLayout({ children, signOutAction, user }) {
   const router = useRouter();
   const pathname = usePathname();
   const { id: sessionId } = useParams();
   const [mounted, setMounted] = useState(false);
-  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [pendingMessage, setPendingMessage] = useState(null);
   const [model, setModel] = useState({
@@ -158,7 +157,7 @@ export default function ChatLayout({ children }) {
   return (
     <ChatContext.Provider value={contextValue}>
       <div className="relative">
-        <NavBar />
+        <NavBar signOutAction={signOutAction} user={user} />
         <div className="flex flex-col relative" style={{ height: "100dvh" }}>
           {showButton && (
             <SelectionButton

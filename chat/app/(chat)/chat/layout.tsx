@@ -1,6 +1,7 @@
 import ChatLayout from "./Clientlayout";
 import { createClient } from "@/utlis/supabase/server";
 import { redirect } from "next/navigation";
+import { signOutAction } from "@/app/(auth)/auth/actions";
 export default async function ChatLayoutWrapper({ children }: any) {
   const supabase = await createClient();
   const {
@@ -9,5 +10,9 @@ export default async function ChatLayoutWrapper({ children }: any) {
   if (!user) {
     return redirect("/auth");
   }
-  return <ChatLayout>{children}</ChatLayout>;
+  return (
+    <ChatLayout signOutAction={signOutAction} user={user}>
+      {children}
+    </ChatLayout>
+  );
 }

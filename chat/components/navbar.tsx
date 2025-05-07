@@ -22,14 +22,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export default function NavBar() {
+export default function NavBar({ signOutAction }: any, user: any) {
   const [open, setOpen] = useState(false);
-  const [user, setUser] = useState(null);
   const router = useRouter();
 
   const toggle = () => setOpen(!open);
 
-  const handleLogout = async () => {};
+  const handleLogout = async () => {
+    signOutAction();
+  };
 
   const handleNewChat = () => {
     router.push("/chat");
