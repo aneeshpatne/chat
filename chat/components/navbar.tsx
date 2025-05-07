@@ -22,7 +22,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export default function NavBar({ signOutAction }: any, user: any) {
+export default function NavBar({
+  signOutAction,
+  user,
+}: {
+  signOutAction: any;
+  user: any;
+}) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
