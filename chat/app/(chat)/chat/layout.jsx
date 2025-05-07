@@ -221,19 +221,6 @@ export default function ChatLayout({ children }) {
             <div className="mx-auto w-[80%] max-w-4xl mb-4">
               {mounted ? (
                 <div className="flex flex-col p-4 bg-card/60 backdrop-blur-sm rounded-md border border-border flex-shrink-0">
-                  {user && (
-                    <div className="flex justify-end mb-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={handleLogout}
-                        className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
-                      >
-                        <span>{user.email}</span>
-                        <LogOut size={14} />
-                      </Button>
-                    </div>
-                  )}
                   <AdditionalMessage
                     message={addMessage}
                     setaddMessage={setaddMessage}

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   ArrowRight,
   ArrowLeft,
@@ -7,12 +7,64 @@ import {
   MessageSquare,
   PlusCircle,
   Search,
+  LogOut,
+  Settings,
 } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/utlis/supabase/client";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function NavBar() {
   const [open, setOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const router = useRouter();
+  const supabase = createClient();
+
   const toggle = () => setOpen(!open);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data, error } = await supabase.auth.getUser();
+      if (!error && data?.user) {
+        setUser(data.user);
+      }
+    };
+
+    fetchUser();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_OUT") {
+        setUser(null);
+      } else if (session?.user) {
+        setUser(session.user);
+      }
+    });
+
+    return () => subscription?.unsubscribe();
+  }, [supabase]);
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      router.push("/auth");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+
+  const handleNewChat = () => {
+    router.push("/chat");
+  };
 
   return (
     <>
@@ -59,7 +111,10 @@ export default function NavBar() {
         {open && (
           <>
             <div className="px-3 py-4">
-              <button className="flex items-center gap-3 w-full bg-primary text-primary-foreground p-3 rounded-lg font-medium shadow-md hover:shadow-lg hover:opacity-90 transition-all">
+              <button
+                onClick={handleNewChat}
+                className="flex items-center gap-3 w-full bg-primary text-primary-foreground p-3 rounded-lg font-medium shadow-md hover:shadow-lg hover:opacity-90 transition-all"
+              >
                 <PlusCircle className="h-5 w-5" />
                 New Chat
               </button>
@@ -93,20 +148,61 @@ export default function NavBar() {
 
             <div className="mt-auto">
               <div className="px-3 py-4 border-t border-sidebar-border/40">
-                <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-sidebar-accent/10 cursor-pointer transition-all">
-                  <div className="bg-primary/20 p-2 rounded-full">
-                    <User className="h-5 w-5 text-primary" />
+                {user ? (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-sidebar-accent/10 cursor-pointer transition-all">
+                        <div className="bg-primary/20 p-2 rounded-full">
+                          <User className="h-5 w-5 text-primary" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium">User Account</p>
+                          <p className="text-xs text-sidebar-foreground/60 truncate">
+                            {user.email}
+                          </p>
+                        </div>
+                        <button className="p-1.5 rounded-md hover:bg-sidebar-accent/20 text-sidebar-foreground/80">
+                          <ArrowRight className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-[200px]">
+                      <DropdownMenuItem
+                        className="flex items-center gap-2 cursor-pointer"
+                        onClick={() => router.push("/profile")}
+                      >
+                        <Settings size={16} />
+                        <span>Settings</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        className="flex items-center gap-2 text-destructive cursor-pointer"
+                        onClick={handleLogout}
+                      >
+                        <LogOut size={16} />
+                        <span>Sign Out</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ) : (
+                  <div
+                    className="flex items-center gap-3 p-2 rounded-lg hover:bg-sidebar-accent/10 cursor-pointer transition-all"
+                    onClick={() => router.push("/auth")}
+                  >
+                    <div className="bg-primary/20 p-2 rounded-full">
+                      <User className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium">Sign In</p>
+                      <p className="text-xs text-sidebar-foreground/60">
+                        Login to your account
+                      </p>
+                    </div>
+                    <button className="p-1.5 rounded-md hover:bg-sidebar-accent/20 text-sidebar-foreground/80">
+                      <ArrowRight className="h-4 w-4" />
+                    </button>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium">User Account</p>
-                    <p className="text-xs text-sidebar-foreground/60 truncate">
-                      user@example.com
-                    </p>
-                  </div>
-                  <button className="p-1.5 rounded-md hover:bg-sidebar-accent/20 text-sidebar-foreground/80">
-                    <ArrowRight className="h-4 w-4" />
-                  </button>
-                </div>
+                )}
               </div>
             </div>
           </>
