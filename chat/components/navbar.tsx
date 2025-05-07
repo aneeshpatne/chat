@@ -26,41 +26,10 @@ export default function NavBar() {
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState(null);
   const router = useRouter();
-  const supabase = createClient();
 
   const toggle = () => setOpen(!open);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const { data, error } = await supabase.auth.getUser();
-      if (!error && data?.user) {
-        setUser(data.user);
-      }
-    };
-
-    fetchUser();
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_OUT") {
-        setUser(null);
-      } else if (session?.user) {
-        setUser(session.user);
-      }
-    });
-
-    return () => subscription?.unsubscribe();
-  }, [supabase]);
-
-  const handleLogout = async () => {
-    try {
-      await supabase.auth.signOut();
-      router.push("/auth");
-    } catch (error) {
-      console.error("Error signing out:", error);
-    }
-  };
+  const handleLogout = async () => {};
 
   const handleNewChat = () => {
     router.push("/chat");

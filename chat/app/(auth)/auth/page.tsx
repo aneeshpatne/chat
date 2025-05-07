@@ -1,9 +1,21 @@
 import Image from "next/image";
 import { signInAction } from "./actions";
 import { Message, FormMessage } from "@/components/ui/form-message";
+import { createClient } from "@/utlis/supabase/server";
+import { redirect } from "next/navigation";
+
 export default async function LoginPage(props: {
   searchParams: Promise<Message>;
 }) {
+  const supabase = await createClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (session) {
+    return redirect("/chat");
+  }
+
   const searchParams = await props.searchParams;
   return (
     <div className="min-h-screen flex items-center justify-center">

@@ -29,7 +29,7 @@ import {
 import { cn } from "@/lib/utils";
 import { set } from "lodash";
 import NavBar from "@/components/navbar";
-import { createClient } from "@/utlis/supabase/client";
+
 const modelList = Object.values(models);
 export const ChatContext = createContext(null);
 
@@ -54,13 +54,14 @@ export default function ChatLayout({ children }) {
   const [token, setToken] = useState({});
   const [scrollToBottomFn, setScrollToBottomFn] = useState(() => () => {});
 
-  // Create the supabase client before using it in any hooks
-  const supabase = createClient();
-
   // Create refs before effects
   const containerRef = useRef(null);
 
-  // Initialize the chat hook (which internally uses multiple hooks)
+  useEffect(() => {
+    setMounted(true);
+    setLoading(false);
+  }, []);
+
   const chat = useChat({
     id: sessionId,
     experimental_throttle: 75,
@@ -81,16 +82,6 @@ export default function ChatLayout({ children }) {
   });
 
   const { append, input, handleInputChange, status, stop } = chat;
-
-  // Define all handler functions before effects
-  const handleLogout = async () => {
-    try {
-      await supabase.auth.signOut();
-      router.push("/auth");
-    } catch (error) {
-      console.error("Error logging out:", error);
-    }
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -145,43 +136,6 @@ export default function ChatLayout({ children }) {
     ]
   );
 
-  // Keep effects at the end to maintain hook order
-  // Authentication effect
-  useEffect(() => {
-    const checkUser = async () => {
-      try {
-        const {
-          data: { user },
-          error,
-        } = await supabase.auth.getUser();
-        if (error) throw error;
-        setUser(user);
-      } catch (error) {
-        console.error("Error fetching user:", error);
-        router.push("/auth");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkUser();
-
-    // Set up auth state listener
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_OUT") {
-        setUser(null);
-        router.push("/auth");
-      } else if (session?.user) {
-        setUser(session.user);
-      }
-    });
-
-    setMounted(true);
-    return () => subscription?.unsubscribe();
-  }, [router, supabase]);
-
   // Pending message effect
   useEffect(() => {
     if (sessionId && pendingMessage) {
@@ -193,7 +147,6 @@ export default function ChatLayout({ children }) {
     }
   }, [sessionId, pendingMessage, append, model]);
 
-  // If still loading or not authenticated, show loading state
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
