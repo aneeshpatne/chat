@@ -53,10 +53,10 @@ export default function ChatLayout({ children }) {
   const [addMessage, setaddMessage] = useState("");
   const [token, setToken] = useState({});
   const [scrollToBottomFn, setScrollToBottomFn] = useState(() => () => {});
-  
+
   // Create the supabase client before using it in any hooks
   const supabase = createClient();
-  
+
   // Create refs before effects
   const containerRef = useRef(null);
 
@@ -86,7 +86,7 @@ export default function ChatLayout({ children }) {
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut();
-      router.push('/auth');
+      router.push("/auth");
     } catch (error) {
       console.error("Error logging out:", error);
     }
@@ -115,7 +115,7 @@ export default function ChatLayout({ children }) {
       );
     }
   };
-  
+
   // Initialize contextValue with useMemo before effects to maintain hook order
   const contextValue = useMemo(
     () => ({
@@ -133,7 +133,16 @@ export default function ChatLayout({ children }) {
       setScrollToBottomFn,
       user,
     }),
-    [chat, model, token, pendingMessage, handleSubmit, scrollToBottomFn, selectedText, user]
+    [
+      chat,
+      model,
+      token,
+      pendingMessage,
+      handleSubmit,
+      scrollToBottomFn,
+      selectedText,
+      user,
+    ]
   );
 
   // Keep effects at the end to maintain hook order
@@ -141,24 +150,29 @@ export default function ChatLayout({ children }) {
   useEffect(() => {
     const checkUser = async () => {
       try {
-        const { data: { user }, error } = await supabase.auth.getUser();
+        const {
+          data: { user },
+          error,
+        } = await supabase.auth.getUser();
         if (error) throw error;
         setUser(user);
       } catch (error) {
         console.error("Error fetching user:", error);
-        router.push('/auth');
+        router.push("/auth");
       } finally {
         setLoading(false);
       }
     };
 
     checkUser();
-    
+
     // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_OUT') {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_OUT") {
         setUser(null);
-        router.push('/auth');
+        router.push("/auth");
       } else if (session?.user) {
         setUser(session.user);
       }
@@ -178,7 +192,7 @@ export default function ChatLayout({ children }) {
       setPendingMessage(null);
     }
   }, [sessionId, pendingMessage, append, model]);
-  
+
   // If still loading or not authenticated, show loading state
   if (loading) {
     return (
@@ -209,9 +223,9 @@ export default function ChatLayout({ children }) {
                 <div className="flex flex-col p-4 bg-card/60 backdrop-blur-sm rounded-md border border-border flex-shrink-0">
                   {user && (
                     <div className="flex justify-end mb-2">
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
+                      <Button
+                        variant="ghost"
+                        size="sm"
                         onClick={handleLogout}
                         className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
                       >
