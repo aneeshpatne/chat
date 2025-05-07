@@ -1,7 +1,7 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useMemo } from "react";
 import { useParams, useRouter, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,24 +11,25 @@ import {
   OctagonX,
   CheckIcon,
   Scroll,
-  ChevronDown, // Import ChevronDown
+  ChevronDown,
+  LogOut,
 } from "lucide-react";
 import TextareaAutosize from "react-textarea-autosize";
 import React from "react";
 import { models } from "@/components/models";
 import Image from "next/image";
-import { useMemo, useRef } from "react";
+import { useRef } from "react";
 import MessageLoadingAnimation from "@/components/MessageLoadingAnimation";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"; // Import DropdownMenu components
-import { cn } from "@/lib/utils"; // Import cn utility
+} from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
 import { set } from "lodash";
 import NavBar from "@/components/navbar";
-
+import { createClient } from "@/utlis/supabase/client";
 const modelList = Object.values(models);
 export const ChatContext = createContext(null);
 
@@ -37,7 +38,8 @@ export default function ChatLayout({ children }) {
   const pathname = usePathname();
   const { id: sessionId } = useParams();
   const [mounted, setMounted] = useState(false);
-
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [pendingMessage, setPendingMessage] = useState(null);
   const [model, setModel] = useState({
     name: "4.1 Nano",
@@ -51,8 +53,14 @@ export default function ChatLayout({ children }) {
   const [addMessage, setaddMessage] = useState("");
   const [token, setToken] = useState({});
   const [scrollToBottomFn, setScrollToBottomFn] = useState(() => () => {});
+  
+  // Create the supabase client before using it in any hooks
+  const supabase = createClient();
+  
+  // Create refs before effects
   const containerRef = useRef(null);
 
+  // Initialize the chat hook (which internally uses multiple hooks)
   const chat = useChat({
     id: sessionId,
     experimental_throttle: 75,
@@ -73,6 +81,16 @@ export default function ChatLayout({ children }) {
   });
 
   const { append, input, handleInputChange, status, stop } = chat;
+
+  // Define all handler functions before effects
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      router.push('/auth');
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -97,20 +115,8 @@ export default function ChatLayout({ children }) {
       );
     }
   };
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (sessionId && pendingMessage) {
-      append(
-        { role: "user", content: pendingMessage },
-        { data: { model: model.id, provider: model.provider } }
-      );
-      setPendingMessage(null);
-    }
-  }, [sessionId, pendingMessage, append, model]);
+  
+  // Initialize contextValue with useMemo before effects to maintain hook order
   const contextValue = useMemo(
     () => ({
       ...chat,
@@ -125,9 +131,62 @@ export default function ChatLayout({ children }) {
       setShowScroll,
       scrollToBottomFn,
       setScrollToBottomFn,
+      user,
     }),
-    [chat, model, token, pendingMessage, handleSubmit, scrollToBottomFn]
+    [chat, model, token, pendingMessage, handleSubmit, scrollToBottomFn, selectedText, user]
   );
+
+  // Keep effects at the end to maintain hook order
+  // Authentication effect
+  useEffect(() => {
+    const checkUser = async () => {
+      try {
+        const { data: { user }, error } = await supabase.auth.getUser();
+        if (error) throw error;
+        setUser(user);
+      } catch (error) {
+        console.error("Error fetching user:", error);
+        router.push('/auth');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkUser();
+    
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT') {
+        setUser(null);
+        router.push('/auth');
+      } else if (session?.user) {
+        setUser(session.user);
+      }
+    });
+
+    setMounted(true);
+    return () => subscription?.unsubscribe();
+  }, [router, supabase]);
+
+  // Pending message effect
+  useEffect(() => {
+    if (sessionId && pendingMessage) {
+      append(
+        { role: "user", content: pendingMessage },
+        { data: { model: model.id, provider: model.provider } }
+      );
+      setPendingMessage(null);
+    }
+  }, [sessionId, pendingMessage, append, model]);
+  
+  // If still loading or not authenticated, show loading state
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   return (
     <ChatContext.Provider value={contextValue}>
@@ -135,7 +194,10 @@ export default function ChatLayout({ children }) {
         <NavBar />
         <div className="flex flex-col relative" style={{ height: "100dvh" }}>
           {showButton && (
-            <SelectionButton onClick={handleAddClick} position={buttonPosition} />
+            <SelectionButton
+              onClick={handleAddClick}
+              position={buttonPosition}
+            />
           )}
           <div ref={containerRef} className="flex-grow overflow-auto">
             {children}
@@ -145,6 +207,19 @@ export default function ChatLayout({ children }) {
             <div className="mx-auto w-[80%] max-w-4xl mb-4">
               {mounted ? (
                 <div className="flex flex-col p-4 bg-card/60 backdrop-blur-sm rounded-md border border-border flex-shrink-0">
+                  {user && (
+                    <div className="flex justify-end mb-2">
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={handleLogout}
+                        className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1"
+                      >
+                        <span>{user.email}</span>
+                        <LogOut size={14} />
+                      </Button>
+                    </div>
+                  )}
                   <AdditionalMessage
                     message={addMessage}
                     setaddMessage={setaddMessage}
