@@ -3,6 +3,7 @@ import React, { useState, useRef, useEffect } from "react"; // Import useEffect
 import { ReceivedMessage } from "./ReceivedMessage";
 import { ChevronDown } from "lucide-react";
 
+import { useVirtualizer } from "@tanstack/react-virtual";
 export default function Chat({
   messages,
   input,
@@ -25,6 +26,7 @@ export default function Chat({
 
   const bottomRef = useRef(null);
   const chatContainerRef = useRef(null);
+  const parentRef = useRef(null);
   const handleScroll = () => {
     const container = chatContainerRef.current;
     if (!container) return;
@@ -69,6 +71,13 @@ export default function Chat({
   const currentlyStreamingId =
     status === "streaming" ? messages[messages.length - 1]?.id : null;
 
+  const rowVirtualizer = useVirtualizer({
+    count: renderedMessages.length,
+    getScrollElement: () => chatContainerRef.current,
+    estimateSize: () => 100,
+    overscan: 5,
+  });
+
   return (
     <div className="flex flex-col w-full h-full relative">
       {!input && messages.length === 0 && !pendingMessage && (
@@ -82,9 +91,16 @@ export default function Chat({
         ref={chatContainerRef}
         className="w-full h-[calc(100vh-3rem)] overflow-y-auto pb-20"
       >
-        <div className="mx-auto w-[80%] max-w-4xl pb-4">
+        <div
+          style={{
+            height: `${rowVirtualizer.getTotalSize()}px`,
+            position: "relative",
+          }}
+          className="mx-auto w-[80%] max-w-4xl pb-4"
+        >
           <div className="flex flex-col w-full gap-3 p-3">
-            {renderedMessages.map((message, index) => {
+            {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+              const message = renderedMessages[virtualRow.index];
               const text = message.parts
                 .filter((part) => part.type === "text")
                 .map((part) => part.text)
@@ -95,23 +111,35 @@ export default function Chat({
                 .join("");
               const messageID = message.id;
 
-              return message.role === "user" ? (
-                <SentMessage key={index} message={text} />
-              ) : message.id === "loading" ? (
-                <MessageLoadingIndicator key={index} />
-              ) : (
-                <ReceivedMessage
-                  key={message.id}
-                  id={messageID}
-                  message={text}
-                  token={token[message.id]}
-                  status={status}
-                  reasoning={reasoning}
-                  currentlyStreamingId={currentlyStreamingId}
-                  setSelectedText={setSelectedText}
-                  setaddMessage={setaddMessage}
-                  selectedText={selectedText}
-                />
+              return (
+                <div
+                  key={virtualRow.key}
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    transform: `translateY(${virtualRow.start}px)`,
+                    width: "100%",
+                  }}
+                >
+                  {message.role === "user" ? (
+                    <SentMessage message={text} />
+                  ) : message.id === "loading" ? (
+                    <MessageLoadingIndicator />
+                  ) : (
+                    <ReceivedMessage
+                      id={messageID}
+                      message={text}
+                      token={token[message.id]}
+                      status={status}
+                      reasoning={reasoning}
+                      currentlyStreamingId={currentlyStreamingId}
+                      setSelectedText={setSelectedText}
+                      setaddMessage={setaddMessage}
+                      selectedText={selectedText}
+                    />
+                  )}
+                </div>
               );
             })}
           </div>
