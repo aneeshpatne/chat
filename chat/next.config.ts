@@ -11,6 +11,12 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  // Explicitly enable server actions
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "2mb",
+    },
+  },
 };
 
 export default nextConfig;

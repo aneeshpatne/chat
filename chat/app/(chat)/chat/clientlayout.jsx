@@ -60,13 +60,13 @@ export default function ChatLayout({ children, signOutAction, user }) {
     setMounted(true);
     setLoading(false);
   }, []);
-
   const chat = useChat({
     id: sessionId,
     experimental_throttle: 75,
     sendExtraMessageFields: true,
     onError: (error) => console.error("Chat error:", error),
     onFinish: async (message, options) => {
+      console.log("Message finished, saving tokens and message to database");
       setToken((prevTokens) => ({
         ...prevTokens,
         [message.id]: {
@@ -77,14 +77,25 @@ export default function ChatLayout({ children, signOutAction, user }) {
       }));
 
       try {
-        await saveMessage({
+        console.log("Attempting to save assistant message", {
           id: message.id,
+          chatId: sessionId,
+          content: message.content.substring(0, 50) + "...", // Log first 50 chars
+        });
+
+        const result = await saveMessage({
+          id: crypto.randomUUID(),
           chatId: sessionId,
           role: "assistant",
           content: message.content,
         });
+
+        console.log("Save message result:", result);
       } catch (err) {
         console.error("Error saving assistant message:", err);
+        alert(
+          "Failed to save the assistant's message. Check the console for details."
+        );
       }
     },
   });
@@ -107,21 +118,34 @@ export default function ChatLayout({ children, signOutAction, user }) {
     } else {
       const userMessageId = crypto.randomUUID(); // Generate user message ID
 
+      console.log("Handling user message submission", {
+        chatId: sessionId,
+        messageId: userMessageId,
+        contentLength: combinedInput.length,
+      });
+
       // Save user's message BEFORE appending
       try {
-        await saveMessage({
+        console.log("Attempting to save user message");
+        const result = await saveMessage({
           id: userMessageId,
           chatId: sessionId,
           role: "user",
           content: combinedInput,
         });
+        console.log("User message save result:", result);
       } catch (err) {
         console.error("Failed to save user message:", err);
+        // Don't block the UI flow on error, but alert the user
+        alert(
+          "Failed to save your message. The conversation will continue but may not be saved."
+        );
       }
 
       setaddMessage("");
       handleInputChange({ target: { value: "" } });
 
+      console.log("Appending message to chat");
       chat.append(
         { role: "user", content: combinedInput, id: userMessageId },
         { data: { model: model.id, provider: model.provider } }
