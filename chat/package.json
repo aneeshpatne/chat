@@ -70,6 +70,8 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/tailwindcss": "^3.0.11",
+    "dotenv": "^16.5.0",
+    "drizzle-kit": "^0.31.1",
     "eslint": "^9",
     "eslint-config-next": "15.3.0",
     "tailwindcss": "^4",
