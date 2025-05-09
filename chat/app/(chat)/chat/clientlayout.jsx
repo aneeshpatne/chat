@@ -29,7 +29,7 @@ import {
 import { cn } from "@/lib/utils";
 import { set } from "lodash";
 import NavBar from "@/components/navbar";
-
+import { saveMessage } from "@/app/actions/savemessage";
 const modelList = Object.values(models);
 export const ChatContext = createContext(null);
 
@@ -66,17 +66,26 @@ export default function ChatLayout({ children, signOutAction, user }) {
     experimental_throttle: 75,
     sendExtraMessageFields: true,
     onError: (error) => console.error("Chat error:", error),
-    onFinish: (message, options) => {
-      setToken((prevTokens) => {
-        return {
-          ...prevTokens,
-          [message.id]: {
-            completionTokens: options.usage.completionTokens,
-            promptTokens: options.usage.promptTokens,
-            totalTokens: options.usage.totalTokens,
-          },
-        };
-      });
+    onFinish: async (message, options) => {
+      setToken((prevTokens) => ({
+        ...prevTokens,
+        [message.id]: {
+          completionTokens: options.usage.completionTokens,
+          promptTokens: options.usage.promptTokens,
+          totalTokens: options.usage.totalTokens,
+        },
+      }));
+
+      try {
+        await saveMessage({
+          id: message.id,
+          chatId: sessionId,
+          role: "assistant",
+          content: message.content,
+        });
+      } catch (err) {
+        console.error("Error saving assistant message:", err);
+      }
     },
   });
 
