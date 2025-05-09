@@ -105,11 +105,25 @@ export default function ChatLayout({ children, signOutAction, user }) {
 
       router.push(`/chat/${data.sessionId}`);
     } else {
+      const userMessageId = crypto.randomUUID(); // Generate user message ID
+
+      // Save user's message BEFORE appending
+      try {
+        await saveMessage({
+          id: userMessageId,
+          chatId: sessionId,
+          role: "user",
+          content: combinedInput,
+        });
+      } catch (err) {
+        console.error("Failed to save user message:", err);
+      }
+
       setaddMessage("");
       handleInputChange({ target: { value: "" } });
 
       chat.append(
-        { role: "user", content: combinedInput },
+        { role: "user", content: combinedInput, id: userMessageId },
         { data: { model: model.id, provider: model.provider } }
       );
     }
