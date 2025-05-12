@@ -77,25 +77,14 @@ export default function ChatLayout({ children, signOutAction, user }) {
       }));
 
       try {
-        console.log("Attempting to save assistant message", {
-          id: message.id,
-          chatId: sessionId,
-          content: message.content.substring(0, 50) + "...", // Log first 50 chars
-        });
-
-        const result = await saveMessage({
+        await saveMessage({
           id: crypto.randomUUID(),
           chatId: sessionId,
           role: "assistant",
           content: message.content,
         });
-
-        console.log("Save message result:", result);
       } catch (err) {
         console.error("Error saving assistant message:", err);
-        alert(
-          "Failed to save the assistant's message. Check the console for details."
-        );
       }
     },
   });
@@ -116,15 +105,8 @@ export default function ChatLayout({ children, signOutAction, user }) {
 
       router.push(`/chat/${data.sessionId}`);
     } else {
-      const userMessageId = crypto.randomUUID(); // Generate user message ID
+      const userMessageId = crypto.randomUUID();
 
-      console.log("Handling user message submission", {
-        chatId: sessionId,
-        messageId: userMessageId,
-        contentLength: combinedInput.length,
-      });
-
-      // Save user's message BEFORE appending
       try {
         console.log("Attempting to save user message");
         const result = await saveMessage({
@@ -136,16 +118,11 @@ export default function ChatLayout({ children, signOutAction, user }) {
         console.log("User message save result:", result);
       } catch (err) {
         console.error("Failed to save user message:", err);
-        // Don't block the UI flow on error, but alert the user
-        alert(
-          "Failed to save your message. The conversation will continue but may not be saved."
-        );
       }
 
       setaddMessage("");
       handleInputChange({ target: { value: "" } });
 
-      console.log("Appending message to chat");
       chat.append(
         { role: "user", content: combinedInput, id: userMessageId },
         { data: { model: model.id, provider: model.provider } }

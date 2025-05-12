@@ -17,12 +17,6 @@ export async function saveMessage({
   role: "user" | "assistant";
   content: string;
 }) {
-  console.log("data", {
-    id,
-    chatId,
-    role,
-    content,
-  });
   const supabase = await createClient();
 
   const {
