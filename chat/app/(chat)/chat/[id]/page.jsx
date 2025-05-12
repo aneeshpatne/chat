@@ -3,6 +3,7 @@ import Chat from "@/components/chatnew";
 import { useEffect, useState } from "react";
 import { useContext } from "react";
 import { ChatContext } from "@/app/(chat)/chat/Clientlayout"; // Corrected import path
+import { generateTitle } from "@/app/actions/title";
 export default function ChatSessionPage() {
   const [title, setTitle] = useState("");
   const { model, setModel, ...chat } = useContext(ChatContext);
@@ -12,12 +13,7 @@ export default function ChatSessionPage() {
     if (!title && messages.length > 0 && !sentRequest) {
       setSentRequest(true);
       const getTitle = async () => {
-        const res = await fetch("/api/title", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: messages[0].content }),
-        });
-        const data = await res.json();
+        const data = await generateTitle(messages[0].content);
         if (data?.title) setTitle(data.title);
       };
       getTitle();

@@ -101,10 +101,10 @@ export default function ChatLayout({ children, signOutAction, user }) {
       handleInputChange({ target: { value: "" } });
       setPendingMessage(combinedInput);
 
-      const data = createSession();
+      const data = await createSession();
       //const data = await res.json();
 
-      router.push(`/chat/${data.sessionId}`);
+      router.push(`/chat/${data}`);
     } else {
       const userMessageId = crypto.randomUUID();
 
