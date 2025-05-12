@@ -109,7 +109,6 @@ export default function ChatLayout({ children, signOutAction, user }) {
       const userMessageId = crypto.randomUUID();
 
       try {
-        console.log("Attempting to save user message");
         const result = await saveMessage({
           id: userMessageId,
           chatId: sessionId,

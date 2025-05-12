@@ -14,7 +14,7 @@ const openrouter = createOpenRouter({
 export async function POST(req: Request) {
   const { messages, data } = await req.json();
   console.log(data?.provider);
-  const modelId = data?.model || "gpt-4.1-nano"; // Default to gpt-4.1 if no model is provided
+  const modelId = data?.model || "gpt-4.1-nano";
   let result;
   if (data?.provider === "openai") {
     result = streamText({
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
       messages,
       providerOptions: {
         openai: {
-          reasoningSummary: "detailed", // 'auto' for condensed or 'detailed' for comprehensive
+          reasoningSummary: "detailed",
         },
       },
     });
