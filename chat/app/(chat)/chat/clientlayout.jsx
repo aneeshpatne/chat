@@ -30,6 +30,7 @@ import { cn } from "@/lib/utils";
 import { set } from "lodash";
 import NavBar from "@/components/navbar";
 import { saveMessage } from "@/app/actions/savemessage";
+import { createSession } from "@/app/actions/session";
 const modelList = Object.values(models);
 export const ChatContext = createContext(null);
 
@@ -100,8 +101,8 @@ export default function ChatLayout({ children, signOutAction, user }) {
       handleInputChange({ target: { value: "" } });
       setPendingMessage(combinedInput);
 
-      const res = await fetch("/api/session");
-      const data = await res.json();
+      const data = createSession();
+      //const data = await res.json();
 
       router.push(`/chat/${data.sessionId}`);
     } else {
