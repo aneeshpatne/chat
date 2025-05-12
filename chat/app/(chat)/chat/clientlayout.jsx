@@ -102,7 +102,6 @@ export default function ChatLayout({ children, signOutAction, user }) {
       setPendingMessage(combinedInput);
 
       const data = await createSession();
-      //const data = await res.json();
 
       router.push(`/chat/${data}`);
     } else {
@@ -180,7 +179,7 @@ export default function ChatLayout({ children, signOutAction, user }) {
   return (
     <ChatContext.Provider value={contextValue}>
       <div className="relative">
-        <NavBar signOutAction={signOutAction} user={user} />
+        <NavBar user={user} />
         <div className="flex flex-col relative" style={{ height: "100dvh" }}>
           {showButton && (
             <SelectionButton

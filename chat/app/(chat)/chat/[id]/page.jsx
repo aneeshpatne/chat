@@ -14,7 +14,7 @@ export default function ChatSessionPage() {
       setSentRequest(true);
       const getTitle = async () => {
         const data = await generateTitle(messages[0].content);
-        if (data?.title) setTitle(data.title);
+        if (data) setTitle(data);
       };
       getTitle();
     }
