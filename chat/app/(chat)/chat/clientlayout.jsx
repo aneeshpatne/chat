@@ -130,7 +130,6 @@ export default function ChatLayout({ children, signOutAction, user }) {
     }
   };
 
-  // Initialize contextValue with useMemo before effects to maintain hook order
   const contextValue = useMemo(
     () => ({
       ...chat,
