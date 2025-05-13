@@ -5,9 +5,11 @@ import { eq } from "drizzle-orm";
 
 export async function getMessagesByChatId(chatId: string) {
   console.log("Fetching messages for chatId:", chatId);
-  return db
+  const data = db
     .select()
     .from(chatMessages)
     .where(eq(chatMessages.chatId, chatId))
     .orderBy(chatMessages.createdAt);
+  console.log("Fetched messages:", data);
+  return data;
 }
