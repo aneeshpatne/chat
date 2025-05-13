@@ -68,18 +68,7 @@ export default function ChatLayout({ children, signOutAction, user }) {
     id: sessionId,
     experimental_throttle: 75,
     sendExtraMessageFields: true,
-    initialMessages: [
-      {
-        id: "7f1b1b1a-4301-49f2-99d7-33abd970464a",
-        role: "assistant",
-        parts: [
-          {
-            type: "text",
-            text: "Hey! How can I assist you today??",
-          },
-        ],
-      },
-    ],
+    initialMessages: initialMessage,
     onError: (error) => console.error("Chat error:", error),
     onFinish: async (message, options) => {
       console.log("Message finished, saving tokens and message to database");
