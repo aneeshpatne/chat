@@ -59,6 +59,8 @@ export default function ChatLayout({ children, signOutAction, user }) {
   const [token, setToken] = useState({});
   const [initialMessage, setInitialMessage] = useState([]);
   const [scrollToBottomFn, setScrollToBottomFn] = useState(() => () => {});
+  const [isFetchingMessages, setIsFetchingMessages] = useState(false); // New loading state for messages
+  const [isInitiatingChat, setIsInitiatingChat] = useState(false); // New state for initiating chat
 
   // Create refs before effects
   const containerRef = useRef(null);
@@ -116,31 +118,42 @@ export default function ChatLayout({ children, signOutAction, user }) {
     const combinedInput = addMessage ? `${addMessage}\n\n${input}` : input;
 
     if (!sessionId) {
-      handleInputChange({ target: { value: "" } });
-      setPendingMessage(combinedInput);
-
-      const sessionID = await createSession();
-      const title = await generateTitle(combinedInput);
-      // Call createChat to save the new chat session to the table
+      setIsInitiatingChat(true); // Set loading state for new chat initiation
       try {
-        await createChat(sessionID, title, user.id);
-      } catch (err) {
-        console.error("Failed to create chat entry:", err);
-      }
+        handleInputChange({ target: { value: "" } });
+        setPendingMessage(combinedInput);
 
-      const userMessageId = crypto.randomUUID();
-      try {
-        await saveMessage({
-          id: userMessageId,
-          chatId: sessionID, // Use the new session ID
-          role: "user",
-          content: combinedInput,
-        });
-      } catch (err) {
-        console.error("Failed to save first user message:", err);
-      }
+        const newSessionID = await createSession();
+        const title = await generateTitle(combinedInput);
+        // Ensure user and user.id are available before calling createChat
+        if (user && user.id) {
+          await createChat(newSessionID, title, user.id);
+        } else {
+          console.error("User ID is not available, cannot create chat entry.");
+          // Optionally, handle this error more gracefully (e.g., show a message to the user)
+          setIsInitiatingChat(false); // Reset loading state
+          return;
+        }
 
-      router.push(`/chat/${sessionID}`);
+        const userMessageId = crypto.randomUUID();
+        try {
+          await saveMessage({
+            id: userMessageId,
+            chatId: newSessionID, // Use the new session ID
+            role: "user",
+            content: combinedInput,
+          });
+        } catch (err) {
+          console.error("Failed to save first user message:", err);
+          // Decide if this error should stop the process or just be logged
+        }
+
+        router.push(`/chat/${newSessionID}`);
+        // setIsInitiatingChat will be set to false by the useEffect watching sessionId
+      } catch (err) {
+        console.error("Failed to initiate chat:", err);
+        setIsInitiatingChat(false); // Reset loading state on error
+      }
     } else {
       const userMessageId = crypto.randomUUID();
 
@@ -165,9 +178,17 @@ export default function ChatLayout({ children, signOutAction, user }) {
     }
   };
   useEffect(() => {
+    if (sessionId) {
+      setIsInitiatingChat(false); // Reset initiating state if a session ID is present
+    }
     const fetchMessage = async () => {
       console.log("Fetching messages...");
-      if (!sessionId) return;
+      if (!sessionId) {
+        setInitialMessage([]); // Reset if no session ID
+        return;
+      }
+      setIsFetchingMessages(true); // Set loading true
+      setInitialMessage([]); // Reset initial messages before fetching new ones
       try {
         console.log("Fetching messages for session:", sessionId);
         const data = await getMessagesByChatId(sessionId);
@@ -175,6 +196,9 @@ export default function ChatLayout({ children, signOutAction, user }) {
         setInitialMessage(data);
       } catch (err) {
         console.error("Failed to fetch messages:", err);
+        setInitialMessage([]); // Reset on error
+      } finally {
+        setIsFetchingMessages(false); // Set loading false
       }
     };
     fetchMessage();
@@ -196,6 +220,7 @@ export default function ChatLayout({ children, signOutAction, user }) {
       setScrollToBottomFn,
       user,
       initialMessage,
+      isFetchingMessages, // Add to context
     }),
     [
       chat,
@@ -207,6 +232,7 @@ export default function ChatLayout({ children, signOutAction, user }) {
       selectedText,
       user,
       initialMessage,
+      isFetchingMessages, // Add to context dependencies
     ]
   );
 
@@ -240,7 +266,14 @@ export default function ChatLayout({ children, signOutAction, user }) {
             />
           )}
           <div ref={containerRef} className="flex-grow overflow-auto">
-            {children}
+            {isInitiatingChat ? (
+              <div className="flex flex-col items-center justify-center h-full flex-grow p-4">
+                <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary mb-4"></div>
+                <p className="text-muted-foreground">Starting new chat...</p>
+              </div>
+            ) : (
+              children
+            )}
           </div>
           <div className="flex flex-col items-center gap-2 absolute left-0 right-0 bottom-0 ">
             {showScroll && <ScrollToBottom onClick={scrollToBottomFn} />}
