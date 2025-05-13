@@ -1,7 +1,7 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { chatMessages } from "@/lib/schema";
+import { chatMessages } from "@/lib/shema/chat_message";
 import { createClient } from "@/utlis/supabase/server";
 
 export async function saveMessage({

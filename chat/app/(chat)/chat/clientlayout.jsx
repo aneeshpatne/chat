@@ -20,6 +20,7 @@ import { models } from "@/components/models";
 import Image from "next/image";
 import { useRef } from "react";
 import MessageLoadingAnimation from "@/components/MessageLoadingAnimation";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,6 +34,7 @@ import { saveMessage } from "@/app/actions/savemessage";
 import { createSession } from "@/app/actions/session";
 import { v4 as uuidv4 } from "uuid";
 import { getMessagesByChatId } from "@/app/actions/fetchmessage";
+import { generateTitle } from "@/app/actions/title";
 const modelList = Object.values(models);
 export const ChatContext = createContext(null);
 
@@ -117,8 +119,8 @@ export default function ChatLayout({ children, signOutAction, user }) {
       setPendingMessage(combinedInput);
 
       const data = await createSession();
+      const title = await generateTitle(combinedInput);
 
-      // Save the first message to the database immediately
       const userMessageId = crypto.randomUUID();
       try {
         await saveMessage({

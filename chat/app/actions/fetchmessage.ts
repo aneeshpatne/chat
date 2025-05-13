@@ -1,6 +1,6 @@
 "use server";
 import { db } from "@/lib/db";
-import { chatMessages } from "@/lib/schema";
+import { chatMessages } from "@/lib/shema/chat_message";
 import { eq } from "drizzle-orm";
 
 export async function getMessagesByChatId(chatId: string) {
