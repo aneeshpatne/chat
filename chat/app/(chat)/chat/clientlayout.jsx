@@ -107,7 +107,6 @@ export default function ChatLayout({ children, signOutAction, user }) {
   });
 
   const { append, input, handleInputChange, status, stop } = chat;
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -118,6 +117,19 @@ export default function ChatLayout({ children, signOutAction, user }) {
       setPendingMessage(combinedInput);
 
       const data = await createSession();
+
+      // Save the first message to the database immediately
+      const userMessageId = crypto.randomUUID();
+      try {
+        await saveMessage({
+          id: userMessageId,
+          chatId: data, // Use the new session ID
+          role: "user",
+          content: combinedInput,
+        });
+      } catch (err) {
+        console.error("Failed to save first user message:", err);
+      }
 
       router.push(`/chat/${data}`);
     } else {
