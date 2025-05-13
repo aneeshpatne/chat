@@ -54,7 +54,7 @@ export default function ChatLayout({ children, signOutAction, user }) {
   const [selectedText, setSelectedText] = useState("");
   const [addMessage, setaddMessage] = useState("");
   const [token, setToken] = useState({});
-  const [messages, setMessages] = useState([]);
+  //const [messages, setMessages] = useState([]);
   const [scrollToBottomFn, setScrollToBottomFn] = useState(() => () => {});
 
   // Create refs before effects
@@ -142,18 +142,18 @@ export default function ChatLayout({ children, signOutAction, user }) {
       );
     }
   };
-  useEffect(() => {
-    const fetchMessage = async () => {
-      if (!sessionId) return;
-      try {
-        const data = await getMessagesByChatId(sessionId);
-        setMessages(data);
-      } catch (err) {
-        console.error("Failed to fetch messages:", err);
-      }
-      fetchMessage();
-    };
-  }, [sessionId]);
+  // useEffect(() => {
+  //   const fetchMessage = async () => {
+  //     if (!sessionId) return;
+  //     try {
+  //       const data = await getMessagesByChatId(sessionId);
+  //       setMessages(data);
+  //     } catch (err) {
+  //       console.error("Failed to fetch messages:", err);
+  //     }
+  //     fetchMessage();
+  //   };
+  // }, [sessionId]);
 
   const contextValue = useMemo(
     () => ({
@@ -170,7 +170,6 @@ export default function ChatLayout({ children, signOutAction, user }) {
       scrollToBottomFn,
       setScrollToBottomFn,
       user,
-      messages,
     }),
     [
       chat,
@@ -181,7 +180,6 @@ export default function ChatLayout({ children, signOutAction, user }) {
       scrollToBottomFn,
       selectedText,
       user,
-      messages,
     ]
   );
 
