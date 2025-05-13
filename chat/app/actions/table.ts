@@ -5,8 +5,14 @@ export async function fetchChats() {
   const chatsList = await db.select().from(chats).orderBy(chats.createdAt);
   return chatsList;
 }
-export async function createChat(title: string, userId: string) {
+export async function createChat(
+  sessionId: string,
+  title: string,
+  userId: string
+) {
+  console.log("createChat called with:", { sessionId, title, userId }); // Log input parameters
   await db.insert(chats).values({
+    id: sessionId,
     title,
     userId,
   });

@@ -35,6 +35,7 @@ import { createSession } from "@/app/actions/session";
 import { v4 as uuidv4 } from "uuid";
 import { getMessagesByChatId } from "@/app/actions/fetchmessage";
 import { generateTitle } from "@/app/actions/title";
+import { createChat } from "@/app/actions/table"; // Added import
 const modelList = Object.values(models);
 export const ChatContext = createContext(null);
 
@@ -118,14 +119,20 @@ export default function ChatLayout({ children, signOutAction, user }) {
       handleInputChange({ target: { value: "" } });
       setPendingMessage(combinedInput);
 
-      const data = await createSession();
+      const sessionID = await createSession();
       const title = await generateTitle(combinedInput);
+      // Call createChat to save the new chat session to the table
+      try {
+        await createChat(sessionID, title, user.id);
+      } catch (err) {
+        console.error("Failed to create chat entry:", err);
+      }
 
       const userMessageId = crypto.randomUUID();
       try {
         await saveMessage({
           id: userMessageId,
-          chatId: data, // Use the new session ID
+          chatId: sessionID, // Use the new session ID
           role: "user",
           content: combinedInput,
         });
@@ -133,7 +140,7 @@ export default function ChatLayout({ children, signOutAction, user }) {
         console.error("Failed to save first user message:", err);
       }
 
-      router.push(`/chat/${data}`);
+      router.push(`/chat/${sessionID}`);
     } else {
       const userMessageId = crypto.randomUUID();
 

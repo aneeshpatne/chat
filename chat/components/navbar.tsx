@@ -22,9 +22,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { signOutAction } from "@/app/(auth)/auth/actions";
+import { fetchChats } from "@/app/actions/table"; // Import fetchChats
+
+// Define an interface for the chat items
+interface ChatItem {
+  id: string;
+  title: string | null; // Assuming title can be null
+  createdAt: Date | null; // Assuming createdAt can be null
+}
+
 export default function NavBar({ user }: { user: any }) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
+  const [recentChats, setRecentChats] = useState<ChatItem[]>([]); // State for recent chats
 
   const toggle = () => setOpen(!open);
 
@@ -35,6 +45,28 @@ export default function NavBar({ user }: { user: any }) {
   const handleNewChat = () => {
     router.push("/chat");
   };
+
+  useEffect(() => {
+    // Fetch chats when the component mounts or when 'open' changes to true
+    if (open) {
+      const loadChats = async () => {
+        try {
+          const chats = await fetchChats();
+          // Ensure chats is an array and then set it
+          if (Array.isArray(chats)) {
+            setRecentChats(chats);
+          } else {
+            console.error("fetchChats did not return an array:", chats);
+            setRecentChats([]); // Set to empty array on error or unexpected format
+          }
+        } catch (error) {
+          console.error("Failed to fetch chats:", error);
+          setRecentChats([]); // Set to empty array on error
+        }
+      };
+      loadChats();
+    }
+  }, [open]); // Re-fetch if 'open' state changes
 
   return (
     <>
@@ -107,11 +139,24 @@ export default function NavBar({ user }: { user: any }) {
                   Recent Chats
                 </h3>
                 <div className="space-y-1">
-                  <RecentChatItem label="AI Assistant Help" time="2h ago" />
-                  <RecentChatItem label="Code Review" time="Yesterday" />
-                  <RecentChatItem label="Project Ideas" time="3d ago" />
-                  <RecentChatItem label="Resume Feedback" time="1w ago" />
-                  <RecentChatItem label="Learning Resources" time="2w ago" />
+                  {recentChats.length > 0 ? (
+                    recentChats.map((chat) => (
+                      <RecentChatItem
+                        key={chat.id}
+                        label={chat.title || "Untitled Chat"} // Use chat title or a default
+                        time={
+                          chat.createdAt
+                            ? formatTimeAgo(chat.createdAt)
+                            : "Unknown time"
+                        } // Format timestamp
+                        onClick={() => router.push(`/chat/${chat.id}`)} // Navigate to chat on click
+                      />
+                    ))
+                  ) : (
+                    <p className="px-3 text-sm text-sidebar-foreground/50">
+                      No recent chats.
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -182,9 +227,36 @@ export default function NavBar({ user }: { user: any }) {
   );
 }
 
-function RecentChatItem({ label, time }) {
+// Helper function to format time (simplified version)
+function formatTimeAgo(date: Date | string): string {
+  const now = new Date();
+  const past = new Date(date);
+  const diffInSeconds = Math.floor((now.getTime() - past.getTime()) / 1000);
+
+  if (diffInSeconds < 60) return `${diffInSeconds}s ago`;
+  const diffInMinutes = Math.floor(diffInSeconds / 60);
+  if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  if (diffInHours < 24) return `${diffInHours}h ago`;
+  const diffInDays = Math.floor(diffInHours / 24);
+  if (diffInDays < 7) return `${diffInDays}d ago`;
+  return past.toLocaleDateString();
+}
+
+function RecentChatItem({
+  label,
+  time,
+  onClick,
+}: {
+  label: string;
+  time: string;
+  onClick?: () => void;
+}) {
   return (
-    <div className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-sidebar-accent/10 cursor-pointer transition-all">
+    <div
+      onClick={onClick}
+      className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-sidebar-accent/10 cursor-pointer transition-all"
+    >
       <span className="text-primary/70">
         <MessageSquare className="h-4 w-4" />
       </span>
