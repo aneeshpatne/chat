@@ -26,7 +26,7 @@ export default function Chat({
   const bottomRef = useRef(null);
   const chatContainerRef = useRef(null);
   const parentRef = useRef(null);
-  
+
   const handleScroll = () => {
     const container = chatContainerRef.current;
     if (!container) return;
@@ -36,7 +36,7 @@ export default function Chat({
     const atBottom = scrollHeight - scrollTop <= clientHeight + threshold;
     setShowScroll(canScroll && !atBottom);
   };
-  
+
   useEffect(() => {
     if (bottomRef.current) {
       setScrollToBottomFn(() => () => {
@@ -66,7 +66,7 @@ export default function Chat({
       role: "assistant",
       parts: [{ type: "text", text: "" }],
       pending: true,
-    }
+    },
   ].filter(Boolean);
 
   const currentlyStreamingId =

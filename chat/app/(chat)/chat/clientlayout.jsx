@@ -54,7 +54,7 @@ export default function ChatLayout({ children, signOutAction, user }) {
   const [selectedText, setSelectedText] = useState("");
   const [addMessage, setaddMessage] = useState("");
   const [token, setToken] = useState({});
-  //const [messages, setMessages] = useState([]);
+  const [initialMessage, setInitialMessage] = useState([]);
   const [scrollToBottomFn, setScrollToBottomFn] = useState(() => () => {});
 
   // Create refs before effects
@@ -68,6 +68,18 @@ export default function ChatLayout({ children, signOutAction, user }) {
     id: sessionId,
     experimental_throttle: 75,
     sendExtraMessageFields: true,
+    initialMessages: [
+      {
+        id: "7f1b1b1a-4301-49f2-99d7-33abd970464a",
+        role: "assistant",
+        parts: [
+          {
+            type: "text",
+            text: "Hey! How can I assist you today??",
+          },
+        ],
+      },
+    ],
     onError: (error) => console.error("Chat error:", error),
     onFinish: async (message, options) => {
       console.log("Message finished, saving tokens and message to database");
@@ -150,7 +162,7 @@ export default function ChatLayout({ children, signOutAction, user }) {
         console.log("Fetching messages for session:", sessionId);
         const data = await getMessagesByChatId(sessionId);
         console.log("Fetched messages:", data);
-        //setMessages(data);
+        setInitialMessage(data);
       } catch (err) {
         console.error("Failed to fetch messages:", err);
       }
@@ -173,6 +185,7 @@ export default function ChatLayout({ children, signOutAction, user }) {
       scrollToBottomFn,
       setScrollToBottomFn,
       user,
+      initialMessage,
     }),
     [
       chat,
@@ -183,6 +196,7 @@ export default function ChatLayout({ children, signOutAction, user }) {
       scrollToBottomFn,
       selectedText,
       user,
+      initialMessage,
     ]
   );
 
