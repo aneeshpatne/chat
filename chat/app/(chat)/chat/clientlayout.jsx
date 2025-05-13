@@ -76,13 +76,25 @@ export default function ChatLayout({ children, signOutAction, user }) {
           totalTokens: options.usage.totalTokens,
         },
       }));
+      const text = message.parts
+        .filter((p) => p.type === "text")
+        .map((p) => p.text)
+        .join("");
+      const reasoning = message.parts
+        .filter((p) => p.type === "reasoning")
+        .map((p) => p.reasoning)
+        .join("");
 
       try {
         await saveMessage({
-          id: crypto.randomUUID(),
+          id: message.id,
           chatId: sessionId,
           role: "assistant",
-          content: message.content,
+          content: text,
+          reasoning,
+          promptTokens: options.usage.promptTokens,
+          completionTokens: options.usage.completionTokens,
+          totalTokens: options.usage.totalTokens,
         });
       } catch (err) {
         console.error("Error saving assistant message:", err);
