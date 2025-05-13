@@ -10,6 +10,6 @@ export async function getMessagesByChatId(chatId: string) {
     .from(chatMessages)
     .where(eq(chatMessages.chatId, chatId))
     .orderBy(chatMessages.createdAt);
-  console.log("Fetched messages:", data);
+
   return data;
 }

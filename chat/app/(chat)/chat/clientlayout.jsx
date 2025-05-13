@@ -142,18 +142,21 @@ export default function ChatLayout({ children, signOutAction, user }) {
       );
     }
   };
-  // useEffect(() => {
-  //   const fetchMessage = async () => {
-  //     if (!sessionId) return;
-  //     try {
-  //       const data = await getMessagesByChatId(sessionId);
-  //       setMessages(data);
-  //     } catch (err) {
-  //       console.error("Failed to fetch messages:", err);
-  //     }
-  //     fetchMessage();
-  //   };
-  // }, [sessionId]);
+  useEffect(() => {
+    const fetchMessage = async () => {
+      console.log("Fetching messages...");
+      if (!sessionId) return;
+      try {
+        console.log("Fetching messages for session:", sessionId);
+        const data = await getMessagesByChatId(sessionId);
+        console.log("Fetched messages:", data);
+        //setMessages(data);
+      } catch (err) {
+        console.error("Failed to fetch messages:", err);
+      }
+    };
+    fetchMessage();
+  }, [sessionId]);
 
   const contextValue = useMemo(
     () => ({
