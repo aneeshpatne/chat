@@ -11,11 +11,19 @@ export async function saveMessage({
   chatId,
   role,
   content,
+  reasoning,
+  promptTokens,
+  completionTokens,
+  totalTokens,
 }: {
   id: string;
   chatId: string;
   role: "user" | "assistant";
   content: string;
+  reasoning?: string;
+  promptTokens?: number;
+  completionTokens?: number;
+  totalTokens?: number;
 }) {
   const supabase = await createClient();
 
@@ -34,5 +42,9 @@ export async function saveMessage({
     role,
     content,
     userId: user.id,
+    reasoning: reasoning || null,
+    promptTokens: promptTokens || null,
+    completionTokens: completionTokens || null,
+    totalTokens: totalTokens || null,
   });
 }

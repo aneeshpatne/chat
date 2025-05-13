@@ -31,6 +31,7 @@ import { set } from "lodash";
 import NavBar from "@/components/navbar";
 import { saveMessage } from "@/app/actions/savemessage";
 import { createSession } from "@/app/actions/session";
+import { v4 as uuidv4 } from "uuid";
 const modelList = Object.values(models);
 export const ChatContext = createContext(null);
 
@@ -87,7 +88,7 @@ export default function ChatLayout({ children, signOutAction, user }) {
 
       try {
         await saveMessage({
-          id: message.id,
+          id: uuidv4(),
           chatId: sessionId,
           role: "assistant",
           content: text,
