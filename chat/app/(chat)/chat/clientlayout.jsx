@@ -32,6 +32,7 @@ import NavBar from "@/components/navbar";
 import { saveMessage } from "@/app/actions/savemessage";
 import { createSession } from "@/app/actions/session";
 import { v4 as uuidv4 } from "uuid";
+import { getMessagesByChatId } from "@/app/actions/fetchmessage";
 const modelList = Object.values(models);
 export const ChatContext = createContext(null);
 
@@ -53,6 +54,7 @@ export default function ChatLayout({ children, signOutAction, user }) {
   const [selectedText, setSelectedText] = useState("");
   const [addMessage, setaddMessage] = useState("");
   const [token, setToken] = useState({});
+  const [messages, setMessages] = useState([]);
   const [scrollToBottomFn, setScrollToBottomFn] = useState(() => () => {});
 
   // Create refs before effects
@@ -127,7 +129,6 @@ export default function ChatLayout({ children, signOutAction, user }) {
           role: "user",
           content: combinedInput,
         });
-        console.log("User message save result:", result);
       } catch (err) {
         console.error("Failed to save user message:", err);
       }
@@ -141,6 +142,18 @@ export default function ChatLayout({ children, signOutAction, user }) {
       );
     }
   };
+  useEffect(() => {
+    const fetchMessage = async () => {
+      if (!sessionId) return;
+      try {
+        const data = await getMessagesByChatId(sessionId);
+        setMessages(data);
+      } catch (err) {
+        console.error("Failed to fetch messages:", err);
+      }
+      fetchMessage();
+    };
+  }, [sessionId]);
 
   const contextValue = useMemo(
     () => ({
@@ -157,6 +170,7 @@ export default function ChatLayout({ children, signOutAction, user }) {
       scrollToBottomFn,
       setScrollToBottomFn,
       user,
+      messages,
     }),
     [
       chat,
@@ -167,10 +181,10 @@ export default function ChatLayout({ children, signOutAction, user }) {
       scrollToBottomFn,
       selectedText,
       user,
+      messages,
     ]
   );
 
-  // Pending message effect
   useEffect(() => {
     if (sessionId && pendingMessage) {
       append(
