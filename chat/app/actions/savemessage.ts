@@ -1,7 +1,5 @@
 "use server";
 
-console.log("savemessage.ts loaded");
-
 import { db } from "@/lib/db";
 import { chatMessages } from "@/lib/schema";
 import { createClient } from "@/utlis/supabase/server";
