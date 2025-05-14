@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
 // Simple test endpoint to check if basic logging works
-export async function GET(request: NextRequest) {
+export async function GET() {
   console.log("API route /api/test was called");
 
   return NextResponse.json({

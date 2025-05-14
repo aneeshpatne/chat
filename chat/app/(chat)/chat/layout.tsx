@@ -2,7 +2,9 @@ import ChatLayout from "./clientlayout";
 import { createClient } from "@/utlis/supabase/server";
 import { redirect } from "next/navigation";
 import { signOutAction } from "@/app/(auth)/auth/actions";
-export default async function ChatLayoutWrapper({ children }: any) {
+import { ReactNode } from "react";
+
+export default async function ChatLayoutWrapper({ children }: { children: ReactNode }) {
   const supabase = await createClient();
   const {
     data: { user },

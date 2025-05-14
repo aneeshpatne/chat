@@ -12,8 +12,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/utlis/supabase/client";
-import { Button } from "@/components/ui/button";
+// Removed unused imports
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,7 +30,7 @@ interface ChatItem {
   createdAt: Date | null; // Assuming createdAt can be null
 }
 
-export default function NavBar({ user }: { user: any }) {
+export default function NavBar({ user }: { user: { email?: string; id: string } }) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const [recentChats, setRecentChats] = useState<ChatItem[]>([]); // State for recent chats

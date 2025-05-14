@@ -47,11 +47,9 @@ export default async function LoginPage(props: {
                 <span className="text-xs text-gray-300">{name}</span>
               </div>
             ))}
-          </div>
-
-          <p className="text-gray-400 text-sm mb-6">
+          </div>          <p className="text-gray-400 text-sm mb-6">
             One interface, endless possibilities. Seamlessly switch between the
-            world's most advanced AI models to find the perfect answer for any
+            world&apos;s most advanced AI models to find the perfect answer for any
             question.
           </p>
 
