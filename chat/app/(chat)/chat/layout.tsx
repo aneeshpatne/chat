@@ -4,7 +4,11 @@ import { redirect } from "next/navigation";
 import { signOutAction } from "@/app/(auth)/auth/actions";
 import { ReactNode } from "react";
 
-export default async function ChatLayoutWrapper({ children }: { children: ReactNode }) {
+export default async function ChatLayoutWrapper({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const supabase = await createClient();
   const {
     data: { user },

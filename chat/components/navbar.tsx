@@ -30,7 +30,11 @@ interface ChatItem {
   createdAt: Date | null; // Assuming createdAt can be null
 }
 
-export default function NavBar({ user }: { user: { email?: string; id: string } }) {
+export default function NavBar({
+  user,
+}: {
+  user: { email?: string; id: string };
+}) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const [recentChats, setRecentChats] = useState<ChatItem[]>([]); // State for recent chats
