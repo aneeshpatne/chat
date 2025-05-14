@@ -6,7 +6,7 @@ import React, {
   useState,
   useRef,
 } from "react";
-import { parseMarkdownIntoBlocks } from "./CodeBlock";
+import parseMarkdownIntoBlocksFunc from "./parseMarkdownIntoBlocks";
 import { AnimatePresence, motion } from "framer-motion";
 import MemoizedMarkdownBlock from "./MemoizedMarkdownBlock";
 import Marked from "react-markdown";
@@ -33,7 +33,7 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
 
   const deferredMessage = useDeferredValue(message);
   const blocks = useMemo(
-    () => parseMarkdownIntoBlocks(deferredMessage),
+    () => parseMarkdownIntoBlocksFunc(deferredMessage),
     [deferredMessage]
   );
 

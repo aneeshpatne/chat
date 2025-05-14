@@ -1,4 +1,4 @@
-import ChatLayout from "./Clientlayout";
+import ChatLayout from "./clientlayout";
 import { createClient } from "@/utlis/supabase/server";
 import { redirect } from "next/navigation";
 import { signOutAction } from "@/app/(auth)/auth/actions";

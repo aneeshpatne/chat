@@ -10,7 +10,6 @@ export async function createChat(
   title: string,
   userId: string
 ) {
-  console.log("createChat called with:", { sessionId, title, userId }); // Log input parameters
   await db.insert(chats).values({
     id: sessionId,
     title,

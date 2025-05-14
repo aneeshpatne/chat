@@ -1,7 +1,7 @@
 "use client";
 import Chat from "@/components/chatnew";
 import { useEffect, useState, useContext } from "react"; // Grouped imports
-import { ChatContext } from "@/app/(chat)/chat/Clientlayout"; // Corrected path to use 'Clientlayout' (uppercase C)
+import { ChatContext } from "@/app/(chat)/chat/clientlayout"; // Fixed path to match actual filename with lowercase 'c'
 import { generateTitle } from "@/app/actions/title";
 
 export default function ChatSessionPage() {

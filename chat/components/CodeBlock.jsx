@@ -10,10 +10,11 @@ marked.use({
   tables: true,
 });
 
-export function parseMarkdownIntoBlocks(markdown) {
-  const tokens = marked.lexer(markdown);
-  return tokens.map((t) => t.raw);
-}
+// Import the function from its dedicated file instead of duplicating
+import parseMarkdownIntoBlocksFunc from "./parseMarkdownIntoBlocks";
+
+// Re-export for backward compatibility
+const parseMarkdownIntoBlocks = parseMarkdownIntoBlocksFunc;
 
 const CodeBlock = React.memo(function CodeBlock({
   children,

@@ -360,6 +360,7 @@ const AdditionalMessage = ({ message, setaddMessage }) => {
     </div>
   );
 };
+// Using named function for React DevTools and Fast Refresh
 const TextAreaComponent = React.memo(function TextAreaComponent({
   input,
   handleInputChange,
@@ -383,7 +384,8 @@ const TextAreaComponent = React.memo(function TextAreaComponent({
   );
 });
 
-function ModelSelector({ model, setModel }) {
+// Using PascalCase and proper React memo
+const ModelSelector = React.memo(function ModelSelector({ model, setModel }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -404,9 +406,14 @@ function ModelSelector({ model, setModel }) {
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
+});
 
-function ModelItem({ model, isSelected, setModel }) {
+// Using PascalCase and proper React memo
+const ModelItem = React.memo(function ModelItem({
+  model,
+  isSelected,
+  setModel,
+}) {
   const { name, id, provider, img } = model;
 
   const handleClick = () => setModel(model);
@@ -438,9 +445,13 @@ function ModelItem({ model, isSelected, setModel }) {
       )}
     </DropdownMenuItem>
   );
-}
+});
 
-function SelectionButton({ onClick, position }) {
+// Using proper PascalCase and memoization for React components
+const SelectionButton = React.memo(function SelectionButton({
+  onClick,
+  position,
+}) {
   return (
     <button
       onClick={onClick}
@@ -455,4 +466,4 @@ function SelectionButton({ onClick, position }) {
       Add
     </button>
   );
-}
+});
