@@ -6,47 +6,41 @@ export default function MessageLoadingAnimation() {
   return (
     <>
       <style jsx>{`
-        @keyframes pulse {
+        @keyframes fadeInOut {
           0%,
-          80%,
           100% {
-            transform: scale(0);
-            opacity: 0.5;
+            opacity: 0.3;
           }
-          40% {
-            transform: scale(1);
+          50% {
             opacity: 1;
           }
         }
-        .dot-container {
-          display: flex;
+        .loading-dot {
+          animation: fadeInOut 0.8s infinite;
+        }
+        .dot-1 {
+          animation-delay: 0s;
+        }
+        .dot-2 {
+          animation-delay: 0.2s;
+        }
+        .dot-3 {
+          animation-delay: 0.4s;
+        }
+        .dots-container {
+          display: inline-flex;
           justify-content: center;
           align-items: center;
-          height: 24px;
-          width: 100%;
-          border-radius: 4px;
-          background: rgba(100, 100, 100, 0.2);
-        }
-        .loading-bar::after {
-          content: "";
-          position: absolute;
-          top: 0;
-          left: 0;
-          height: 100%;
-          width: 60%;
-          background: linear-gradient(
-            90deg,
-            transparent,
-            rgba(150, 150, 150, 0.5),
-            transparent
-          );
-          animation: wave 1.5s infinite ease-in-out;
+          gap: 3px;
+          padding: 4px 8px;
+          border-radius: 12px;
+          background: rgba(100, 100, 100, 0.1);
         }
       `}</style>
-      <div className="dot-container">
-        <div className="dot dot1"></div>
-        <div className="dot dot2"></div>
-        <div className="dot dot3"></div>
+      <div className="dots-container">
+        <span className="loading-dot dot-1 h-1.5 w-1.5 rounded-full bg-muted-foreground"></span>
+        <span className="loading-dot dot-2 h-1.5 w-1.5 rounded-full bg-muted-foreground"></span>
+        <span className="loading-dot dot-3 h-1.5 w-1.5 rounded-full bg-muted-foreground"></span>
       </div>
     </>
   );

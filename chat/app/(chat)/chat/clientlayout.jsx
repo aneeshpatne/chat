@@ -5,10 +5,8 @@ import { createContext, useContext, useState, useEffect, useMemo } from "react";
 import { useParams, useRouter, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
-  Send,
   LayoutTemplate,
   X,
-  OctagonX,
   CheckIcon,
   Scroll,
   ChevronDown,
@@ -19,7 +17,7 @@ import React from "react";
 import { models } from "@/components/models";
 import Image from "next/image";
 import { useRef } from "react";
-import MessageLoadingAnimation from "@/components/MessageLoadingAnimation";
+import SubmitButton from "@/components/SubmitButton";
 
 import {
   DropdownMenu,
@@ -118,20 +116,17 @@ export default function ChatLayout({ children, signOutAction, user }) {
     const combinedInput = addMessage ? `${addMessage}\n\n${input}` : input;
 
     if (!sessionId) {
-      setIsInitiatingChat(true); // Set loading state for new chat initiation
+      setIsInitiatingChat(true);
       try {
         handleInputChange({ target: { value: "" } });
         setPendingMessage(combinedInput);
-
         const newSessionID = await createSession();
         const title = await generateTitle(combinedInput);
-        // Ensure user and user.id are available before calling createChat
         if (user && user.id) {
           await createChat(newSessionID, title, user.id);
         } else {
           console.error("User ID is not available, cannot create chat entry.");
-          // Optionally, handle this error more gracefully (e.g., show a message to the user)
-          setIsInitiatingChat(false); // Reset loading state
+          setIsInitiatingChat(false);
           return;
         }
 
@@ -145,14 +140,12 @@ export default function ChatLayout({ children, signOutAction, user }) {
           });
         } catch (err) {
           console.error("Failed to save first user message:", err);
-          // Decide if this error should stop the process or just be logged
         }
 
         router.push(`/chat/${newSessionID}`);
-        // setIsInitiatingChat will be set to false by the useEffect watching sessionId
       } catch (err) {
         console.error("Failed to initiate chat:", err);
-        setIsInitiatingChat(false); // Reset loading state on error
+        setIsInitiatingChat(false);
       }
     } else {
       const userMessageId = crypto.randomUUID();
@@ -167,7 +160,6 @@ export default function ChatLayout({ children, signOutAction, user }) {
       } catch (err) {
         console.error("Failed to save user message:", err);
       }
-
       setaddMessage("");
       handleInputChange({ target: { value: "" } });
 
@@ -179,16 +171,16 @@ export default function ChatLayout({ children, signOutAction, user }) {
   };
   useEffect(() => {
     if (sessionId) {
-      setIsInitiatingChat(false); // Reset initiating state if a session ID is present
+      setIsInitiatingChat(false);
     }
     const fetchMessage = async () => {
       console.log("Fetching messages...");
       if (!sessionId) {
-        setInitialMessage([]); // Reset if no session ID
+        setInitialMessage([]);
         return;
       }
-      setIsFetchingMessages(true); // Set loading true
-      setInitialMessage([]); // Reset initial messages before fetching new ones
+      setIsFetchingMessages(true);
+      setInitialMessage([]);
       try {
         console.log("Fetching messages for session:", sessionId);
         const data = await getMessagesByChatId(sessionId);
@@ -196,9 +188,9 @@ export default function ChatLayout({ children, signOutAction, user }) {
         setInitialMessage(data);
       } catch (err) {
         console.error("Failed to fetch messages:", err);
-        setInitialMessage([]); // Reset on error
+        setInitialMessage([]);
       } finally {
-        setIsFetchingMessages(false); // Set loading false
+        setIsFetchingMessages(false);
       }
     };
     fetchMessage();
@@ -220,7 +212,7 @@ export default function ChatLayout({ children, signOutAction, user }) {
       setScrollToBottomFn,
       user,
       initialMessage,
-      isFetchingMessages, // Add to context
+      isFetchingMessages,
     }),
     [
       chat,
@@ -232,7 +224,7 @@ export default function ChatLayout({ children, signOutAction, user }) {
       selectedText,
       user,
       initialMessage,
-      isFetchingMessages, // Add to context dependencies
+      isFetchingMessages,
     ]
   );
 
@@ -245,12 +237,34 @@ export default function ChatLayout({ children, signOutAction, user }) {
       setPendingMessage(null);
     }
   }, [sessionId, pendingMessage, append, model]);
-
+  // Instead of showing a full-screen loading indicator, render the layout
+  // with the SubmitButton in loading state
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-      </div>
+      <ChatContext.Provider value={contextValue}>
+        <div className="relative">
+          <NavBar user={user} />
+          <div className="flex flex-col relative" style={{ height: "100dvh" }}>
+            <div className="flex-grow"></div>
+            <div className="flex flex-col items-center gap-2 absolute left-0 right-0 bottom-0 ">
+              <div className="mx-auto w-[80%] max-w-4xl mb-4">
+                <div className="flex flex-col p-4 bg-card/60 backdrop-blur-sm rounded-md border border-border flex-shrink-0">
+                  <div className="h-10"></div>
+                  <div className="flex justify-between mt-3">
+                    <div className="w-24 h-10"></div>
+                    <SubmitButton
+                      status="in_progress"
+                      isInitiatingChat={true}
+                      onSubmit={() => {}}
+                      onStop={() => {}}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ChatContext.Provider>
     );
   }
 
@@ -266,14 +280,7 @@ export default function ChatLayout({ children, signOutAction, user }) {
             />
           )}
           <div ref={containerRef} className="flex-grow overflow-auto">
-            {isInitiatingChat ? (
-              <div className="flex flex-col items-center justify-center h-full flex-grow p-4">
-                <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary mb-4"></div>
-                <p className="text-muted-foreground">Starting new chat...</p>
-              </div>
-            ) : (
-              children
-            )}
+            {children}
           </div>
           <div className="flex flex-col items-center gap-2 absolute left-0 right-0 bottom-0 ">
             {showScroll && <ScrollToBottom onClick={scrollToBottomFn} />}
@@ -290,25 +297,13 @@ export default function ChatLayout({ children, signOutAction, user }) {
                     onSubmit={handleSubmit}
                   />
                   <div className="flex justify-between mt-3">
-                    <ModelSelector model={model} setModel={setModel} />
-
-                    {status === "streaming" ? (
-                      <Button
-                        variant="destructive"
-                        onClick={stop}
-                        className="shadow-md hover:shadow-lg transition-all duration-200"
-                      >
-                        <OctagonX className="w-5 h-5" />
-                      </Button>
-                    ) : (
-                      <Button
-                        variant="outline"
-                        onClick={handleSubmit}
-                        className="bg-primary/80 hover:bg-primary text-primary-foreground hover:text-primary-foreground border-primary/30 shadow-md hover:shadow-lg transition-all duration-200"
-                      >
-                        <Send className="w-5 h-5" />
-                      </Button>
-                    )}
+                    <ModelSelector model={model} setModel={setModel} />{" "}
+                    <SubmitButton
+                      status={status}
+                      isInitiatingChat={isInitiatingChat}
+                      onSubmit={handleSubmit}
+                      onStop={stop}
+                    />
                   </div>
                 </div>
               ) : (
@@ -372,7 +367,7 @@ const TextAreaComponent = React.memo(function TextAreaComponent({
       onChange={handleInputChange}
       minRows={1}
       maxRows={10}
-      placeholder="Type your message here..."
+      placeholder="Type your messages here..."
       className="w-full p-2 border-none rounded-md text-foreground bg-transparent overflow-y-auto focus:outline-none transition-all duration-150 ease-in-out resize-none"
       onKeyDown={(e) => {
         if (e.key === "Enter" && !e.shiftKey) {

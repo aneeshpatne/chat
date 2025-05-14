@@ -2,11 +2,11 @@
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { Button } from "./ui/button";
-import { Send } from "lucide-react";
 import { useChat } from "@ai-sdk/react";
 import { ReceivedMessage } from "./ReceivedMessage";
-import { LayoutTemplate, X, OctagonX } from "lucide-react";
+import { LayoutTemplate, X } from "lucide-react";
 import { useRouter } from "next/navigation";
+import SubmitButton from "./SubmitButton";
 
 import { models } from "./models";
 import Image from "next/image";
@@ -49,23 +49,46 @@ export default function Chat() {
   const [mounted, setMounted] = useState(false);
 
   //const [model, setModel] = useState("gpt-4.1-nano");
-
   useEffect(() => {
     setMounted(true);
   }, []);
-  if (!mounted) {
-    return <LoadingState />;
-  }
 
+  // Use a minimal loading UI that shows the submit button in loading state
+  if (!mounted) {
+    return (
+      <div className="flex flex-col w-full h-full relative">
+        <div className="flex-grow"></div>
+        <div className="flex flex-col items-center gap-2 absolute left-0 right-0 bottom-0 ">
+          <div className="mx-auto w-[80%] max-w-4xl mb-4">
+            <div className="flex flex-col p-4 bg-card rounded-md border border-border">
+              <div className="h-10"></div>
+              <div className="flex justify-between mt-2">
+                <div className="w-24 h-10"></div>
+                <SubmitButton
+                  status="in_progress"
+                  onSubmit={() => {}}
+                  onStop={() => {}}
+                  isInitiatingChat={false}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="flex flex-col w-full h-full">
-      {!input && messages.length === 0 && (
-        <div className="flex items-center justify-center h-[calc(100vh-6rem)]">
-          <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-stone-100 via-stone-300 to-stone-100 inline-block text-transparent bg-clip-text drop-shadow-sm">
-            Good Afternoon, Aneesh!
-          </h1>
-        </div>
-      )}
+      {!input &&
+        messages.length === 0 &&
+        status !== "in_progress" &&
+        status !== "submitted" && (
+          <div className="flex items-center justify-center h-[calc(100vh-6rem)]">
+            <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-stone-100 via-stone-300 to-stone-100 inline-block text-transparent bg-clip-text drop-shadow-sm">
+              Good Afternoon, Aneesh!
+            </h1>
+          </div>
+        )}
       <div className="w-full h-full overflow-y-auto">
         <div className="mx-auto w-[80%] max-w-4xl pb-4">
           <div className="flex flex-col w-full gap-3 p-3">
@@ -74,12 +97,11 @@ export default function Chat() {
                 .filter((part) => part.type === "text")
                 .map((part) => part.text)
                 .join("");
-
               return message.role === "user" ? (
                 <SentMessage key={index} message={text} />
-              ) : message.id === "loading" ? (
-                <MessageLoadingIndicator key={index} />
-              ) : (
+              ) : message.id ===
+                "loading" ? // Skip rendering loading message, use button loading state instead
+              null : (
                 <ReceivedMessage
                   key={index}
                   message={text}
@@ -100,17 +122,13 @@ export default function Chat() {
             onSubmit={onSubmit}
           />
           <div className="flex justify-between mt-2">
-            <ModelSelector model={model} setModel={setModel} />
-
-            {status === "streaming" ? (
-              <Button variant="destructive" onClick={stop}>
-                <OctagonX />
-              </Button>
-            ) : (
-              <Button variant="outline" onClick={(e) => onSubmit(e)}>
-                <Send size={16} />
-              </Button>
-            )}
+            <ModelSelector model={model} setModel={setModel} />{" "}
+            <SubmitButton
+              status={status}
+              onSubmit={(e) => onSubmit(e)}
+              onStop={stop}
+              isInitiatingChat={false}
+            />
           </div>
         </div>
       </div>

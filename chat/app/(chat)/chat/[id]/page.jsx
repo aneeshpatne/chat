@@ -32,13 +32,17 @@ export default function ChatSessionPage() {
       }
     }
   }, [title]);
-
+  // Instead of showing a central loading indicator, render the Chat component
+  // with empty messages and let the SubmitButton handle loading state
   if (isFetchingMessages === true) {
     return (
-      <div className="flex flex-col items-center justify-center h-full flex-grow p-4">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary mb-4"></div>
-        <p className="text-muted-foreground">Loading messages...</p>
-      </div>
+      <Chat
+        {...chatContextProps}
+        model={model}
+        setModel={setModel}
+        messages={[]}
+        status="in_progress"
+      />
     );
   }
 

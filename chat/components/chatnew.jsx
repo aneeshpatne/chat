@@ -63,7 +63,6 @@ export default function Chat({
     container.addEventListener("scroll", handleScroll);
     return () => container.removeEventListener("scroll", handleScroll);
   }, []);
-
   const renderedMessages = [
     ...messages,
     pendingMessage && {
@@ -72,26 +71,24 @@ export default function Chat({
       parts: [{ type: "text", text: pendingMessage }],
       pending: true,
     },
-    status === "submitted" && {
-      id: "loading-assistant",
-      role: "assistant",
-      parts: [{ type: "text", text: "" }],
-      pending: true,
-    },
+    // Removed loading-assistant message to avoid center loading animation
   ].filter(Boolean);
 
   const currentlyStreamingId =
     status === "streaming" ? messages[messages.length - 1]?.id : null;
-
   return (
     <div className="flex flex-col w-full h-full relative">
-      {!input && messages.length === 0 && !pendingMessage && (
-        <div className="flex items-center justify-center h-[calc(100vh-6rem)]">
-          <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-indigo-300 via-purple-300 to-blue-300 inline-block text-transparent bg-clip-text drop-shadow-sm">
-            Good Afternoon, Aneesh!
-          </h1>
-        </div>
-      )}
+      {!input &&
+        messages.length === 0 &&
+        !pendingMessage &&
+        status !== "in_progress" &&
+        status !== "submitted" && (
+          <div className="flex items-center justify-center h-[calc(100vh-6rem)]">
+            <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-indigo-300 via-purple-300 to-blue-300 inline-block text-transparent bg-clip-text drop-shadow-sm">
+              Good Afternoon, Aneesh!
+            </h1>
+          </div>
+        )}
       <div
         ref={chatContainerRef}
         className="w-full h-[calc(100vh-3rem)] overflow-y-auto"
@@ -108,12 +105,11 @@ export default function Chat({
                 .map((part) => part.reasoning)
                 .join("");
               const messageID = message.id;
-
               return message.role === "user" ? (
                 <SentMessage key={index} message={text} />
-              ) : message.id === "loading" ? (
-                <MessageLoadingIndicator key={index} />
-              ) : (
+              ) : message.id ===
+                "loading" ? // Don't show a loading indicator, handled by SubmitButton now
+              null : (
                 <ReceivedMessage
                   key={index}
                   id={messageID}
@@ -153,20 +149,20 @@ export function MessageLoadingIndicator() {
           }
         }
       `}</style>
-      <div className="flex items-center space-x-1">
+      <div className="flex items-center space-x-1 p-1 rounded-md">
         <span
-          className="h-2 w-2 rounded-full bg-muted-foreground"
+          className="h-1.5 w-1.5 rounded-full bg-muted-foreground"
           style={{ animation: "fastFade 0.7s infinite", animationDelay: "0s" }}
         ></span>
         <span
-          className="h-2 w-2 rounded-full bg-muted-foreground"
+          className="h-1.5 w-1.5 rounded-full bg-muted-foreground"
           style={{
             animation: "fastFade 0.7s infinite",
             animationDelay: "0.15s",
           }}
         ></span>
         <span
-          className="h-2 w-2 rounded-full bg-muted-foreground"
+          className="h-1.5 w-1.5 rounded-full bg-muted-foreground"
           style={{
             animation: "fastFade 0.7s infinite",
             animationDelay: "0.3s",

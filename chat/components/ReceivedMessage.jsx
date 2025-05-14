@@ -94,9 +94,9 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
       console.error("Failed to copy message: ", err);
     }
   };
-
+  // Skip rendering empty messages instead of showing a loading indicator
   if (!message && !reasoning) {
-    return <MessageLoadingIndicator />;
+    return null;
   }
 
   return (
