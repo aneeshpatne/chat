@@ -3,6 +3,7 @@
 import { generateText } from "ai";
 import { openai } from "@ai-sdk/openai";
 import { createClient } from "@/utlis/supabase/server";
+
 export async function generateTitle(content: string): Promise<string> {
   const supabase = await createClient();
   const {

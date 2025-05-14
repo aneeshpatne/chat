@@ -10,7 +10,7 @@ export async function getMessagesByChatId(chatId: string) {
     .select()
     .from(chatMessages)
     .where(eq(chatMessages.chatId, chatId))
-    .orderBy(desc(chatMessages.createdAt));
+    .orderBy(chatMessages.createdAt);
 
   const transformed = rows.map((msg) => ({
     id: msg.id,

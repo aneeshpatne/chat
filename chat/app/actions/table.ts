@@ -1,6 +1,7 @@
 "use server";
 import { db } from "@/lib/db";
 import { chats } from "@/lib/shema/chat";
+import { desc } from "drizzle-orm";
 import { createClient } from "@/utlis/supabase/server";
 export async function fetchChats() {
   const supabase = await createClient();
@@ -10,7 +11,10 @@ export async function fetchChats() {
   if (!user) {
     throw new Error("You are not authenticated");
   }
-  const chatsList = await db.select().from(chats).orderBy(chats.createdAt);
+  const chatsList = await db
+    .select()
+    .from(chats)
+    .orderBy(desc(chats.createdAt));
   return chatsList;
 }
 export async function createChat(
