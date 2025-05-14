@@ -107,9 +107,7 @@ export default function Chat({
               const messageID = message.id;
               return message.role === "user" ? (
                 <SentMessage key={index} message={text} />
-              ) : message.id ===
-                "loading" ? // Don't show a loading indicator, handled by SubmitButton now
-              null : (
+              ) : message.id === "loading" ? null : (
                 <ReceivedMessage
                   key={index}
                   id={messageID}

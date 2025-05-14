@@ -40,6 +40,12 @@ export const models = {
     provider: "openai",
     img: "/openai.svg",
   },
+  "OpenAI o3": {
+    name: "o3",
+    id: "o3",
+    provider: "openai",
+    img: "/openai.svg",
+  },
   "OpenAI o4 Mini": {
     name: "o4 Mini",
     id: "o4-mini",
@@ -83,6 +89,13 @@ export const models = {
     provider: "openrouter",
     img: "/anthropic.svg",
   },
+
+  "Grok 3": {
+    name: "Grok 3",
+    id: "x-ai/grok-3-beta",
+    provider: "openrouter",
+    img: "/x-ai.svg",
+  },
   "Grok 3 Mini": {
     name: "Grok 3 Mini",
     id: "x-ai/grok-3-mini-beta",
@@ -93,7 +106,7 @@ export const models = {
     name: "Qwen 3 Mini",
     id: "qwen/qwen3-235b-a22b",
     provider: "openrouter",
-    img: "/qwen.svg",
+    img: "/qwen.png",
   },
   "Deepseek v3": {
     name: "DeepSeek V3",
@@ -105,12 +118,12 @@ export const models = {
     name: "Sonar Reasoning Pro",
     id: "perplexity/sonar-reasoning-pro",
     provider: "openrouter",
-    img: "/perplexity.svg",
+    img: "/perplexity.png",
   },
   "Sonar Deep Research": {
     name: "Sonar Deep Research",
     id: "perplexity/sonar-deep-research",
     provider: "openrouter",
-    img: "/perplexity.svg",
+    img: "/perplexity.png",
   },
 };
