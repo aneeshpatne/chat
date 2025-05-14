@@ -7,10 +7,11 @@ import { micromark } from "micromark";
 import { ReceivedMessage } from "./ReceivedMessage";
 import { LayoutTemplate, X } from "lucide-react";
 import SubmitButton from "./SubmitButton";
-import { models } from "./models";
+import { useModels } from "./models";
 import Image from "next/image";
 
 export default function Chat({ sessionid }) {
+  const { getAllModels } = useModels();
   const [token, setToken] = useState({});
   const {
     messages,
@@ -122,9 +123,7 @@ export default function Chat({ sessionid }) {
                 .join("");
               return message.role === "user" ? (
                 <SentMessage key={index} message={text} />
-              ) : message.id ===
-                "loading" ? // Remove the loading indicator, it's now integrated into the submit button
-              null : (
+              ) : message.id === "loading" ? null : ( // Remove the loading indicator, it's now integrated into the submit button
                 <ReceivedMessage
                   key={index}
                   message={text}
@@ -210,7 +209,7 @@ function ModelSelector({ model, setModel }) {
         bg-popover text-popover-foreground p-2 border border-border rounded-md shadow-lg {/* Use popover theme colors */}
       "
           >
-            {models.map((m) => (
+            {getAllModels().map((m) => (
               <Button
                 key={m.id}
                 id={m.id}

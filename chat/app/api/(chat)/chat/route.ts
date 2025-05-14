@@ -1,6 +1,7 @@
 // /app/api/chat/route.ts
 import { openai } from "@ai-sdk/openai";
 import { google } from "@ai-sdk/google";
+import { createGroq } from "@ai-sdk/groq";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { streamText } from "ai";
 import { createClient } from "@/utlis/supabase/server";
@@ -9,6 +10,9 @@ export const maxDuration = 30;
 
 const openrouter = createOpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY,
+});
+const groq = createGroq({
+  apiKey: process.env.GROQ_API_KEY,
 });
 
 export async function POST(req: Request) {
@@ -36,13 +40,19 @@ export async function POST(req: Request) {
   } else if (data?.provider === "openrouter") {
     result = streamText({
       model: openrouter(modelId),
-      temperature: 1,
+      temperature: 0.7,
       messages,
     });
   } else if (data?.provider === "gemini") {
     result = streamText({
       model: google(modelId),
       temperature: 1,
+      messages,
+    });
+  } else if (data?.provider === "groq") {
+    result = streamText({
+      model: groq(modelId),
+      temperature: 0.7,
       messages,
     });
   } else {

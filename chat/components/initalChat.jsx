@@ -8,11 +8,12 @@ import { LayoutTemplate, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import SubmitButton from "./SubmitButton";
 
-import { models } from "./models";
+import { useModels } from "./models";
 import Image from "next/image";
 
 export default function Chat() {
   const router = useRouter();
+  const { getAllModels } = useModels();
 
   const [token, setToken] = useState({});
   const [sessionId, setSessionId] = useState(null);
@@ -99,9 +100,7 @@ export default function Chat() {
                 .join("");
               return message.role === "user" ? (
                 <SentMessage key={index} message={text} />
-              ) : message.id ===
-                "loading" ? // Skip rendering loading message, use button loading state instead
-              null : (
+              ) : message.id === "loading" ? null : ( // Skip rendering loading message, use button loading state instead
                 <ReceivedMessage
                   key={index}
                   message={text}
@@ -187,7 +186,7 @@ function ModelSelector({ model, setModel }) {
         bg-popover text-popover-foreground p-2 border border-border rounded-md shadow-lg {/* Use popover theme colors */}
       "
           >
-            {models.map((m) => (
+            {getAllModels().map((m) => (
               <Button
                 key={m.id}
                 id={m.id}

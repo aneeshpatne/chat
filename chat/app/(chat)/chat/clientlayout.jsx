@@ -11,10 +11,11 @@ import {
   Scroll,
   ChevronDown,
   LogOut,
+  ChevronRight,
 } from "lucide-react";
 import TextareaAutosize from "react-textarea-autosize";
 import React from "react";
-import { models } from "@/components/models";
+import { models, useModels, modelsByCompany } from "@/components/models";
 import Image from "next/image";
 import { useRef } from "react";
 import SubmitButton from "@/components/SubmitButton";
@@ -34,6 +35,7 @@ import { v4 as uuidv4 } from "uuid";
 import { getMessagesByChatId } from "@/app/actions/fetchmessage";
 import { generateTitle } from "@/app/actions/title";
 import { createChat } from "@/app/actions/table"; // Added import
+// Use flat list of models for backwards compatibility
 const modelList = Object.values(models);
 export const ChatContext = createContext(null);
 
@@ -213,6 +215,7 @@ export default function ChatLayout({ children, signOutAction, user }) {
       user,
       initialMessage,
       isFetchingMessages,
+      modelsByCompany, // Add modelsByCompany to context
     }),
     [
       chat,
@@ -225,6 +228,7 @@ export default function ChatLayout({ children, signOutAction, user }) {
       user,
       initialMessage,
       isFetchingMessages,
+      // modelsByCompany is static so no need to add it to deps
     ]
   );
 
@@ -381,25 +385,140 @@ const TextAreaComponent = React.memo(function TextAreaComponent({
 
 // Using PascalCase and proper React memo
 const ModelSelector = React.memo(function ModelSelector({ model, setModel }) {
+  const [selectedCompany, setSelectedCompany] = useState(null);
+
+  // Import modelsByCompany from models.tsx
+  const { byCompany } = useModels();
+  // Find current company for the selected model
+  const currentCompany = useMemo(() => {
+    return byCompany.find((company) =>
+      company.models.some((m) => m.id === model.id)
+    );
+  }, [byCompany, model.id]);
   return (
-    <DropdownMenu>
+    <DropdownMenu closeOnSelect={false}>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline">
-          <LayoutTemplate size={16} className="mr-2" />
+        <Button variant="outline" className="flex items-center">
+          {currentCompany?.img ? (
+            <Image
+              src={currentCompany.img}
+              alt={`${currentCompany.name} logo`}
+              height={16}
+              width={16}
+              className="object-contain flex-shrink-0 mr-2"
+            />
+          ) : (
+            <LayoutTemplate size={16} className="mr-2" />
+          )}
           <span>{model.name}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="max-h-[80vh] overflow-y-auto bg-popover p-1 border border-border rounded-md shadow-lg min-w-[200px]">
-        {modelList.map((m) => (
-          <ModelItem
-            key={m.id}
-            model={m}
-            isSelected={m.id === model.id}
-            setModel={setModel}
-          />
-        ))}
+        {selectedCompany ? (
+          <>
+            {" "}
+            <div
+              className="flex items-center gap-2 p-2 cursor-pointer hover:bg-muted group transition-colors duration-200"
+              onClick={(e) => {
+                // Prevent the dropdown from closing
+                e.preventDefault();
+                e.stopPropagation();
+                setSelectedCompany(null);
+              }}
+            >
+              <ChevronDown
+                className="rotate-90 mr-1 group-hover:-translate-x-1 transition-transform duration-200"
+                size={16}
+              />
+              <span className="font-medium">Back to companies</span>
+            </div>{" "}
+            <div className="h-px bg-border my-1" />
+            {(() => {
+              const company = byCompany.find((c) => c.name === selectedCompany);
+              return (
+                <>
+                  <div className="px-2 py-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      {company?.img && (
+                        <Image
+                          src={company.img}
+                          alt={`${company.name} logo`}
+                          height={20}
+                          width={20}
+                          className="object-contain flex-shrink-0"
+                        />
+                      )}
+                      <span className="font-semibold text-sm">
+                        {company?.name} Models
+                      </span>
+                    </div>
+                  </div>
+                  {company?.models.map((m) => (
+                    <ModelItem
+                      key={m.id}
+                      model={m}
+                      isSelected={m.id === model.id}
+                      setModel={setModel}
+                    />
+                  ))}
+                </>
+              );
+            })()}
+          </>
+        ) : (
+          byCompany.map((company) => (
+            <CompanyItem
+              key={company.name}
+              company={company}
+              onSelect={() => setSelectedCompany(company.name)}
+            />
+          ))
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
+  );
+});
+
+// Company item component for showing company entries in dropdown
+const CompanyItem = React.memo(function CompanyItem({ company, onSelect }) {
+  const { name, img } = company;
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleClick = (e) => {
+    // Prevent the dropdown from closing
+    e.preventDefault();
+    e.stopPropagation();
+    onSelect();
+  };
+
+  return (
+    <DropdownMenuItem
+      onClick={handleClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className="cursor-pointer flex items-center justify-between gap-2 p-2 hover:bg-muted focus:bg-muted focus:text-foreground relative"
+    >
+      <div className="flex items-center gap-2">
+        {img && (
+          <Image
+            src={img}
+            alt={`${name} logo`}
+            height={20}
+            width={20}
+            className="object-contain flex-shrink-0"
+          />
+        )}
+        <span className="flex-grow truncate">{name}</span>
+      </div>
+      <ChevronRight
+        size={16}
+        className={`transition-all duration-200 ease-in-out ${
+          isHovered
+            ? "text-foreground transform translate-x-1"
+            : "text-muted-foreground"
+        }`}
+      />
+    </DropdownMenuItem>
   );
 });
 
@@ -410,8 +529,14 @@ const ModelItem = React.memo(function ModelItem({
   setModel,
 }) {
   const { name, id, provider, img } = model;
+  const handleClick = () => {
+    // Allow dropdown to close when model is actually selected
+    // by not preventing the event
+    setModel(model);
 
-  const handleClick = () => setModel(model);
+    // This will close the dropdown after a model is selected
+    // We don't need to prevent/stop propagation here
+  };
 
   return (
     <DropdownMenuItem
