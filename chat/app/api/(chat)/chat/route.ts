@@ -3,7 +3,7 @@ import { openai } from "@ai-sdk/openai";
 import { google } from "@ai-sdk/google";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { streamText } from "ai";
-import { errorHandler } from "./errorhandler";
+import { createClient } from "@/utlis/supabase/server";
 export const runtime = "edge";
 export const maxDuration = 30;
 
@@ -12,6 +12,13 @@ const openrouter = createOpenRouter({
 });
 
 export async function POST(req: Request) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return new Response("You are not authenticated", { status: 401 });
+  }
   const { messages, data } = await req.json();
   console.log(data?.provider);
   const modelId = data?.model || "gpt-4.1-nano";
