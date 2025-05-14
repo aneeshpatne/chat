@@ -1,7 +1,7 @@
 "use server";
 import { db } from "@/lib/db";
 import { chatMessages } from "@/lib/shema/chat_message";
-import { eq } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 
 export async function getMessagesByChatId(chatId: string) {
   console.log("Fetching messages for chatId:", chatId);
@@ -10,7 +10,7 @@ export async function getMessagesByChatId(chatId: string) {
     .select()
     .from(chatMessages)
     .where(eq(chatMessages.chatId, chatId))
-    .orderBy(chatMessages.createdAt);
+    .orderBy(desc(chatMessages.createdAt));
 
   const transformed = rows.map((msg) => ({
     id: msg.id,
