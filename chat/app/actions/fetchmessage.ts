@@ -1,7 +1,7 @@
 "use server";
 import { db } from "@/lib/db";
 import { chatMessages } from "@/lib/shema/chat_message";
-import { eq, desc } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 
 export async function getMessagesByChatId(chatId: string) {
   console.log("Fetching messages for chatId:", chatId);
