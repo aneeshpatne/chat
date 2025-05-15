@@ -37,9 +37,8 @@ export async function POST(req: Request) {
           content: lastMsg.content,
         }
       : null;
-
   // Generic save helper
-  async function saveMessage(message: Record<string, any>) {
+  async function saveMessage(message: Record<string, unknown>) {
     const res = await fetch("https://chat.aneeshpatne.com/api/savemessage", {
       method: "POST",
       headers: {
@@ -51,9 +50,16 @@ export async function POST(req: Request) {
     });
     if (!res.ok) console.error("Failed to save message:", await res.text());
   }
-
   // Save both user and assistant once streaming completes
-  async function saveAll(result: any) {
+  async function saveAll(result: {
+    text: string;
+    reasoning?: string;
+    usage?: {
+      promptTokens?: number;
+      completionTokens?: number;
+      totalTokens?: number;
+    };
+  }) {
     try {
       if (userMsg) await saveMessage(userMsg);
       const assistantMsg = {
@@ -71,9 +77,8 @@ export async function POST(req: Request) {
       console.error(`Error saving messages for provider ${provider}:`, err);
     }
   }
-
   // Providers with onFinish pointing to saveAll
-  const providers: Record<string, any> = {
+  const providers: Record<string, () => ReturnType<typeof streamText>> = {
     openai: () =>
       streamText({
         model: openai.responses(modelId),
