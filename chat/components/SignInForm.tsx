@@ -29,7 +29,7 @@ export default function SignInForm({
   signInAction,
   message,
 }: {
-  signInAction: (formData: FormData) => Promise<any>;
+  signInAction: (formData: FormData) => Promise<void>;
   message: Message;
 }) {
   return (
