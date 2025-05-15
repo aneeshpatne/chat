@@ -40,7 +40,7 @@ export async function POST(req: Request) {
 
   // Generic save helper
   async function saveMessage(message: Record<string, any>) {
-    const res = await fetch("http://localhost:3000/api/savemessage", {
+    const res = await fetch("https://chat.aneeshpatne.com/api/savemessage", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
