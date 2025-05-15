@@ -1,0 +1,188 @@
+/* Mobile responsiveness styles */
+
+/* Ensure all content respects container width */
+.prose,
+.prose *,
+.whitespace-pre-wrap,
+.break-words {
+  overflow-wrap: break-word !important;
+  word-wrap: break-word !important;
+  word-break: break-word !important;
+  hyphens: auto !important;
+}
+
+/* Special handling for terminal commands */
+code {
+  word-break: break-all !important;
+  max-width: 100%;
+  font-size: 0.9em;
+  display: inline-block;
+}
+
+/* Terminal command styling */
+.prose pre > code,
+pre > code {
+  overflow-wrap: break-word !important;
+  word-break: break-all !important;
+  white-space: pre-wrap !important;
+  display: block;
+}
+
+/* Ensure pre blocks don't cause horizontal scroll */
+.prose pre,
+pre,
+code,
+kbd,
+samp {
+  white-space: pre-wrap !important;
+  overflow-x: auto !important;
+  max-width: 100% !important;
+  word-break: break-all !important;
+}
+
+/* For inline code snippets */
+.prose code:not([class*="language-"]),
+code,
+.prose *:not(pre) > code {
+  white-space: pre-wrap !important;
+  overflow-wrap: break-word !important;
+  word-break: break-all !important;
+}
+
+/* Terminal commands and long inline code */
+code:has(+ br),
+code:has(~ br),
+p > code,
+li > code,
+h1 > code,
+h2 > code,
+h3 > code {
+  display: inline-block;
+  max-width: 100%;
+  word-break: break-all !important;
+  overflow-wrap: break-word !important;
+}
+
+/* Ensure all table containers can scroll horizontally instead of breaking layout */
+.overflow-x-auto,
+.table-container {
+  -webkit-overflow-scrolling: touch;
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+/* Add a class for tables to ensure they don't break layout */
+table {
+  table-layout: auto;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Ensure links don't overflow */
+a {
+  word-break: break-word;
+}
+
+/* Specific style for inline terminal commands */
+.inline-terminal-code,
+code:not([class*="language-"]) {
+  max-width: 100% !important;
+  overflow-wrap: break-word !important; 
+  word-break: break-all !important;
+  white-space: pre-wrap !important;
+}
+
+/* Ensure images don't overflow */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Additional mobile-specific styles */
+@media (max-width: 640px) {
+  .prose {
+    font-size: 0.95rem;
+  }
+  
+  .prose pre {
+    padding: 0.75rem;
+  }
+  
+  .prose img {
+    margin: 1rem auto;
+  }
+  
+  /* Adjust table display on very small screens */
+  .prose table {
+    display: block;
+    width: 100%;
+  }
+  
+  /* Reduce horizontal padding on mobile */
+  .px-4 {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  /* Ensure message containers don't overflow */
+  [class*="max-w-[60%]"] {
+    max-width: 80% !important;
+  }
+  
+  /* Make code blocks more mobile-friendly */
+  .SyntaxHighlighter {
+    font-size: 0.8rem !important;
+    line-height: 1.4 !important;
+  }
+}
+
+/* Handle specific case of terminal commands in markdown */
+.prose p code,
+.prose li code,
+p code,
+li code,
+h1 code,
+h2 code,
+h3 code,
+h4 code {
+  word-break: break-all !important;
+  white-space: normal !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+/* Apply to all paragraphs and list items to catch those containing code */
+p, li, h1, h2, h3, h4, h5, h6 {
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+  overflow-wrap: break-word !important;
+  word-wrap: break-word !important;
+  word-break: break-word !important;
+}
+
+/* Terminal commands with special treatment */
+pre:not([class*="language-"]),
+code:not([class*="language-"]) {
+  max-width: 100% !important;
+  white-space: pre-wrap !important;
+  word-break: break-all !important;
+  overflow-wrap: break-word !important;
+}
+
+/* Very small screens */
+@media (max-width: 480px) {
+  /* Further adjust for even smaller screens */
+  [class*="max-w-[60%]"] {
+    max-width: 90% !important;
+  }
+  
+  .prose pre {
+    padding: 0.5rem;
+  }
+  
+  /* Smaller font for terminal commands on mobile */
+  pre:not([class*="language-"]),
+  code:not([class*="language-"]) {
+    font-size: 0.75rem !important;
+  }
+}

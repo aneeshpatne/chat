@@ -172,9 +172,37 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
                   <Marked
                     components={{
                       root: ({ children }) => (
-                        <div className="prose prose-invert prose-sm max-w-none">
+                        <div className="prose prose-invert prose-sm max-w-none break-words">
                           {children}
                         </div>
+                      ),
+                      code: ({ node, inline, className, children, ...props }) => {
+                        return (
+                          <code
+                            className={className}
+                            style={{
+                              overflowWrap: "break-word",
+                              wordBreak: "break-word",
+                              whiteSpace: "pre-wrap"
+                            }}
+                            {...props}
+                          >
+                            {children}
+                          </code>
+                        );
+                      },
+                      pre: ({ node, children, ...props }) => (
+                        <pre
+                          style={{
+                            overflowX: "auto",
+                            maxWidth: "100%",
+                            whiteSpace: "pre-wrap",
+                            wordBreak: "break-word"
+                          }}
+                          {...props}
+                        >
+                          {children}
+                        </pre>
                       ),
                     }}
                   >

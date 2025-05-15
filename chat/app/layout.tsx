@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./responsive.css"; // Import responsive styles
 import { Inter } from "next/font/google";
 const inter = Inter({
   subsets: ["latin"], // or ['latin', 'cyrillic'] etc.

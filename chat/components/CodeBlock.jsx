@@ -40,7 +40,6 @@ const CodeBlock = React.memo(function CodeBlock({
   return match ? (
     <div className="rounded-md overflow-hidden border border-border">
       <div className="flex items-center justify-between bg-secondary px-4 py-1.5 text-xs text-secondary-foreground">
-        {" "}
         <span className="lowercase">{language}</span>
         <button
           onClick={copyToClipboard}
@@ -60,11 +59,20 @@ const CodeBlock = React.memo(function CodeBlock({
           padding: "1rem",
           margin: 0,
           overflowX: "auto",
-          fontSize: "0.875rem",
+          fontSize: "1rem",
+          maxWidth: "100%",
+          wordBreak: "break-all",
+        }}
+        wrapLines={true}
+        wrapLongLines={true}
+        lineProps={{
+          style: { wordBreak: "break-all", whiteSpace: "pre-wrap" },
         }}
         codeTagProps={{
           style: {
             fontFamily: '"Fira Code", monospace',
+            whiteSpace: "pre-wrap",
+            wordBreak: "break-all",
           },
         }}
       >
@@ -74,7 +82,14 @@ const CodeBlock = React.memo(function CodeBlock({
   ) : (
     <code
       {...props}
-      className={`${className} bg-muted text-muted-foreground rounded px-1 py-0.5 text-sm`}
+      className={`${className} bg-muted text-muted-foreground rounded px-1 py-0.5 text-sm overflow-wrap-anywhere inline-terminal-code`}
+      style={{
+        overflowWrap: "break-word",
+        wordBreak: "break-all",
+        whiteSpace: "pre-wrap",
+        display: "inline-block",
+        maxWidth: "100%",
+      }}
     >
       {children}
     </code>

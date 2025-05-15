@@ -25,12 +25,12 @@ function SubmitButton() {
   );
 }
 
-export default function SignInForm({ 
-  signInAction, 
-  message 
-}: { 
-  signInAction: (formData: FormData) => Promise<any>,
-  message: Message
+export default function SignInForm({
+  signInAction,
+  message,
+}: {
+  signInAction: (formData: FormData) => Promise<any>;
+  message: Message;
 }) {
   return (
     <form action={signInAction} className="space-y-4">
@@ -62,12 +62,23 @@ export default function SignInForm({
           background: currentColor;
           animation: fade 0.8s ease-in-out infinite;
         }
-        .dot-1 { animation-delay: 0.1s; }
-        .dot-2 { animation-delay: 0.2s; }
-        .dot-3 { animation-delay: 0.3s; }
+        .dot-1 {
+          animation-delay: 0.1s;
+        }
+        .dot-2 {
+          animation-delay: 0.2s;
+        }
+        .dot-3 {
+          animation-delay: 0.3s;
+        }
         @keyframes fade {
-          0%, 100% { opacity: 0.2; }
-          50% { opacity: 1; }
+          0%,
+          100% {
+            opacity: 0.2;
+          }
+          50% {
+            opacity: 1;
+          }
         }
         button:disabled .loading-dots {
           display: flex;

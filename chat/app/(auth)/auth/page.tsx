@@ -59,8 +59,8 @@ export default async function LoginPage(props: {
           </div>
           <p className="text-gray-400 text-sm mb-6">
             One interface, endless possibilities. Seamlessly switch between the
-            world&apos;s most advanced AI models to find the perfect answer for any
-            question.
+            world&apos;s most advanced AI models to find the perfect answer for
+            any question.
           </p>
 
           {/* Tech stack */}
@@ -71,20 +71,22 @@ export default async function LoginPage(props: {
               { name: "Supabase", icon: "supabase-logo.svg" },
               { name: "Dexie.js", icon: "dexie-logo.svg" },
             */}
-            {["Vercel AI SDK", "Next.js", "Supabase", "Dexie.js"].map((name) => (
-              <div
-                key={name}
-                className="flex items-center gap-1 bg-gray-800 px-2 py-1 rounded-full"
-              >
-                <Image
-                  src={`/${name.toLowerCase().replace(" ", "-")}.svg`}
-                  alt={name}
-                  width={14}
-                  height={14}
-                />
-                <span className="text-xs text-gray-300">{name}</span>
-              </div>
-            ))}
+            {["Vercel AI SDK", "Next.js", "Supabase", "Dexie.js"].map(
+              (name) => (
+                <div
+                  key={name}
+                  className="flex items-center gap-1 bg-gray-800 px-2 py-1 rounded-full"
+                >
+                  <Image
+                    src={`/${name.toLowerCase().replace(" ", "-")}.svg`}
+                    alt={name}
+                    width={14}
+                    height={14}
+                  />
+                  <span className="text-xs text-gray-300">{name}</span>
+                </div>
+              )
+            )}
           </div>
 
           <p className="text-gray-500 text-xs mb-2">
