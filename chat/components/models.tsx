@@ -208,7 +208,7 @@ export const modelsByCompany: Company[] = [
 ];
 
 // Create a flattened list of all models for backwards compatibility
-export const models = {};
+export const models: Record<string, Model> = {};
 modelsByCompany.forEach((company) => {
   company.models.forEach((model) => {
     const displayName = `${company.name} ${model.name}`;
