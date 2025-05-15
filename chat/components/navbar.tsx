@@ -9,6 +9,7 @@ import {
   Search,
   LogOut,
   Settings,
+  RefreshCw,
 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -23,11 +24,10 @@ import {
 import { signOutAction } from "@/app/(auth)/auth/actions";
 import { fetchChats } from "@/app/actions/table"; // Import fetchChats
 
-// Define an interface for the chat items
 interface ChatItem {
   id: string;
-  title: string | null; // Assuming title can be null
-  createdAt: Date | null; // Assuming createdAt can be null
+  title: string | null; // Title can be null
+  createdAt: Date | null; // CreatedAt can be null
 }
 
 export default function NavBar({
@@ -38,6 +38,7 @@ export default function NavBar({
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const [recentChats, setRecentChats] = useState<ChatItem[]>([]); // State for recent chats
+  const [isLoading, setIsLoading] = useState(false); // Loading state for chats
 
   const toggle = () => setOpen(!open);
 
@@ -49,27 +50,36 @@ export default function NavBar({
     router.push("/chat");
   };
 
+  // Function to load chats
+  const loadChats = async () => {
+    setIsLoading(true);
+    try {
+      const chats = await fetchChats();
+      // Ensure chats is an array and then set it
+      if (Array.isArray(chats)) {
+        setRecentChats(chats);
+      } else {
+        console.error("fetchChats did not return an array:", chats);
+        setRecentChats([]); // Set to empty array on error or unexpected format
+      }
+    } catch (error) {
+      console.error("Failed to fetch chats:", error);
+      setRecentChats([]); // Set to empty array on error
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Reload chats manually
+  const handleReload = () => {
+    loadChats();
+  };
+
   useEffect(() => {
-    // Fetch chats when the component mounts or when 'open' changes to true
     if (open) {
-      const loadChats = async () => {
-        try {
-          const chats = await fetchChats();
-          // Ensure chats is an array and then set it
-          if (Array.isArray(chats)) {
-            setRecentChats(chats);
-          } else {
-            console.error("fetchChats did not return an array:", chats);
-            setRecentChats([]); // Set to empty array on error or unexpected format
-          }
-        } catch (error) {
-          console.error("Failed to fetch chats:", error);
-          setRecentChats([]); // Set to empty array on error
-        }
-      };
       loadChats();
     }
-  }, [open]); // Re-fetch if 'open' state changes
+  }, [open]);
 
   return (
     <>
@@ -124,7 +134,6 @@ export default function NavBar({
                 New Chat
               </button>
             </div>
-
             <div className="px-3 mb-2">
               <div className="relative">
                 <Search className="absolute left-3 top-2.5 h-4 w-4 text-sidebar-foreground/50" />
@@ -134,36 +143,65 @@ export default function NavBar({
                   className="w-full bg-sidebar-accent/10 border border-sidebar-border/30 rounded-lg py-2 pl-9 pr-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all"
                 />
               </div>
-            </div>
-
+            </div>{" "}
             <div className="flex-1 overflow-y-auto px-3">
               <div className="mt-1 pt-1">
-                <h3 className="text-xs font-semibold text-sidebar-foreground/60 uppercase tracking-wider px-3 mb-2">
-                  Recent Chats
-                </h3>
-                <div className="space-y-1">
-                  {recentChats.length > 0 ? (
-                    recentChats.map((chat) => (
-                      <RecentChatItem
-                        key={chat.id}
-                        label={chat.title || "Untitled Chat"} // Use chat title or a default
-                        time={
-                          chat.createdAt
-                            ? formatTimeAgo(chat.createdAt)
-                            : "Unknown time"
-                        } // Format timestamp
-                        onClick={() => router.push(`/chat/${chat.id}`)} // Navigate to chat on click
-                      />
-                    ))
-                  ) : (
-                    <p className="px-3 text-sm text-sidebar-foreground/50">
-                      No recent chats.
-                    </p>
-                  )}
-                </div>
+                <div className="flex items-center justify-between px-3 mb-2">
+                  <h3 className="text-xs font-semibold text-sidebar-foreground/60 uppercase tracking-wider">
+                    Recent Chats
+                  </h3>
+                  <button
+                    onClick={handleReload}
+                    disabled={isLoading}
+                    className="p-1.5 rounded-md text-primary/70 hover:bg-sidebar-accent/20 hover:text-primary transition-all"
+                    aria-label="Refresh chats"
+                  >
+                    <RefreshCw
+                      className={`h-3.5 w-3.5 ${
+                        isLoading ? "animate-spin text-primary" : ""
+                      }`}
+                    />
+                  </button>
+                </div>{" "}
+                {isLoading ? (
+                  <div className="space-y-2 px-3">
+                    {[1, 2, 3].map((i) => (
+                      <div
+                        key={i}
+                        className="flex items-center gap-3 animate-pulse"
+                      >
+                        <div className="w-4 h-4 rounded-full bg-sidebar-accent/30"></div>
+                        <div className="flex-1">
+                          <div className="h-3 w-3/4 bg-sidebar-accent/30 rounded mb-1.5"></div>
+                          <div className="h-2 w-1/2 bg-sidebar-accent/20 rounded"></div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="space-y-1">
+                    {recentChats.length > 0 ? (
+                      recentChats.map((chat) => (
+                        <RecentChatItem
+                          key={chat.id}
+                          label={chat.title || "Untitled Chat"} // Use chat title or a default
+                          time={
+                            chat.createdAt
+                              ? formatTimeAgo(chat.createdAt)
+                              : "Unknown time"
+                          } // Format timestamp
+                          onClick={() => router.push(`/chat/${chat.id}`)} // Navigate to chat on click
+                        />
+                      ))
+                    ) : (
+                      <p className="px-3 text-sm text-sidebar-foreground/50">
+                        No recent chats.
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
-
             <div className="mt-auto">
               <div className="px-3 py-4 border-t border-sidebar-border/40">
                 {user ? (
