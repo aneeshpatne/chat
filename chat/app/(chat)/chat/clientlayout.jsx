@@ -530,12 +530,7 @@ const ModelItem = React.memo(function ModelItem({
 }) {
   const { name, id, provider, img } = model;
   const handleClick = () => {
-    // Allow dropdown to close when model is actually selected
-    // by not preventing the event
     setModel(model);
-
-    // This will close the dropdown after a model is selected
-    // We don't need to prevent/stop propagation here
   };
 
   return (

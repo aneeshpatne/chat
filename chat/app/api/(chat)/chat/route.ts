@@ -36,12 +36,18 @@ export async function POST(req: Request) {
           reasoningSummary: "detailed",
         },
       },
+      onFinish: (result) => {
+        console.log("OpenAI response:", result.text);
+      },
     });
   } else if (data?.provider === "openrouter") {
     result = streamText({
       model: openrouter(modelId),
       temperature: 0.7,
       messages,
+      onFinish: (result) => {
+        console.log("OpenRouter response:", result.text);
+      },
     });
   } else if (data?.provider === "gemini") {
     result = streamText({
