@@ -7,13 +7,13 @@ import { ChevronDown } from "lucide-react";
 const SentMessage = React.memo(function SentMessage({ message }) {
   return (
     <div className="flex justify-end w-full">
-      <div 
+      <div
         className="max-w-[60%] px-4 py-2 bg-card border border-border text-primary-foreground rounded-2xl shadow-sm prose prose-invert whitespace-pre-wrap break-words"
         style={{
           overflowWrap: "break-word",
           wordWrap: "break-word",
           hyphens: "auto",
-          maxWidth: "60%"
+          maxWidth: "60%",
         }}
       >
         {message}

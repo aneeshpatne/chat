@@ -1,8 +1,17 @@
 import CodeBlock from "./CodeBlock";
 
 export const mdComponents = {
-  code: (props) => <CodeBlock {...props} />,  p: ({ node, ...props }) => (
-    <p className="my-4 text-foreground/90 break-words" style={{ overflowWrap: "break-word", wordWrap: "break-word", hyphens: "auto" }} {...props} />
+  code: (props) => <CodeBlock {...props} />,
+  p: ({ node, ...props }) => (
+    <p
+      className="my-4 text-foreground/90 break-words"
+      style={{
+        overflowWrap: "break-word",
+        wordWrap: "break-word",
+        hyphens: "auto",
+      }}
+      {...props}
+    />
   ),
   h1: ({ node, ...props }) => (
     <h1 className="text-2xl font-bold my-4 text-foreground" {...props} />
@@ -24,14 +33,15 @@ export const mdComponents = {
   ),
   li: ({ node, ...props }) => (
     <li className="text-foreground/90 mb-1" {...props} />
-  ),  a: ({ node, ...props }) => (
+  ),
+  a: ({ node, ...props }) => (
     <a
       className="text-accent hover:text-accent/80 underline break-words"
-      style={{ 
-        overflowWrap: "break-word", 
-        wordBreak: "break-all", 
-        maxWidth: "100%", 
-        display: "inline-block" 
+      style={{
+        overflowWrap: "break-word",
+        wordBreak: "break-all",
+        maxWidth: "100%",
+        display: "inline-block",
       }}
       target="_blank"
       rel="noopener noreferrer"
@@ -44,15 +54,21 @@ export const mdComponents = {
       {...props}
     />
   ),
-  hr: ({ node, ...props }) => <hr className="border-border my-4" {...props} />,  img: ({ node, ...props }) => (
-    <img className="max-w-full w-auto rounded-lg my-4" style={{ height: "auto" }} {...props} />
+  hr: ({ node, ...props }) => <hr className="border-border my-4" {...props} />,
+  img: ({ node, ...props }) => (
+    <img
+      className="max-w-full w-auto rounded-lg my-4"
+      style={{ height: "auto" }}
+      {...props}
+    />
   ),
   strong: ({ node, ...props }) => (
     <strong className="font-bold text-foreground" {...props} />
   ),
   em: ({ node, ...props }) => (
     <em className="italic text-foreground/90" {...props} />
-  ),  table: ({ node, ...props }) => (
+  ),
+  table: ({ node, ...props }) => (
     <div className="overflow-x-auto my-4 max-w-full">
       <table
         className="border-collapse w-full border border-border rounded-md"

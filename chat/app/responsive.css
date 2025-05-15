@@ -87,7 +87,7 @@ a {
 .inline-terminal-code,
 code:not([class*="language-"]) {
   max-width: 100% !important;
-  overflow-wrap: break-word !important; 
+  overflow-wrap: break-word !important;
   word-break: break-all !important;
   white-space: pre-wrap !important;
 }
@@ -103,21 +103,21 @@ img {
   .prose {
     font-size: 0.95rem;
   }
-  
+
   .prose pre {
     padding: 0.75rem;
   }
-  
+
   .prose img {
     margin: 1rem auto;
   }
-  
+
   /* Adjust table display on very small screens */
   .prose table {
     display: block;
     width: 100%;
   }
-  
+
   /* Reduce horizontal padding on mobile */
   .px-4 {
     padding-left: 0.75rem;
@@ -128,7 +128,7 @@ img {
   [class*="max-w-[60%]"] {
     max-width: 80% !important;
   }
-  
+
   /* Make code blocks more mobile-friendly */
   .SyntaxHighlighter {
     font-size: 0.8rem !important;
@@ -152,7 +152,14 @@ h4 code {
 }
 
 /* Apply to all paragraphs and list items to catch those containing code */
-p, li, h1, h2, h3, h4, h5, h6 {
+p,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   max-width: 100% !important;
   overflow-x: hidden !important;
   overflow-wrap: break-word !important;
@@ -175,11 +182,11 @@ code:not([class*="language-"]) {
   [class*="max-w-[60%]"] {
     max-width: 90% !important;
   }
-  
+
   .prose pre {
     padding: 0.5rem;
   }
-  
+
   /* Smaller font for terminal commands on mobile */
   pre:not([class*="language-"]),
   code:not([class*="language-"]) {

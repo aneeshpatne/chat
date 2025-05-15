@@ -176,14 +176,20 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
                           {children}
                         </div>
                       ),
-                      code: ({ node, inline, className, children, ...props }) => {
+                      code: ({
+                        node,
+                        inline,
+                        className,
+                        children,
+                        ...props
+                      }) => {
                         return (
                           <code
                             className={className}
                             style={{
                               overflowWrap: "break-word",
                               wordBreak: "break-word",
-                              whiteSpace: "pre-wrap"
+                              whiteSpace: "pre-wrap",
                             }}
                             {...props}
                           >
@@ -197,7 +203,7 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
                             overflowX: "auto",
                             maxWidth: "100%",
                             whiteSpace: "pre-wrap",
-                            wordBreak: "break-word"
+                            wordBreak: "break-word",
                           }}
                           {...props}
                         >
