@@ -29,7 +29,6 @@ import {
 import { cn } from "@/lib/utils";
 import { set } from "lodash";
 import NavBar from "@/components/navbar";
-import { saveMessage } from "@/app/actions/savemessage";
 import { createSession } from "@/app/actions/session";
 import { v4 as uuidv4 } from "uuid";
 import { getMessagesByChatId } from "@/app/actions/fetchmessage";
@@ -85,29 +84,6 @@ export default function ChatLayout({ children, signOutAction, user }) {
           totalTokens: options.usage.totalTokens,
         },
       }));
-      const text = message.parts
-        .filter((p) => p.type === "text")
-        .map((p) => p.text)
-        .join("");
-      const reasoning = message.parts
-        .filter((p) => p.type === "reasoning")
-        .map((p) => p.reasoning)
-        .join("");
-
-      try {
-        await saveMessage({
-          id: uuidv4(),
-          chatId: sessionId,
-          role: "assistant",
-          content: text,
-          reasoning,
-          promptTokens: options.usage.promptTokens,
-          completionTokens: options.usage.completionTokens,
-          totalTokens: options.usage.totalTokens,
-        });
-      } catch (err) {
-        console.error("Error saving assistant message:", err);
-      }
     },
   });
 
@@ -116,7 +92,6 @@ export default function ChatLayout({ children, signOutAction, user }) {
     e.preventDefault();
 
     const combinedInput = addMessage ? `${addMessage}\n\n${input}` : input;
-
     if (!sessionId) {
       setIsInitiatingChat(true);
       try {
@@ -132,18 +107,6 @@ export default function ChatLayout({ children, signOutAction, user }) {
           return;
         }
 
-        const userMessageId = crypto.randomUUID();
-        try {
-          await saveMessage({
-            id: userMessageId,
-            chatId: newSessionID, // Use the new session ID
-            role: "user",
-            content: combinedInput,
-          });
-        } catch (err) {
-          console.error("Failed to save first user message:", err);
-        }
-
         router.push(`/chat/${newSessionID}`);
       } catch (err) {
         console.error("Failed to initiate chat:", err);
@@ -152,22 +115,19 @@ export default function ChatLayout({ children, signOutAction, user }) {
     } else {
       const userMessageId = crypto.randomUUID();
 
-      try {
-        const result = await saveMessage({
-          id: userMessageId,
-          chatId: sessionId,
-          role: "user",
-          content: combinedInput,
-        });
-      } catch (err) {
-        console.error("Failed to save user message:", err);
-      }
+      // No need to save message here anymore - it's handled by the API route
       setaddMessage("");
       handleInputChange({ target: { value: "" } });
 
       chat.append(
         { role: "user", content: combinedInput, id: userMessageId },
-        { data: { model: model.id, provider: model.provider } }
+        {
+          data: {
+            model: model.id,
+            provider: model.provider,
+            sessionId: sessionId,
+          },
+        }
       );
     }
   };
@@ -228,21 +188,25 @@ export default function ChatLayout({ children, signOutAction, user }) {
       user,
       initialMessage,
       isFetchingMessages,
-      // modelsByCompany is static so no need to add it to deps
     ]
   );
-
   useEffect(() => {
     if (sessionId && pendingMessage) {
+      const firstMessageId = crypto.randomUUID();
       append(
-        { role: "user", content: pendingMessage },
-        { data: { model: model.id, provider: model.provider } }
+        { role: "user", content: pendingMessage, id: firstMessageId },
+        {
+          data: {
+            model: model.id,
+            provider: model.provider,
+            sessionId: sessionId,
+          },
+        }
       );
       setPendingMessage(null);
     }
   }, [sessionId, pendingMessage, append, model]);
-  // Instead of showing a full-screen loading indicator, render the layout
-  // with the SubmitButton in loading state
+
   if (loading) {
     return (
       <ChatContext.Provider value={contextValue}>
