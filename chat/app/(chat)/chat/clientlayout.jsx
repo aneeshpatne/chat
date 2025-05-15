@@ -175,7 +175,8 @@ export default function ChatLayout({ children, signOutAction, user }) {
       user,
       initialMessage,
       isFetchingMessages,
-      modelsByCompany, // Add modelsByCompany to context
+      modelsByCompany,
+      sessionId,
     }),
     [
       chat,
@@ -188,6 +189,7 @@ export default function ChatLayout({ children, signOutAction, user }) {
       user,
       initialMessage,
       isFetchingMessages,
+      sessionId,
     ]
   );
   useEffect(() => {

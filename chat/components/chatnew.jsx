@@ -31,12 +31,46 @@ export default function Chat({
   setShowScroll,
   scrollToBottomFn,
   setScrollToBottomFn,
+  sessionId,
 }) {
   const [messagesStatus, setMessagesStatus] = useState({});
 
   const bottomRef = useRef(null);
   const chatContainerRef = useRef(null);
   const parentRef = useRef(null);
+  const greetings = [
+    "Where should we begin, Aneesh?",
+    "What's on your mind, Aneesh?",
+    "How can I help you today, Aneesh?",
+    "Ready to start, Aneesh?",
+    "What shall we explore, Aneesh?",
+    "Let's get to it, Aneesh!",
+    "Greetings Aneesh! What's the plan?",
+    "Hello Aneesh, what are we working on?",
+    "Good to see you, Aneesh! What's up?",
+    "Ask me anything, Aneesh!",
+    "What can I do for you, Aneesh?",
+    "How may I assist you, Aneesh?",
+    "Ready when you are, Aneesh!",
+    "Let the ideas flow, Aneesh!",
+    "What's the first thing, Aneesh?",
+    "Your wish is my command, Aneesh (almost)!",
+    "Let's make some magic, Aneesh!",
+    "What adventure awaits us, Aneesh?",
+    "How's it going, Aneesh? What's next?",
+    "I'm all ears, Aneesh!",
+    "What's the query, Aneesh?",
+    "Let's dive in, Aneesh!",
+    "Pleased to meet you, Aneesh! What's the task?",
+    "What are your thoughts, Aneesh?",
+    "Let's brainstorm, Aneesh!",
+  ];
+
+  const [randomGreeting, setRandomGreeting] = useState("");
+
+  useEffect(() => {
+    setRandomGreeting(greetings[Math.floor(Math.random() * greetings.length)]);
+  }, []);
 
   const handleScroll = () => {
     const container = chatContainerRef.current;
@@ -71,7 +105,6 @@ export default function Chat({
       parts: [{ type: "text", text: pendingMessage }],
       pending: true,
     },
-    // Removed loading-assistant message to avoid center loading animation
   ].filter(Boolean);
 
   const currentlyStreamingId =
@@ -82,10 +115,11 @@ export default function Chat({
         messages.length === 0 &&
         !pendingMessage &&
         status !== "in_progress" &&
-        status !== "submitted" && (
+        status !== "submitted" &&
+        !sessionId && (
           <div className="flex items-center justify-center h-[calc(100vh-6rem)]">
             <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-indigo-300 via-purple-300 to-blue-300 inline-block text-transparent bg-clip-text drop-shadow-sm">
-              Good Afternoon, Aneesh!
+              {randomGreeting}
             </h1>
           </div>
         )}
