@@ -269,7 +269,7 @@ export default function ChatLayout({ children, signOutAction, user }) {
               position={buttonPosition}
             />
           )}
-          <div ref={containerRef} className="flex-grow overflow-auto pb-32">
+          <div ref={containerRef} className="flex-grow overflow-auto">
             {children}
           </div>
           <div className="flex flex-col items-center gap-2 fixed left-0 right-0 bottom-0 z-10">

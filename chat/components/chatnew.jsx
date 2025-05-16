@@ -169,7 +169,7 @@ export default function Chat({
         style={{ overscrollBehavior: "none" }}
       >
         <div className="mx-auto w-[80%] max-w-4xl">
-          <div className="flex flex-col w-full gap-3 p-3 pb-20">
+          <div className="flex flex-col w-full gap-3 p-3 pb-50">
             {renderedMessages.map((message, index) => {
               const text = message.parts
                 .filter((part) => part.type === "text")
