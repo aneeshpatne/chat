@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import "./responsive.css"; // Import responsive styles
 import { Inter } from "next/font/google";
-import { preventOverscrollBounce } from "./no-bounce";
+// We're using the no-bounce behavior via inline script instead
 const inter = Inter({
   subsets: ["latin"], // or ['latin', 'cyrillic'] etc.
 });
