@@ -83,12 +83,14 @@ export default function NavBar({
 
   return (
     <>
+      {" "}
       {!open && (
         <button
           onClick={toggle}
-          className="fixed top-4 left-4 z-50 p-2.5 bg-primary/90 text-primary-foreground rounded-xl hover:bg-primary hover:text-primary-foreground transition-all shadow-lg backdrop-blur-sm"
+          className="fixed top-4 left-4 z-50 p-2.5 bg-background/70 text-foreground border border-border/40 rounded-lg hover:bg-background/90 hover:border-primary/30 hover:text-primary transition-all duration-200 shadow-sm backdrop-blur-md group"
+          aria-label="Open sidebar"
         >
-          <ArrowRight className="h-5 w-5" />
+          <ArrowRight className="h-4.5 w-4.5 group-hover:translate-x-0.5 transition-transform" />
         </button>
       )}
       <aside
@@ -111,15 +113,18 @@ export default function NavBar({
                 />
               </div>
               <h1 className="text-xl font-bold whitespace-nowrap text-sidebar-foreground">
-                Chat App
+                Chat
               </h1>
             </div>
-          )}
+          )}{" "}
           <button
-            className="p-2 rounded-full hover:bg-sidebar-accent/20 hover:text-sidebar-accent-foreground transition-all"
+            className="p-2 rounded-lg border border-transparent hover:bg-sidebar-accent/10 hover:border-sidebar-border/40 hover:text-sidebar-accent-foreground transition-all duration-200 group"
             onClick={toggle}
+            aria-label="Close sidebar"
           >
-            {open && <ArrowLeft className="h-5 w-5" />}
+            {open && (
+              <ArrowLeft className="h-4.5 w-4.5 group-hover:-translate-x-0.5 transition-transform" />
+            )}
           </button>
         </div>
 

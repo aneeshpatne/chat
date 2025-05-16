@@ -47,8 +47,8 @@ export async function POST(req: Request) {
         id: crypto.randomUUID(),
         chatId: sessionId,
         role: "assistant",
-        content: "Image generated successfully.",
-        imageBase64: image.base64,
+        content: image.base64,
+        // imageBase64: image.base64,
       };
 
       await saveMessage(userMsg);
