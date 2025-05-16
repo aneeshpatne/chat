@@ -98,11 +98,14 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
   if (!message && !reasoning) {
     return null;
   }
-
   return (
     <div
       className="justify-start w-full space-y-2 relative"
       onMouseUp={handleMouseUp}
+      onTouchEnd={(e) => {
+        // Handle touch selection
+        setTimeout(handleMouseUp, 100); // Delay to let selection register
+      }}
       ref={containerRef}
     >
       {showButton && (

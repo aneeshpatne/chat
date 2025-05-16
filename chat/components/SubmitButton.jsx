@@ -67,13 +67,17 @@ export default function SubmitButton({
       </Button>
     );
   }
-
   // Default state - ready to send
   return (
     <Button
       variant="outline"
       onClick={onSubmit}
       className="bg-primary/80 hover:bg-primary text-primary-foreground hover:text-primary-foreground border-primary/30 shadow-md hover:shadow-lg transition-all duration-200"
+      style={{ touchAction: 'manipulation' }}
+      onTouchStart={(e) => {
+        // Prevent unwanted touch events from bubbling
+        e.stopPropagation();
+      }}
     >
       <Send className="w-5 h-5" />
     </Button>

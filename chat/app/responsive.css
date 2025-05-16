@@ -100,6 +100,14 @@ img {
 
 /* Additional mobile-specific styles */
 @media (max-width: 640px) {
+  html, body {
+    overflow: hidden;
+    position: fixed;
+    height: 100%;
+    width: 100%;
+    overscroll-behavior: none;
+  }
+  
   .prose {
     font-size: 0.95rem;
   }
@@ -127,6 +135,12 @@ img {
   /* Ensure message containers don't overflow */
   [class*="max-w-[60%]"] {
     max-width: 80% !important;
+  }
+  
+  /* Fix scrolling issues */
+  *::-webkit-scrollbar {
+    width: 0 !important;
+    height: 0 !important;
   }
 
   /* Make code blocks more mobile-friendly */
@@ -191,5 +205,18 @@ code:not([class*="language-"]) {
   pre:not([class*="language-"]),
   code:not([class*="language-"]) {
     font-size: 0.75rem !important;
+  }
+  
+  /* Fix iOS-specific input issues */
+  textarea, input {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    font-size: 16px !important; /* Prevents iOS zoom on focus */
+  }
+  
+  /* Fix for iOS viewport height issue */
+  .fixed {
+    position: fixed !important;
   }
 }

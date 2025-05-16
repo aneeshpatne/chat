@@ -258,20 +258,19 @@ export default function ChatLayout({ children, signOutAction, user }) {
   return (
     <ChatContext.Provider value={contextValue}>
       <div className="relative">
-        <NavBar user={user} />
-        <div className="flex flex-col relative" style={{ height: "100dvh" }}>
-          {showButton && (
-            <SelectionButton
-              onClick={handleAddClick}
-              position={buttonPosition}
-            />
-          )}
-          <div ref={containerRef} className="flex-grow overflow-auto">
-            {children}
-          </div>
-          <div className="flex flex-col items-center gap-2 absolute left-0 right-0 bottom-0">
-            {showScroll && <ScrollToBottom onClick={scrollToBottomFn} />}
-            <div className="mx-auto w-[80%] max-w-4xl mb-4">
+        <NavBar user={user} />      <div className="flex flex-col fixed inset-0" style={{ height: "100dvh" }}>
+        {showButton && (
+          <SelectionButton
+            onClick={handleAddClick}
+            position={buttonPosition}
+          />
+        )}
+        <div ref={containerRef} className="flex-grow overflow-auto pb-32">
+          {children}
+        </div>
+        <div className="flex flex-col items-center gap-2 fixed left-0 right-0 bottom-0 z-10">
+          {showScroll && <ScrollToBottom onClick={scrollToBottomFn} />}
+          <div className="mx-auto w-[80%] max-w-4xl mb-4">
               {mounted ? (
                 <div className="flex flex-col p-4 bg-card/60 backdrop-blur-sm rounded-md border border-border flex-shrink-0">
                   <AdditionalMessage
@@ -349,19 +348,22 @@ const TextAreaComponent = React.memo(function TextAreaComponent({
   handleInputChange,
   onSubmit,
 }) {
-  return (
-    <TextareaAutosize
+  return (    <TextareaAutosize
       value={input}
       onChange={handleInputChange}
       minRows={1}
       maxRows={10}
       placeholder="Type your messages here..."
       className="w-full p-2 border-none rounded-md text-foreground bg-transparent overflow-y-auto focus:outline-none transition-all duration-150 ease-in-out resize-none"
+      style={{ touchAction: 'manipulation' }}
       onKeyDown={(e) => {
         if (e.key === "Enter" && !e.shiftKey) {
           e.preventDefault();
           onSubmit(e);
         }
+      }}
+      onTouchStart={(e) => {
+        e.stopPropagation();
       }}
     />
   );
