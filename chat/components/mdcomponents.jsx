@@ -101,4 +101,18 @@ export const mdComponents = {
       {...props}
     />
   ),
+  pre: ({ node, ...props }) => (
+    <pre
+      className="mx-auto"
+      style={{
+        overflowX: "auto",
+        maxWidth: "100%",
+        whiteSpace: "pre-wrap",
+        wordBreak: "break-word",
+        display: "block",
+        margin: "1rem auto",
+      }}
+      {...props}
+    />
+  ),
 };

@@ -34,11 +34,13 @@ const CodeBlock = React.memo(function CodeBlock({
       });
     }
   };
-
   const codeBg = "var(--card)"; // Use CSS variable for background
 
   return match ? (
-    <div className="rounded-md overflow-hidden border border-border">
+    <div
+      className="rounded-md overflow-hidden border border-border mx-auto w-full"
+      style={{ textAlign: "center", maxWidth: "100%" }}
+    >
       <div className="flex items-center justify-between bg-secondary px-4 py-1.5 text-xs text-secondary-foreground">
         <span className="lowercase">{language}</span>
         <button
@@ -57,11 +59,14 @@ const CodeBlock = React.memo(function CodeBlock({
         customStyle={{
           backgroundColor: codeBg,
           padding: "1rem",
-          margin: 0,
+          margin: "0 auto",
           overflowX: "auto",
           fontSize: "1rem",
           maxWidth: "100%",
           wordBreak: "break-all",
+          textAlign: "left",
+          marginLeft: "auto",
+          marginRight: "auto",
         }}
         wrapLines={true}
         wrapLongLines={true}

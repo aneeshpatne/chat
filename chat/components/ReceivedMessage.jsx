@@ -207,7 +207,12 @@ export const ReceivedMessage = React.memo(function ReceivedMessage({
                             maxWidth: "100%",
                             whiteSpace: "pre-wrap",
                             wordBreak: "break-word",
+                            display: "block",
+                            margin: "1rem auto",
+                            textAlign: "left",
+                            width: "100%",
                           }}
+                          className="mx-auto text-left w-full"
                           {...props}
                         >
                           {children}

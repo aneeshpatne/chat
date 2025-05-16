@@ -228,6 +228,13 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+  /* Ensure pre tags are centered */
+  pre {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    text-align: left !important;
+    width: 100% !important;
+  }
 }
 
 /* For Firefox */
@@ -235,4 +242,34 @@ body {
   scrollbar-width: auto;
   scrollbar-color: rgba(140, 120, 220, 0.3) transparent;
   scrollbar-color: rgba(140, 120, 220, 0.3) transparent;
+}
+
+/* Additional styling for code blocks */
+.SyntaxHighlighter {
+  margin: 0 auto !important;
+  width: 100% !important;
+  text-align: left !important;
+}
+
+/* Fix for horizontally aligned code elements in sequences */
+code {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 0.25rem;
+}
+
+/* Specifically target multiple inline code elements that appear next to each other */
+p > code + code,
+p > code + span + code,
+p > code + span + span + code {
+  margin-left: 0.5rem;
+}
+
+/* Ensure proper alignment for parentheses with code inside */
+p > code:first-of-type {
+  margin-left: 0.25rem;
+}
+
+p > code:last-of-type {
+  margin-right: 0.25rem;
 }
