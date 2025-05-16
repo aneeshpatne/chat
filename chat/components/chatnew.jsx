@@ -97,23 +97,30 @@ export default function Chat({
         bottomRef.current.scrollIntoView({ behavior: "smooth" });
       });
     }
-  }, [bottomRef.current, setScrollToBottomFn]);  useEffect(() => {
+  }, [bottomRef.current, setScrollToBottomFn]);
+  useEffect(() => {
     const container = chatContainerRef.current;
     if (!container) return;
     handleScroll();
     container.addEventListener("scroll", handleScroll);
-    
+
     // Prevent bounce/rubber band effect in iOS Safari
     const preventBounce = (e) => {
-      if (container.scrollTop === 0 && e.touches[0].screenY > e.touches[0].clientY) {
+      if (
+        container.scrollTop === 0 &&
+        e.touches[0].screenY > e.touches[0].clientY
+      ) {
         e.preventDefault();
       }
-      if (container.scrollTop + container.clientHeight >= container.scrollHeight && 
-          e.touches[0].screenY < e.touches[0].clientY) {
+      if (
+        container.scrollTop + container.clientHeight >=
+          container.scrollHeight &&
+        e.touches[0].screenY < e.touches[0].clientY
+      ) {
         e.preventDefault();
       }
     };
-    
+
     container.addEventListener("touchmove", preventBounce, { passive: false });
     return () => {
       container.removeEventListener("scroll", handleScroll);
@@ -138,8 +145,12 @@ export default function Chat({
   ].filter(Boolean);
 
   const currentlyStreamingId =
-    status === "streaming" ? messages[messages.length - 1]?.id : null;  return (
-    <div className="flex flex-col w-full h-full relative" style={{ overscrollBehavior: 'none' }}>
+    status === "streaming" ? messages[messages.length - 1]?.id : null;
+  return (
+    <div
+      className="flex flex-col w-full h-full relative"
+      style={{ overscrollBehavior: "none" }}
+    >
       {!input &&
         messages.length === 0 &&
         !pendingMessage &&
@@ -151,10 +162,11 @@ export default function Chat({
               {randomGreeting}
             </h1>
           </div>
-        )}<div
+        )}
+      <div
         ref={chatContainerRef}
         className="w-full h-full overflow-y-auto"
-        style={{ overscrollBehavior: 'none' }}
+        style={{ overscrollBehavior: "none" }}
       >
         <div className="mx-auto w-[80%] max-w-4xl">
           <div className="flex flex-col w-full gap-3 p-3 pb-20">

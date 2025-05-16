@@ -50,7 +50,6 @@ export default function SubmitButton({
     );
   }
 
-  // If we're initiating a new chat or waiting for a response or if status is submitted
   if (
     isInitiatingChat ||
     isFetchingMessages ||
@@ -67,13 +66,13 @@ export default function SubmitButton({
       </Button>
     );
   }
-  // Default state - ready to send
+
   return (
     <Button
       variant="outline"
       onClick={onSubmit}
       className="bg-primary/80 hover:bg-primary text-primary-foreground hover:text-primary-foreground border-primary/30 shadow-md hover:shadow-lg transition-all duration-200"
-      style={{ touchAction: 'manipulation' }}
+      style={{ touchAction: "manipulation" }}
       onTouchStart={(e) => {
         // Prevent unwanted touch events from bubbling
         e.stopPropagation();
