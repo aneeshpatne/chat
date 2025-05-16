@@ -257,19 +257,3 @@ code {
   vertical-align: middle;
   margin: 0 0.25rem;
 }
-
-/* Specifically target multiple inline code elements that appear next to each other */
-p > code + code,
-p > code + span + code,
-p > code + span + span + code {
-  margin-left: 0.5rem;
-}
-
-/* Ensure proper alignment for parentheses with code inside */
-p > code:first-of-type {
-  margin-left: 0.25rem;
-}
-
-p > code:last-of-type {
-  margin-right: 0.25rem;
-}
