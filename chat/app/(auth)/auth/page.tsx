@@ -48,7 +48,9 @@ export default async function LoginPage(props: {
               height={36}
               className="h-9 w-9"
             />
-            <h2 className="text-white text-2xl font-bold tracking-tight">Chat</h2>
+            <h2 className="text-white text-2xl font-bold tracking-tight">
+              Chat
+            </h2>
           </div>
 
           <div className="space-y-10">
@@ -86,7 +88,9 @@ export default async function LoginPage(props: {
                     </div>
                   ))}
                   <div className="flex items-center gap-2 bg-[#1E2130] px-4 py-2 rounded-lg shadow-sm">
-                    <span className="text-gray-200 font-medium text-sm">+More</span>
+                    <span className="text-gray-200 font-medium text-sm">
+                      +More
+                    </span>
                   </div>
                 </div>
               </div>

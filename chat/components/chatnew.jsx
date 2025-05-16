@@ -79,15 +79,16 @@ export default function Chat({
   useEffect(() => {
     setRandomGreeting(greetings[Math.floor(Math.random() * greetings.length)]);
   }, []);
-
   const handleScroll = () => {
     const container = chatContainerRef.current;
     if (!container) return;
     const { scrollTop, scrollHeight, clientHeight } = container;
     const threshold = 50;
-    const canScroll = scrollHeight > clientHeight;
+    // Only set showScroll to true if the content is actually scrollable
+    // AND we're not already at the bottom
+    const hasScrollableContent = scrollHeight > clientHeight + 20; // Add small buffer to avoid edge cases
     const atBottom = scrollHeight - scrollTop <= clientHeight + threshold;
-    setShowScroll(canScroll && !atBottom);
+    setShowScroll(hasScrollableContent && !atBottom);
   };
 
   useEffect(() => {
@@ -97,7 +98,6 @@ export default function Chat({
       });
     }
   }, [bottomRef.current, setScrollToBottomFn]);
-
   useEffect(() => {
     const container = chatContainerRef.current;
     if (!container) return;
@@ -105,6 +105,13 @@ export default function Chat({
     container.addEventListener("scroll", handleScroll);
     return () => container.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Update scroll button visibility whenever messages change
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      handleScroll();
+    }
+  }, [messages.length]);
   const renderedMessages = [
     ...messages,
     pendingMessage && {
@@ -133,9 +140,9 @@ export default function Chat({
         )}
       <div
         ref={chatContainerRef}
-        className="w-full h-[calc(100vh-3rem)] overflow-y-auto"
+        className="w-full h-[100vh] overflow-y-auto pb-35"
       >
-        <div className="mx-auto w-[80%] max-w-4xl pb-24">
+        <div className="mx-auto w-[80%] max-w-4xl ">
           <div className="flex flex-col w-full gap-3 p-3">
             {renderedMessages.map((message, index) => {
               const text = message.parts
