@@ -55,7 +55,7 @@ export default function ChatLayout({ children, signOutAction, user }) {
   const [buttonPosition, setButtonPosition] = useState({ x: 0, y: 0 });
   const [selectedText, setSelectedText] = useState("");
   const [addMessage, setaddMessage] = useState("");
-  const [token, setToken] = useState({});
+  const [token, setToken] = useState({}); // Token info stored by message ID
   const [initialMessage, setInitialMessage] = useState([]);
   const [scrollToBottomFn, setScrollToBottomFn] = useState(() => () => {});
   const [isFetchingMessages, setIsFetchingMessages] = useState(false); // New loading state for messages
@@ -76,14 +76,17 @@ export default function ChatLayout({ children, signOutAction, user }) {
     onError: (error) => console.error("Chat error:", error),
     onFinish: async (message, options) => {
       console.log("Message finished, saving tokens and message to database");
-      setToken((prevTokens) => ({
-        ...prevTokens,
-        [message.id]: {
-          completionTokens: options.usage.completionTokens,
-          promptTokens: options.usage.promptTokens,
-          totalTokens: options.usage.totalTokens,
-        },
-      }));
+      if (options?.usage) {
+        setToken((prevTokens) => ({
+          ...prevTokens,
+          [message.id]: {
+            id: message.id,
+            promptTokens: options.usage.promptTokens,
+            completionTokens: options.usage.completionTokens,
+            totalTokens: options.usage.totalTokens,
+          },
+        }));
+      }
     },
   });
 
@@ -122,11 +125,12 @@ export default function ChatLayout({ children, signOutAction, user }) {
       chat.append(
         { role: "user", content: combinedInput, id: userMessageId },
         {
-          data: {
-            model: model.id,
-            provider: model.provider,
-            sessionId: sessionId,
-          },
+          data:
+            {
+              model: model.id,
+              provider: model.provider,
+              sessionId: sessionId,
+            },
         }
       );
     }
@@ -136,7 +140,6 @@ export default function ChatLayout({ children, signOutAction, user }) {
       setIsInitiatingChat(false);
     }
     const fetchMessage = async () => {
-      console.log("Fetching messages...");
       if (!sessionId) {
         setInitialMessage([]);
         return;
@@ -144,12 +147,26 @@ export default function ChatLayout({ children, signOutAction, user }) {
       setIsFetchingMessages(true);
       setInitialMessage([]);
       try {
-        console.log("Fetching messages for session:", sessionId);
         const data = await getMessagesByChatId(sessionId);
         console.log("Fetched messages:", data);
+        
+        // Extract token info from fetched messages
+        const tokenInfo = {};
+        data.forEach(message => {
+          if (message.usage) {
+            tokenInfo[message.id] = {
+              id: message.id,
+              promptTokens: message.usage.promptTokens,
+              completionTokens: message.usage.completionTokens,
+              totalTokens: message.usage.totalTokens
+            };
+          }
+        });
+        
+        // Update token state with extracted info
+        setToken(tokenInfo);
         setInitialMessage(data);
       } catch (err) {
-        console.error("Failed to fetch messages:", err);
         setInitialMessage([]);
       } finally {
         setIsFetchingMessages(false);
@@ -198,11 +215,12 @@ export default function ChatLayout({ children, signOutAction, user }) {
       append(
         { role: "user", content: pendingMessage, id: firstMessageId },
         {
-          data: {
-            model: model.id,
-            provider: model.provider,
-            sessionId: sessionId,
-          },
+          data:
+            {
+              model: model.id,
+              provider: model.provider,
+              sessionId: sessionId,
+            },
         }
       );
       setPendingMessage(null);
