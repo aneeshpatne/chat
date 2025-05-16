@@ -9,6 +9,7 @@ export default function SubmitButton({
   onSubmit,
   onStop,
   isInitiatingChat,
+  isFetchingMessages,
 }) {
   // Define a spinner animation for loading states
   const LoadingSpinner = () => (
@@ -50,7 +51,12 @@ export default function SubmitButton({
   }
 
   // If we're initiating a new chat or waiting for a response or if status is submitted
-  if (isInitiatingChat || status === "in_progress" || status === "submitted") {
+  if (
+    isInitiatingChat ||
+    isFetchingMessages ||
+    status === "in_progress" ||
+    status === "submitted"
+  ) {
     return (
       <Button
         variant="outline"

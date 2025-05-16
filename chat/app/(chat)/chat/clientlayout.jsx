@@ -55,7 +55,7 @@ export default function ChatLayout({ children, signOutAction, user }) {
   const [buttonPosition, setButtonPosition] = useState({ x: 0, y: 0 });
   const [selectedText, setSelectedText] = useState("");
   const [addMessage, setaddMessage] = useState("");
-  const [token, setToken] = useState({}); // Token info stored by message ID
+  const [token, setToken] = useState({});
   const [initialMessage, setInitialMessage] = useState([]);
   const [scrollToBottomFn, setScrollToBottomFn] = useState(() => () => {});
   const [isFetchingMessages, setIsFetchingMessages] = useState(false); // New loading state for messages
@@ -81,8 +81,8 @@ export default function ChatLayout({ children, signOutAction, user }) {
           ...prevTokens,
           [message.id]: {
             id: message.id,
-            promptTokens: options.usage.promptTokens,
             completionTokens: options.usage.completionTokens,
+            promptTokens: options.usage.promptTokens,
             totalTokens: options.usage.totalTokens,
           },
         }));
@@ -125,12 +125,11 @@ export default function ChatLayout({ children, signOutAction, user }) {
       chat.append(
         { role: "user", content: combinedInput, id: userMessageId },
         {
-          data:
-            {
-              model: model.id,
-              provider: model.provider,
-              sessionId: sessionId,
-            },
+          data: {
+            model: model.id,
+            provider: model.provider,
+            sessionId: sessionId,
+          },
         }
       );
     }
@@ -149,20 +148,20 @@ export default function ChatLayout({ children, signOutAction, user }) {
       try {
         const data = await getMessagesByChatId(sessionId);
         console.log("Fetched messages:", data);
-        
-        // Extract token info from fetched messages
+
+        // Extract token information from fetched messages
         const tokenInfo = {};
-        data.forEach(message => {
+        data.forEach((message) => {
           if (message.usage) {
             tokenInfo[message.id] = {
               id: message.id,
               promptTokens: message.usage.promptTokens,
               completionTokens: message.usage.completionTokens,
-              totalTokens: message.usage.totalTokens
+              totalTokens: message.usage.totalTokens,
             };
           }
         });
-        
+
         // Update token state with extracted info
         setToken(tokenInfo);
         setInitialMessage(data);
@@ -215,12 +214,11 @@ export default function ChatLayout({ children, signOutAction, user }) {
       append(
         { role: "user", content: pendingMessage, id: firstMessageId },
         {
-          data:
-            {
-              model: model.id,
-              provider: model.provider,
-              sessionId: sessionId,
-            },
+          data: {
+            model: model.id,
+            provider: model.provider,
+            sessionId: sessionId,
+          },
         }
       );
       setPendingMessage(null);
@@ -243,6 +241,7 @@ export default function ChatLayout({ children, signOutAction, user }) {
                     <SubmitButton
                       status="in_progress"
                       isInitiatingChat={true}
+                      isFetchingMessages={false}
                       onSubmit={() => {}}
                       onStop={() => {}}
                     />
@@ -270,7 +269,7 @@ export default function ChatLayout({ children, signOutAction, user }) {
           <div ref={containerRef} className="flex-grow overflow-auto">
             {children}
           </div>
-          <div className="flex flex-col items-center gap-2 absolute left-0 right-0 bottom-0 ">
+          <div className="flex flex-col items-center gap-2 absolute left-0 right-0 bottom-0">
             {showScroll && <ScrollToBottom onClick={scrollToBottomFn} />}
             <div className="mx-auto w-[80%] max-w-4xl mb-4">
               {mounted ? (
@@ -289,6 +288,7 @@ export default function ChatLayout({ children, signOutAction, user }) {
                     <SubmitButton
                       status={status}
                       isInitiatingChat={isInitiatingChat}
+                      isFetchingMessages={isFetchingMessages}
                       onSubmit={handleSubmit}
                       onStop={stop}
                     />
