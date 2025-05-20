@@ -1,0 +1,9 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="64" height="64" rx="16" fill="#000"/>
+  <!-- Left curly brace -->
+  <path d="M22 18C25 18 25 26 22 26C25 26 25 34 22 34C25 34 25 42 22 42" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+  <!-- Right curly brace -->
+  <path d="M42 18C39 18 39 26 42 26C39 26 39 34 42 34C39 34 39 42 42 42" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+  <!-- Code line in the middle -->
+  <rect x="27" y="30" width="10" height="3" rx="1.5" fill="#fff"/>
+</svg>
