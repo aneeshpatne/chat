@@ -2,6 +2,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ReceivedMessage } from "./ReceivedMessage";
 import { ChevronDown } from "lucide-react";
+import MessageLoadingAnimation from "./MessageLoadingAnimation"; // Added import
 
 // SentMessage component defined before it's used
 const SentMessage = React.memo(function SentMessage({ message }) {
@@ -41,37 +42,39 @@ export default function Chat({
   setScrollToBottomFn,
   sessionId,
 }) {
-  const [messagesStatus, setMessagesStatus] = useState({});
-
-  const bottomRef = useRef(null);
   const chatContainerRef = useRef(null);
-  const parentRef = useRef(null);
+  const bottomRef = useRef(null);
+  const [showScrollButton, setShowScrollButton] = useState(false);
+
+  // Greetings array
   const greetings = [
-    "Where should we begin, Aneesh?",
-    "What's on your mind, Aneesh?",
-    "How can I help you today, Aneesh?",
-    "Ready to start, Aneesh?",
-    "What shall we explore, Aneesh?",
-    "Let's get to it, Aneesh!",
-    "Greetings Aneesh! What's the plan?",
-    "Hello Aneesh, what are we working on?",
-    "Good to see you, Aneesh! What's up?",
-    "Ask me anything, Aneesh!",
-    "What can I do for you, Aneesh?",
-    "How may I assist you, Aneesh?",
-    "Ready when you are, Aneesh!",
-    "Let the ideas flow, Aneesh!",
-    "What's the first thing, Aneesh?",
-    "Your wish is my command, Aneesh (almost)!",
-    "Let's make some magic, Aneesh!",
-    "What adventure awaits us, Aneesh?",
-    "How's it going, Aneesh? What's next?",
-    "I'm all ears, Aneesh!",
-    "What's the query, Aneesh?",
-    "Let's dive in, Aneesh!",
-    "Pleased to meet you, Aneesh! What's the task?",
-    "What are your thoughts, Aneesh?",
-    "Let's brainstorm, Aneesh!",
+    "Hello Aneesh! How can I help you today?",
+    "Hi Aneesh! What can I do for you today?",
+    "Greetings Aneesh! What brings you here today?",
+    "Salutations Aneesh! How may I assist you?",
+    "Hey Aneesh! What's on your mind?",
+    "Hello Aneesh! Ready to explore some ideas?",
+    "Hi Aneesh! Need help with something?",
+    "Greetings Aneesh! Let's dive into your queries.",
+    "Salutations Aneesh! What would you like to know?",
+    "Hey Aneesh! How can I be of service today?",
+    "Hello Aneesh! What topic shall we discuss?",
+    "Hi Aneesh! Looking for some information?",
+    "Greetings Aneesh! Let's get started on your project.",
+    "Salutations Aneesh! How can I make your day easier?",
+    "Hey Aneesh! What challenges are you facing today?",
+    "Hello Aneesh! Let's brainstorm some solutions.",
+    "Hi Aneesh! Ready to tackle your questions?",
+    "Greetings Aneesh! What ideas do you have in mind?",
+    "Salutations Aneesh! Let's turn your thoughts into action.",
+    "Hey Aneesh! What are you curious about today?",
+    "Hello Aneesh! Let's embark on a new learning journey.",
+    "Hi Aneesh! What skills do you want to explore?",
+    "Greetings Aneesh! How can I assist in your learning today?",
+    "Salutations Aneesh! What knowledge are you seeking?",
+    "Hey Aneesh! Let's unlock some new skills together.",
+    "Hello Aneesh! What would you like to achieve today?",
+    "Hi Aneesh! Let's set some goals for our session.",
   ];
 
   const [randomGreeting, setRandomGreeting] = useState("");
@@ -167,6 +170,7 @@ export default function Chat({
         ref={chatContainerRef}
         className="w-full h-full overflow-y-auto"
         style={{ overscrollBehavior: "none" }}
+        onScroll={handleScroll}
       >
         <div className="mx-auto w-[80%] max-w-4xl pb-50">
           <div className="flex flex-col w-full gap-3 p-3 ">
@@ -197,51 +201,16 @@ export default function Chat({
                 />
               );
             })}
+            {(status === "in_progress" || status === "submitted") &&
+              !pendingMessage && (
+                <div className="flex justify-start w-full">
+                  <MessageLoadingAnimation />
+                </div>
+              )}
           </div>
         </div>
         <div ref={bottomRef} />
       </div>
     </div>
-  );
-}
-
-export function MessageLoadingIndicator() {
-  return (
-    <>
-      <style jsx>{`
-        @keyframes fastFade {
-          0%,
-          80%,
-          100% {
-            opacity: 0.4;
-            transform: scale(0.9);
-          }
-          40% {
-            opacity: 1;
-            transform: scale(1.2);
-          }
-        }
-      `}</style>
-      <div className="flex items-center space-x-1 p-1 rounded-md">
-        <span
-          className="h-1.5 w-1.5 rounded-full bg-muted-foreground"
-          style={{ animation: "fastFade 0.7s infinite", animationDelay: "0s" }}
-        ></span>
-        <span
-          className="h-1.5 w-1.5 rounded-full bg-muted-foreground"
-          style={{
-            animation: "fastFade 0.7s infinite",
-            animationDelay: "0.15s",
-          }}
-        ></span>
-        <span
-          className="h-1.5 w-1.5 rounded-full bg-muted-foreground"
-          style={{
-            animation: "fastFade 0.7s infinite",
-            animationDelay: "0.3s",
-          }}
-        ></span>
-      </div>
-    </>
   );
 }
