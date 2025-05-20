@@ -137,41 +137,14 @@ export default function ChatLayout({ children, signOutAction, user }) {
   useEffect(() => {
     if (sessionId) {
       setIsInitiatingChat(false);
-    }
-    const fetchMessage = async () => {
-      if (!sessionId) {
-        setInitialMessage([]);
-        return;
-      }
-      setIsFetchingMessages(true);
       setInitialMessage([]);
-      try {
-        const data = await getMessagesByChatId(sessionId);
-        console.log("Fetched messages:", data);
-
-        // Extract token information from fetched messages
-        const tokenInfo = {};
-        data.forEach((message) => {
-          if (message.usage) {
-            tokenInfo[message.id] = {
-              id: message.id,
-              promptTokens: message.usage.promptTokens,
-              completionTokens: message.usage.completionTokens,
-              totalTokens: message.usage.totalTokens,
-            };
-          }
-        });
-
-        // Update token state with extracted info
-        setToken(tokenInfo);
-        setInitialMessage(data);
-      } catch (err) {
-        setInitialMessage([]);
-      } finally {
-        setIsFetchingMessages(false);
-      }
-    };
-    fetchMessage();
+      setIsFetchingMessages(false);
+      setToken({});
+    } else {
+      setInitialMessage([]);
+      setIsFetchingMessages(false);
+      setToken({});
+    }
   }, [sessionId]);
 
   const contextValue = useMemo(
