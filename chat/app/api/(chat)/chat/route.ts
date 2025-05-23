@@ -4,7 +4,6 @@ import { createGroq } from "@ai-sdk/groq";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { streamText } from "ai";
 import { createClient } from "@/utlis/supabase/server";
-import { experimental_generateImage as generateImage } from "ai";
 
 export const runtime = "edge";
 export const maxDuration = 30;
@@ -17,7 +16,6 @@ export async function POST(req: Request) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
   if (!user) {
     return new Response("You are not authenticated", { status: 401 });
   }
@@ -28,42 +26,7 @@ export async function POST(req: Request) {
   const sessionId = data?.sessionId;
   const cookieHeader = req.headers.get("cookie") || "";
 
-  if (data?.imagePrompt) {
-    try {
-      const { image } = await generateImage({
-        model: openai.image("gpt-image-1"),
-        prompt: data.imagePrompt,
-        size: "1024x1024", // Optional: specify size
-      });
-
-      const userMsg = {
-        id: crypto.randomUUID(),
-        chatId: sessionId,
-        role: "user",
-        content: data.imagePrompt,
-      };
-
-      const assistantMsg = {
-        id: crypto.randomUUID(),
-        chatId: sessionId,
-        role: "assistant",
-        content: image.base64,
-        // imageBase64: image.base64,
-      };
-
-      await saveMessage(userMsg);
-      await saveMessage(assistantMsg);
-
-      return new Response(JSON.stringify({ imageBase64: image.base64 }), {
-        headers: { "Content-Type": "application/json" },
-      });
-    } catch (error) {
-      console.error("Image generation failed:", error);
-      return new Response("Image generation failed", { status: 500 });
-    }
-  }
-
-  // Existing text streaming logic
+  // Capture last user message to save later
   const lastMsg = messages[messages.length - 1];
   const userMsg =
     lastMsg?.role === "user"
@@ -75,7 +38,8 @@ export async function POST(req: Request) {
         }
       : null;
 
-  async function saveMessage(message: Record<string, unknown>) {
+  // Generic save helper
+  async function saveMessage(message: Record<string, any>) {
     const res = await fetch("https://chat.aneeshpatne.com/api/savemessage", {
       method: "POST",
       headers: {
@@ -88,15 +52,8 @@ export async function POST(req: Request) {
     if (!res.ok) console.error("Failed to save message:", await res.text());
   }
 
-  async function saveAll(result: {
-    text: string;
-    reasoning?: string;
-    usage?: {
-      promptTokens?: number;
-      completionTokens?: number;
-      totalTokens?: number;
-    };
-  }) {
+  // Save both user and assistant once streaming completes
+  async function saveAll(result: any) {
     try {
       if (userMsg) await saveMessage(userMsg);
       const assistantMsg = {
@@ -115,7 +72,8 @@ export async function POST(req: Request) {
     }
   }
 
-  const providers: Record<string, () => ReturnType<typeof streamText>> = {
+  // Providers with onFinish pointing to saveAll
+  const providers: Record<string, any> = {
     openai: () =>
       streamText({
         model: openai.responses(modelId),

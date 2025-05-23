@@ -37,8 +37,8 @@ export default function NavBar({
 }) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
-  const [recentChats, setRecentChats] = useState<ChatItem[]>([]); // State for recent chats
-  const [isLoading, setIsLoading] = useState(false); // Loading state for chats
+  const [recentChats, setRecentChats] = useState<ChatItem[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const toggle = () => setOpen(!open);
 
@@ -50,21 +50,19 @@ export default function NavBar({
     router.push("/chat");
   };
 
-  // Function to load chats
   const loadChats = async () => {
     setIsLoading(true);
     try {
       const chats = await fetchChats();
-      // Ensure chats is an array and then set it
       if (Array.isArray(chats)) {
         setRecentChats(chats);
       } else {
         console.error("fetchChats did not return an array:", chats);
-        setRecentChats([]); // Set to empty array on error or unexpected format
+        setRecentChats([]);
       }
     } catch (error) {
       console.error("Failed to fetch chats:", error);
-      setRecentChats([]); // Set to empty array on error
+      setRecentChats([]);
     } finally {
       setIsLoading(false);
     }
