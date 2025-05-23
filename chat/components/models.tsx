@@ -108,6 +108,12 @@ export const modelsByCompany: Company[] = [
     img: "/anthropic.svg",
     models: [
       {
+        name: "Claude 4 Sonnet",
+        id: "anthropic/claude-sonnet-4",
+        provider: "openrouter",
+        img: "/anthropic.svg",
+      },
+      {
         name: "Claude 3.7",
         id: "anthropic/claude-3.7-sonnet",
         provider: "openrouter",
