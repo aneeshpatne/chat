@@ -5,6 +5,33 @@ import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { streamText } from "ai";
 import { createClient } from "@/utlis/supabase/server";
 
+// Type definitions
+interface MessagePart {
+  type: string;
+  text?: string;
+  reasoning?: string;
+}
+
+interface MessageWithParts {
+  id?: string;
+  role: "user" | "assistant";
+  parts: MessagePart[];
+}
+
+interface SimpleMessage {
+  id?: string;
+  role: "user" | "assistant";
+  content: string;
+}
+
+type IncomingMessage = MessageWithParts | SimpleMessage;
+
+interface TransformedMessage {
+  id?: string;
+  role: "user" | "assistant";
+  content: string;
+}
+
 export const runtime = "edge";
 export const maxDuration = 30;
 
@@ -24,21 +51,22 @@ export async function POST(req: Request) {
   const provider = data?.provider;
   const modelId = data?.model || "gpt-4.1-nano";
   const sessionId = data?.sessionId;
-  const cookieHeader = req.headers.get("cookie") || "";
-  const transformedMessages = messages.map((msg: any) => {
-    if (msg.parts) {
+  const cookieHeader = req.headers.get("cookie") || "";  const transformedMessages: TransformedMessage[] = messages.map((msg: IncomingMessage) => {
+    if ('parts' in msg && msg.parts) {
       const textContent = msg.parts
-        .filter((part: any) => part.type === "text")
-        .map((part: any) => part.text)
+        .filter((part: MessagePart) => part.type === "text")
+        .map((part: MessagePart) => part.text || "")
         .join("");
       return {
+        id: msg.id,
         role: msg.role,
         content: textContent,
       };
     } else {
       return {
+        id: msg.id,
         role: msg.role,
-        content: msg.content,
+        content: (msg as SimpleMessage).content,
       };
     }
   });
