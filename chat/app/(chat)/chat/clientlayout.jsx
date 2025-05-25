@@ -137,9 +137,23 @@ export default function ChatLayout({ children, signOutAction, user }) {
   useEffect(() => {
     if (sessionId) {
       setIsInitiatingChat(false);
-      setInitialMessage([]);
-      setIsFetchingMessages(false);
+      setIsFetchingMessages(true);
       setToken({});
+
+      // Fetch existing messages for this chat session
+      const fetchMessages = async () => {
+        try {
+          const messages = await getMessagesByChatId(sessionId);
+          setInitialMessage(messages);
+        } catch (error) {
+          console.error("Failed to fetch messages:", error);
+          setInitialMessage([]);
+        } finally {
+          setIsFetchingMessages(false);
+        }
+      };
+
+      fetchMessages();
     } else {
       setInitialMessage([]);
       setIsFetchingMessages(false);
