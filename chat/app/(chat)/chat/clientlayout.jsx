@@ -139,8 +139,6 @@ export default function ChatLayout({ children, signOutAction, user }) {
       setIsInitiatingChat(false);
       setIsFetchingMessages(true);
       setToken({});
-
-      // Fetch existing messages for this chat session
       const fetchMessages = async () => {
         try {
           const messages = await getMessagesByChatId(sessionId);

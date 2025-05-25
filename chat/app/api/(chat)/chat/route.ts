@@ -16,18 +16,33 @@ export async function POST(req: Request) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+
   if (!user) {
     return new Response("You are not authenticated", { status: 401 });
   }
-
   const { messages, data } = await req.json();
   const provider = data?.provider;
   const modelId = data?.model || "gpt-4.1-nano";
   const sessionId = data?.sessionId;
   const cookieHeader = req.headers.get("cookie") || "";
-
-  // Capture last user message to save later
-  const lastMsg = messages[messages.length - 1];
+  const transformedMessages = messages.map((msg: any) => {
+    if (msg.parts) {
+      const textContent = msg.parts
+        .filter((part: any) => part.type === "text")
+        .map((part: any) => part.text)
+        .join("");
+      return {
+        role: msg.role,
+        content: textContent,
+      };
+    } else {
+      return {
+        role: msg.role,
+        content: msg.content,
+      };
+    }
+  });
+  const lastMsg = transformedMessages[transformedMessages.length - 1];
   const userMsg =
     lastMsg?.role === "user"
       ? {
@@ -38,9 +53,8 @@ export async function POST(req: Request) {
         }
       : null;
 
-  // Generic save helper
-  async function saveMessage(message: Record<string, any>) {
-    const res = await fetch("http://localhost:3000/api/savemessage", {
+  async function saveMessage(message: Record<string, unknown>) {
+    const res = await fetch("https://chat.aneeshpatne.com/api/savemessage", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -52,8 +66,15 @@ export async function POST(req: Request) {
     if (!res.ok) console.error("Failed to save message:", await res.text());
   }
 
-  // Save both user and assistant once streaming completes
-  async function saveAll(result: any) {
+  async function saveAll(result: {
+    text: string;
+    reasoning?: string;
+    usage?: {
+      promptTokens?: number;
+      completionTokens?: number;
+      totalTokens?: number;
+    };
+  }) {
     try {
       if (userMsg) await saveMessage(userMsg);
       const assistantMsg = {
@@ -71,13 +92,11 @@ export async function POST(req: Request) {
       console.error(`Error saving messages for provider ${provider}:`, err);
     }
   }
-
-  // Providers with onFinish pointing to saveAll
-  const providers: Record<string, any> = {
+  const providers: Record<string, () => ReturnType<typeof streamText>> = {
     openai: () =>
       streamText({
-        model: openai.responses(modelId),
-        messages,
+        model: openai(modelId),
+        messages: transformedMessages,
         providerOptions: { openai: { reasoningSummary: "detailed" } },
         onFinish: saveAll,
       }),
@@ -85,21 +104,21 @@ export async function POST(req: Request) {
       streamText({
         model: openrouter(modelId),
         temperature: 0.7,
-        messages,
+        messages: transformedMessages,
         onFinish: saveAll,
       }),
     gemini: () =>
       streamText({
         model: google(modelId),
         temperature: 1,
-        messages,
+        messages: transformedMessages,
         onFinish: saveAll,
       }),
     groq: () =>
       streamText({
         model: groq(modelId),
         temperature: 0.7,
-        messages,
+        messages: transformedMessages,
         onFinish: saveAll,
       }),
   };
