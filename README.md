@@ -13,9 +13,9 @@ A sophisticated conversational AI platform built with Next.js that provides unif
 
 <div align="center">
 
-|                        Chat Interface                        |                        Authentication                        |
+|                        Chat Interface                        |                        Conversation                        |
 | :----------------------------------------------------------: | :----------------------------------------------------------: |
-| <img src="./img/img1.png" alt="Chat Interface" width="400"/> | <img src="./img/img2.png" alt="Authentication" width="400"/> |
+| <img src="./img/img1.png" alt="Chat Interface" width="400"/> | <img src="./img/img2.png" alt="Conversation" width="400"/> |
 
 </div>
 
